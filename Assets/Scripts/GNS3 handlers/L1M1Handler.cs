@@ -40,7 +40,6 @@ public class L1M1Handler : MonoBehaviour {
         );
         // Set the billboards
         HelpL1M1Handler.SetBillboards(NetTables, NetsPrefix);
-
     }
 
     private static class HelpL1M1Handler {
