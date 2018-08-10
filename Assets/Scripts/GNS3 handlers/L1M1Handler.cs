@@ -8,7 +8,10 @@ public class L1M1Handler : MonoBehaviour {
     private ushort[] NetsPrefix = GNS3Handler.RandomizeNets(8);
 
     [SerializeField]
-    private Text[] NetTables;
+    private Text[] SignsPC1;
+
+    [SerializeField]
+    private GameObject[] NetTables;
 
     // Use this for initialization
     void Start () {
@@ -33,16 +36,18 @@ public class L1M1Handler : MonoBehaviour {
         Thread.Sleep(120000);
 
         // Set up end-point nodes
-        HelpL1M1Handler.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
+        L1M1HandlerHelper.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
         // Set-up routers
-        HelpL1M1Handler.SetUpRouters(
+        L1M1HandlerHelper.SetUpRouters(
             new OpenWRT[5] {R1, R2, R3, R4, R5}, NetsPrefix
         );
-        // Set the billboards
-        HelpL1M1Handler.SetBillboards(NetTables, NetsPrefix);
+        // Set the signs
+        L1M1HandlerHelper.SetSignsPC1(SignsPC1, NetsPrefix);
+        // Set the routing tables signs
+        L1M1HandlerHelper.SetRoutingTables(R1.RoutingTable, NetTables[0]);
     }
 
-    private static class HelpL1M1Handler {
+    private static class L1M1HandlerHelper {
 
         public static void SetUpPCs(VPC[] PCs, ushort[] NetsPrefix) {
             PCs[0].SetIP(
@@ -104,12 +109,30 @@ public class L1M1Handler : MonoBehaviour {
             Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
         }
 
-        public static void SetBillboards(Text[] NetTables, ushort[] NetsPrefix) {
-            // PC1
-            // Welcome billboard
-            NetTables[0].text = $"192.168.{NetsPrefix[0]}.11";
+        public static void SetSignsPC1(Text[] Signs, ushort[] NetsPrefix) {
+            // Welcome sign
+            Signs[0].text = $"192.168.{NetsPrefix[0]}.11";
             // Doors
-            NetTables[1].text = $"192.168.{NetsPrefix[1]}.1";
+            Signs[1].text = $"192.168.{NetsPrefix[1]}.1";
+        }
+
+        public static void SetRoutingTables(RoutingTable RoutTab, GameObject TextToReplicate) {
+
+            float positionOffset = 0f;
+            foreach (RoutingTable.RoutingTableRow route in RoutTab.Routes)
+            {
+                positionOffset += 0.20f;
+                // Duplicate the canvas for the routing tables
+                var newTextWrapper = Instantiate(TextToReplicate, TextToReplicate.transform);
+                // Move it down
+                newTextWrapper.transform.Translate(0, -positionOffset, 0);
+                var dest = newTextWrapper.transform.GetChild(0).GetComponent<Text>();
+                dest.text = route.Destination;
+                var gate = newTextWrapper.transform.GetChild(1).GetComponent<Text>();
+                gate.text = route.Gateway;
+                var netmask = newTextWrapper.transform.GetChild(2).GetComponent<Text>();
+                netmask.text = route.Netmask;
+            }
         }
 
     }

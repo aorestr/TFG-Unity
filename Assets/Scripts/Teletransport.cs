@@ -15,6 +15,5 @@ public class Teletransport : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
             Character.position = new Vector3(NewX, NewY);
         }
-        Debug.Log("ok");
     }
 }
