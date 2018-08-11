@@ -33,7 +33,7 @@ public class L1M1Handler : MonoBehaviour {
         OpenWRT R5 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[6]);
 
         // We need to wait. Otherwise, nodes won't boot properly
-        Thread.Sleep(120000);
+        /*Thread.Sleep(120000);
 
         // Set up end-point nodes
         L1M1HandlerHelper.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
@@ -41,6 +41,7 @@ public class L1M1Handler : MonoBehaviour {
         L1M1HandlerHelper.SetUpRouters(
             new OpenWRT[5] {R1, R2, R3, R4, R5}, NetsPrefix
         );
+        */
         // Set the signs
         L1M1HandlerHelper.SetSignsPC1(SignsPC1, NetsPrefix);
         // Set the routing tables signs
@@ -118,14 +119,16 @@ public class L1M1Handler : MonoBehaviour {
 
         public static void SetRoutingTables(RoutingTable RoutTab, GameObject TextToReplicate) {
 
-            float positionOffset = 0f;
+            float positionOffset = 0.15f;
+            // Assign the sign to a new variable
+            var newTextWrapper = TextToReplicate;
             foreach (RoutingTable.RoutingTableRow route in RoutTab.Routes)
             {
-                positionOffset += 0.20f;
                 // Duplicate the canvas for the routing tables
-                var newTextWrapper = Instantiate(TextToReplicate, TextToReplicate.transform);
+                newTextWrapper = Instantiate(newTextWrapper, newTextWrapper.transform);
                 // Move it down
                 newTextWrapper.transform.Translate(0, -positionOffset, 0);
+                // Write down the parameters into the sign
                 var dest = newTextWrapper.transform.GetChild(0).GetComponent<Text>();
                 dest.text = route.Destination;
                 var gate = newTextWrapper.transform.GetChild(1).GetComponent<Text>();
