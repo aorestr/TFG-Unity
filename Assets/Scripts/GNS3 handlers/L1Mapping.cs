@@ -56,7 +56,10 @@ public struct L1Mapping {
         {"PC1", new float[2]{ -9.694201f, -1.0057f } },
         {"R1", new float[2]{ -13.2f, 5.3f } },
         {"R2", new float[2]{ 5.4f, 12.31f } },
-        {"R3", new float[2]{ 15.01f, 6.97f } }
+        {"R3", new float[2]{ 15.01f, 6.97f } },
+        {"R4", new float[2]{ 10f, -7f } },
+        {"R5", new float[2]{ 32.4f, 0.2f } },
+        {"PC2", new float[2]{ 64.05f, 8.06f } }
     };
 
     // Random order for doors
@@ -65,7 +68,9 @@ public struct L1Mapping {
         { "PC1", new ushort[1]{ 0 } },
         { "R1", new ushort[3]{ 1, 2, 3 }.OrderBy(x => rnd.Next()).ToArray() },
         { "R2", new ushort[3]{ 1, 2, 3 }.OrderBy(x => rnd.Next()).ToArray() },
-        { "R3", new ushort[3]{ 1, 2, 3 }.OrderBy(x => rnd.Next()).ToArray() }
+        { "R3", new ushort[3]{ 1, 2, 3 }.OrderBy(x => rnd.Next()).ToArray() },
+        { "R4", new ushort[2]{ 1, 2 }.OrderBy(x => rnd.Next()).ToArray() },
+        { "R5", new ushort[3]{ 1, 2, 3 }.OrderBy(x => rnd.Next()).ToArray() }
     };
 
     // Allow to randomize a several links on a project. It is useful

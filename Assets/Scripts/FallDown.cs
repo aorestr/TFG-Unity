@@ -5,13 +5,13 @@ using UnityEngine;
 public class FallDown : MonoBehaviour {
 
     [SerializeField]
-    private float NewX;
-    [SerializeField]
-    private float NewY;
+    private string CurrentNode;
     [SerializeField]
     private Transform Character;
 	
     private void OnTriggerEnter2D()  {
-        Character.position = new Vector3(NewX,NewY);
+        Character.position = new Vector3(
+            L1Mapping.NodeRespawnM1[CurrentNode][0], L1Mapping.NodeRespawnM1[CurrentNode][1]
+        );
     }
 }

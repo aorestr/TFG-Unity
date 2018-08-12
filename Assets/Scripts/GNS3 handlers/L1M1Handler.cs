@@ -28,19 +28,21 @@ public class L1M1Handler : MonoBehaviour {
         OpenWRT R3 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[4]);
         OpenWRT R4 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[5]);
         OpenWRT R5 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[6]);
+        OpenWRT[] Routers = new OpenWRT[5] { R1, R2, R3, R4, R5 };
 
         // We need to wait. Otherwise, nodes won't boot properly
-        Thread.Sleep(120000);
+        /*Thread.Sleep(120000);
 
         // Set up end-point nodes
         L1M1HandlerHelper.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
         // Set-up routers
         L1M1HandlerHelper.SetUpRouters(
-            new OpenWRT[5] {R1, R2, R3, R4, R5}, NetsPrefix
+            Routers, NetsPrefix
         );
-        // R1
+        */
         // Set the routing tables signs
-        L1M1HandlerHelper.SetRoutingTables(R1.RoutingTable, NetTables[0]);
+        for (int i = 0; i < Routers.Length; i++)
+            L1M1HandlerHelper.SetRoutingTables(Routers[i].RoutingTable, NetTables[i]);
     }
 
     private static class L1M1HandlerHelper {
@@ -97,6 +99,13 @@ public class L1M1Handler : MonoBehaviour {
             Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[2]}.2", netmask: "255.255.255.0");
             Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[4]}.3", netmask: "255.255.255.0");
             Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[5]}.3", netmask: "255.255.255.0");
+            //
+            Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
+            Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
             //
             Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
             Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
