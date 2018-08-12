@@ -1,13 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Teletransport : MonoBehaviour {
 
-    [SerializeField]
-    private float NewX;
-    [SerializeField]
-    private float NewY;
+    public float NewX {
+        get;
+        set;
+    }
+
+    public float NewY {
+        get;
+        set;
+    }
+
     [SerializeField]
     private Transform Character;
 

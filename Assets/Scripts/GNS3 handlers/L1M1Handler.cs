@@ -5,11 +5,8 @@ using System.Threading;
 
 public class L1M1Handler : MonoBehaviour {
 
-    private ushort[] NetsPrefix = GNS3Handler.RandomizeNets(8);
-
-    [SerializeField]
-    private Text[] SignsPC1;
-
+    private ushort[] NetsPrefix = L1Mapping.RandomizeNets(8);
+    
     [SerializeField]
     private GameObject[] NetTables;
 
@@ -17,20 +14,20 @@ public class L1M1Handler : MonoBehaviour {
     void Start () {
 
         // Activate nodes
-        foreach (string nodeName in L1NodesNames.M1) {
+        foreach (string nodeName in L1Mapping.NodeNamesM1) {
             GNS3Handler.Instance.projectHandler.StartNode(
                 GNS3Handler.Instance.projectHandler.GetNodeByName(nodeName)
             );
         }
 
         // Assign every node with a variable
-        VPC PC1 = (VPC)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[0]);
-        VPC PC2 = (VPC)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[1]);
-        OpenWRT R1 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[2]);
-        OpenWRT R2 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[3]);
-        OpenWRT R3 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[4]);
-        OpenWRT R4 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[5]);
-        OpenWRT R5 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1NodesNames.M1[6]);
+        VPC PC1 = (VPC)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[0]);
+        VPC PC2 = (VPC)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[1]);
+        OpenWRT R1 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[2]);
+        OpenWRT R2 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[3]);
+        OpenWRT R3 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[4]);
+        OpenWRT R4 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[5]);
+        OpenWRT R5 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[6]);
 
         // We need to wait. Otherwise, nodes won't boot properly
         Thread.Sleep(120000);
@@ -41,8 +38,7 @@ public class L1M1Handler : MonoBehaviour {
         L1M1HandlerHelper.SetUpRouters(
             new OpenWRT[5] {R1, R2, R3, R4, R5}, NetsPrefix
         );
-        // Set the signs
-        L1M1HandlerHelper.SetSignsPC1(SignsPC1, NetsPrefix);
+        // R1
         // Set the routing tables signs
         L1M1HandlerHelper.SetRoutingTables(R1.RoutingTable, NetTables[0]);
     }
@@ -107,13 +103,6 @@ public class L1M1Handler : MonoBehaviour {
             Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
             Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
             Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
-        }
-
-        public static void SetSignsPC1(Text[] Signs, ushort[] NetsPrefix) {
-            // Welcome sign
-            Signs[0].text = $"192.168.{NetsPrefix[0]}.11";
-            // Doors
-            Signs[1].text = $"192.168.{NetsPrefix[1]}.1";
         }
 
         public static void SetRoutingTables(RoutingTable RoutTab, GameObject TextToReplicate) {
