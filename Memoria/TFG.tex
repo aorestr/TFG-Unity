@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 
-% \usepackage[style=list, number=none]{glossary} %
+%\usepackage[style=list, number=none]{glossary} %
 %\usepackage{titlesec}
 %\usepackage{pailatino}
 
@@ -30,17 +30,17 @@
 % ********************************************************************
 % Re-usable information
 % ********************************************************************
-\newcommand{\myTitle}{Título del proyecto\xspace}
+\newcommand{\myTitle}{Desarrollo de un videojuego para la configuración y análisis de redes de computadores\xspace}
 \newcommand{\myDegree}{Grado en Ingeniería de Tecnologías de Telecomunicación\xspace}
-\newcommand{\myName}{Nombre Apllido1 Apellido2 (alumno)\xspace}
-\newcommand{\myProf}{Nombre Apllido1 Apellido2 (tutor1)\xspace}
-\newcommand{\myOtherProf}{Nombre Apllido1 Apellido2 (tutor2)\xspace}
+\newcommand{\myName}{Ángel Oreste Rodríguez Romero\xspace}
+\newcommand{\myProf}{Juan José Ramos Muñoz\xspace}
+\newcommand{\myOtherProf}{Jonathan Prados Garzón\xspace}
 %\newcommand{\mySupervisor}{Put name here\xspace}
 \newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
 Telecomunicación\xspace}
 \newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de
 Telecomunicación\xspace}
-\newcommand{\myDepartment}{Departamento de ...\xspace}
+\newcommand{\myDepartment}{Departamento de TSTC\xspace}
 \newcommand{\myUni}{\protect{Universidad de Granada}\xspace}
 \newcommand{\myLocation}{Granada\xspace}
 \newcommand{\myTime}{\today\xspace}
@@ -48,10 +48,10 @@ Telecomunicación\xspace}
 
 
 \hypersetup{
-pdfauthor = {\myName (email (en) ugr (punto) es)},
+pdfauthor = {\myName (aoreste96@correo.ugr.es)},
 pdftitle = {\myTitle},
 pdfsubject = {},
-pdfkeywords = {palabra_clave1, palabra_clave2, palabra_clave3, ...},
+pdfkeywords = {GNS3, Unity, telemática, API, ...},
 pdfcreator = {LaTeX con el paquete ....},
 pdfproducer = {pdflatex}
 }
@@ -124,22 +124,13 @@ pdfproducer = {pdflatex}
 \lstnewenvironment{listing}[1][]
    {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
 
-\lstdefinestyle{CodigoC}
+\lstdefinestyle{CodigoCs}
    {
 	basicstyle=\scriptsize,
 	frame=single,
-	language=C,
+	language=csh,
 	numbers=left
    }
-\lstdefinestyle{CodigoC++}
-   {
-	basicstyle=\small,
-	frame=single,
-	backgroundcolor=\color{gray30},
-	language=C++,
-	numbers=left
-   }
-
  
 \lstdefinestyle{Consola}
    {basicstyle=\scriptsize\bf\ttfamily,
@@ -174,15 +165,19 @@ pdfproducer = {pdflatex}
 \begin{document}
 \input{portada/portada}
 \input{prefacios/prefacio}
-%\frontmatter
-%\tableofcontents
+\frontmatter
+\tableofcontents
 %\listoffigures
 %\listoftables
 %
-%\mainmatter
-%\setlength{\parskip}{5pt}
+\mainmatter
+\setlength{\parskip}{5pt}
 
-%\input{capitulos/01_Introduccion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{capitulos/01_Introduccion}
+
+
+
 %
 %\input{capitulos/02_EspecificacionRequisitos}
 %
