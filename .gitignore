@@ -35,3 +35,9 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# LaTeX
+Memoria/*.aux
+Memoria/*.log
+Memoria/*.out
+Memoria/*.synctex.gz
