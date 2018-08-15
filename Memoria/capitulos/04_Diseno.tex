@@ -18,7 +18,9 @@ En pleno 2018 la cantidad de lenguajes de programación existentes roza el absur
 Ya que nuestra intención es que el MV sea capaz de establecer interacción con el SR, es necesario que la API a desarrollar esté escrita en un lenguaje con el que el propio motor sea capaz de trabajar. C\# parecía la opción más sensata. ¿Por qué? Las razones se exponen a continuación:
 
 \begin{itemize}  
-\item \textbf{Porque sí}
+\item\textbf{Porque es el lenguaje más usado en Unity}. Unity admite varios lenguajes de programación con los que desarrollar los scripts asociados a los juegos. C++, usado en otros muchísimos otros motores de videojuegos como Unreal Engine, es uno de ellos. Aunque se trate de un lenguaje increíblemente potente y eficiente, su complejidad de uso es mucho mayor, ya que su nivel de abstracción es altamente inferior. JavaScript es otro de ellos, pero no es tan recomendable como C\#, pues entre otras razones, a diferencia de JS es fuertemente tipado\cite{unityinaction}. En general, Unity es el lenguaje usado por defecto en Unity y el recomendado por todos.
+\item\textbf{Porque otros motores comienzan a usarlo}. Unity está en el podio de entre los motores de videojuegos más usados en el mundo. Como tal se convierte en un referente. El resto de motores miran hacia él y si quieren atraer a nuevos programadores, tendrán que hacer de su incursión en el nuevo motor algo sencillo. Este es el caso de Godot Engine, que hace unos meses decidió incluir tal lenguaje entre los soportados\cite{godotcs}. Esto quiere decir que la API no solo podrá ser usada en juegos creados en Unity, si no que su terreno de juego se verá ampliado. CryEngine es otro de los motores que permiten el uso de C\#.
+\item\textbf{Porque, ante todo, es un gran lenguaje}. 
 \end{itemize}
 
 \subsection{Estructura de clases}
