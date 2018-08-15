@@ -38,6 +38,8 @@ sysinfo.txt
 
 # LaTeX
 Memoria/*.aux
+Memoria/*.bbl
+Memoria/*.blg
 Memoria/*.log
 Memoria/*/*.log
 Memoria/*.out

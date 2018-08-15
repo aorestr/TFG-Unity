@@ -1,0 +1,37 @@
+\chapter{Diseño de la solución}\label{chap:Design}
+
+Expuestas ya las distintas tecnologías que serán implementadas en nuestro trabajo, queda definir de qué modo estas serán utilizadas y cuál será su papel en la creación del proyecto.
+
+\section{Diseño de la API}
+La programación se rige por capas de abstracción. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en eficiencia y agilidad de escritura sin perder flexibilidad de desarrollo.
+
+Una API, a grandes rasgos, no es más que una capa de abstracción sobre un lenguaje de programación o incluso sobre un framework del mismo. Comprende una serie de funciones que facilitan en mayor o menor medida trabajar sobre un cierto motivo. Como ejemplo de API famosa tenemos la de Google Maps, que contiene un compendio de métodos para JavaScript que permiten interactuar directamente con la plataforma de Google y crear nuestros programas jugando con ella\cite{googlemaps}. Podemos verlo como una biblioteca de funciones.
+
+Como se ha citado previamente, GNS3 hace uso de una API REST (\textit{REpresentational State Transfer}). Esto es, mediante una serie de métodos (los conocidos GET, POST...) asociados a una URI concreta podemos interactuar vía web con una aplicación. La diferencia fundamental con otra clase de servicios web es que REST está orientado a recursos y no a métodos. Esto permite a la web utilizar comunicaciones sin estado, facilitando de este modo su escalabilidad\cite{REST}.
+
+Aunque de increíble utilidad y ya veremos qué papel concreto juega en nuestro trabajo, necesitamos algo más para poder propiciar la interacción entre el simulador de redes y el videojuego. Necesitamos crear nuestra propia API que haga uso de la API REST de GNS3 y que defina métodos que permita a Unity interactuar con el SR de forma automática.
+
+\subsection{Elección del lenguaje}
+
+En pleno 2018 la cantidad de lenguajes de programación existentes roza el absurdo. Desde el tradicional C, pasando por el multifuncional Java, el sencillo Python o incluso los llamados lenguajes esotéricos como LOLCODE\cite{esotericlang}. De entre todos ellos nosotros elegiremos uno sobre el que trabajar. Esta decisión está condicionada, como es natural, por el motor de videojuegos a utilizar.
+
+Ya que nuestra intención es que el MV sea capaz de establecer interacción con el SR, es necesario que la API a desarrollar esté escrita en un lenguaje con el que el propio motor sea capaz de trabajar. C\# parecía la opción más sensata. ¿Por qué? Las razones se exponen a continuación:
+
+\begin{itemize}  
+\item \textbf{Porque sí}
+\end{itemize}
+
+\subsection{Estructura de clases}
+\subsubsection[''GNS3sharp'']{Clase principal}
+\subsubsection{Nodes}
+\subsubsection{Links}
+\subsubsection{Otras clases}
+\subsection{GitHub y la comunidad}
+
+
+\section{Diseño del videojuego}
+\subsection{Interacción con el simulador}
+\subsection{Propuestas de modelo de videojuego}
+
+
+
