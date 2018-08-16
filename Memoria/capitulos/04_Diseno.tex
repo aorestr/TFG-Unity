@@ -19,12 +19,32 @@ Ya que nuestra intención es que el MV sea capaz de establecer interacción con 
 
 \begin{itemize}  
 \item\textbf{Porque es el lenguaje más usado en Unity}. Unity admite varios lenguajes de programación con los que desarrollar los scripts asociados a los juegos. C++, usado en otros muchísimos otros motores de videojuegos como Unreal Engine, es uno de ellos. Aunque se trate de un lenguaje increíblemente potente y eficiente, su complejidad de uso es mucho mayor, ya que su nivel de abstracción es altamente inferior. JavaScript es otro de ellos, pero no es tan recomendable como C\#, pues entre otras razones, a diferencia de JS es fuertemente tipado\cite{unityinaction}. En general, Unity es el lenguaje usado por defecto en Unity y el recomendado por todos.
-\item\textbf{Porque otros motores comienzan a usarlo}. Unity está en el podio de entre los motores de videojuegos más usados en el mundo. Como tal se convierte en un referente. El resto de motores miran hacia él y si quieren atraer a nuevos programadores, tendrán que hacer de su incursión en el nuevo motor algo sencillo. Este es el caso de Godot Engine, que hace unos meses decidió incluir tal lenguaje entre los soportados\cite{godotcs}. Esto quiere decir que la API no solo podrá ser usada en juegos creados en Unity, si no que su terreno de juego se verá ampliado. CryEngine es otro de los motores que permiten el uso de C\#.
-\item\textbf{Porque, ante todo, es un gran lenguaje}. 
+\item\textbf{Porque son más motores quienes lo utilizan}. Unity está en el podio de entre los motores de videojuegos más usados en el mundo. Como tal se convierte en un referente. El resto de motores miran hacia él y, si quieren atraer a nuevos programadores, tendrán que hacer de su incursión en el nuevo motor algo sencillo. Este es el caso de Godot Engine, que hace unos meses decidió incluir tal lenguaje entre los soportados\cite{godotcs}. Esto quiere decir que la API no solo podrá ser usada en juegos creados en Unity, si no que su terreno de juego se verá ampliado. CryEngine es otro de los motores que permiten el uso de C\# como lenguaje de scripting.
+\item\textbf{Porque, ante todo, es un gran lenguaje}. C\#, similar en cuanto a sintaxis a Java, nació como respuesta a esta de la mano de Microsoft. Se trata de un lenguaje de propósito general aunque se use primordialmente para la construcción de aplicaciones para infraestructuras Windows. Es uno de los lenguajes que componen la plataforma .NET de Microsoft. Tal es su importancia que a día de hoy se posiciona como el cuarto lenguaje de programación más usado a nivel mundial\cite{csisfamous}.
 \end{itemize}
+Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
+
+\subsection{La API}
+Antes de desarrollar la API es necesario reflexionar sobre la forma que tendrá. Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
+\subsubsection[''Interacción con GNS3'']{¿Cómo debe interactuar con el simulador?}
+Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión.
+
+Tratándose de una API REST, lo único que no es necesario para la conexión es un cliente web. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que no será necesario el uso de alguna tecnología más.
+
+
+\subsubsection[''Acceso a la API'']{¿Cómo queremos que interactúe con el exterior?}
+
+
+\subsubsection[''Utilidad'']{Más importante aún, ¿qué queremos que haga?}
 
 \subsection{Estructura de clases}
-\subsubsection[''GNS3sharp'']{Clase principal}
+\begin{figure}[h]
+  \centering
+  \includegraphics{imagenes/diagrama_api1}
+  \caption{Boceto de diagrama UML de la API}
+  \label{fig:diagrama_api1}
+\end{figure}
+\subsubsection[''La clase principal'']{GNS3sharp, la clase principal}
 \subsubsection{Nodes}
 \subsubsection{Links}
 \subsubsection{Otras clases}
