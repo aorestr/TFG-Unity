@@ -3,24 +3,29 @@
 Expuestas ya las distintas tecnologías que serán implementadas en nuestro trabajo, queda definir de qué modo estas serán utilizadas y cuál será su papel en la creación del proyecto.
 
 \section{Diseño de la API}
-La programación se rige por capas de abstracción. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en eficiencia y agilidad de escritura sin perder flexibilidad de desarrollo.
+La programación se rige por \textbf{capas de abstracción}. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en eficiencia y agilidad de escritura sin perder flexibilidad de desarrollo.
 
-Una API, a grandes rasgos, no es más que una capa de abstracción sobre un lenguaje de programación o incluso sobre un framework del mismo. Comprende una serie de funciones que facilitan en mayor o menor medida trabajar sobre un cierto motivo. Como ejemplo de API famosa tenemos la de Google Maps, que contiene un compendio de métodos para JavaScript que permiten interactuar directamente con la plataforma de Google y crear nuestros programas jugando con ella\cite{googlemaps}. Podemos verlo como una biblioteca de funciones.
+Una \textbf{API}, a grandes rasgos, no es más que una capa de abstracción sobre un lenguaje de programación o, más aún, sobre un framework del mismo. Comprende una serie de funciones que facilitan en mayor o menor medida trabajar sobre un cierto motivo. Como ejemplo de API famosa tenemos la de Google Maps, que contiene un compendio de métodos para JavaScript que permiten interactuar directamente con la plataforma de Google y crear nuestros programas jugando con ella\cite{googlemaps}. Podemos verlo como una biblioteca de funciones.
 
-Como se ha citado previamente, GNS3 hace uso de una API REST (\textit{REpresentational State Transfer}). Esto es, mediante una serie de métodos (los conocidos GET, POST...) asociados a una URI concreta podemos interactuar vía web con una aplicación. La diferencia fundamental con otra clase de servicios web es que REST está orientado a recursos y no a métodos. Esto permite a la web utilizar comunicaciones sin estado, facilitando de este modo su escalabilidad\cite{REST}.
+Como se ha citado previamente, GNS3 hace uso de una \textbf{API REST} (\textit{REpresentational State Transfer}). Esto es, mediante una serie de métodos (los conocidos GET, POST...) asociados a una URI concreta podemos interactuar \textbf{vía web} con una aplicación. La diferencia fundamental con otra clase de servicios web es que REST está orientado a recursos y no a métodos. Esto permite a la web utilizar comunicaciones sin estado, facilitando de este modo su escalabilidad\cite{REST}.
 
-Aunque de increíble utilidad y ya veremos qué papel concreto juega en nuestro trabajo, necesitamos algo más para poder propiciar la interacción entre el simulador de redes y el videojuego. Necesitamos crear nuestra propia API que haga uso de la API REST de GNS3 y que defina métodos que permita a Unity interactuar con el SR de forma automática.
+Aunque de increíble utilidad (ya veremos qué papel concreto juega en nuestro trabajo), necesitamos algo más para poder propiciar la interacción entre el simulador de redes y el videojuego. Necesitamos crear nuestra propia API que haga uso de la API REST de GNS3 y que defina métodos que permita a Unity interactuar con el simulador de redes de forma automática.
 
 \subsection{Elección del lenguaje}
-
 En pleno 2018 la cantidad de lenguajes de programación existentes roza el absurdo. Desde el tradicional C, pasando por el multifuncional Java, el sencillo Python o incluso los llamados lenguajes esotéricos como LOLCODE\cite{esotericlang}. De entre todos ellos nosotros elegiremos uno sobre el que trabajar. Esta decisión está condicionada, como es natural, por el motor de videojuegos a utilizar.
 
-Ya que nuestra intención es que el MV sea capaz de establecer interacción con el SR, es necesario que la API a desarrollar esté escrita en un lenguaje con el que el propio motor sea capaz de trabajar. C\# parecía la opción más sensata. ¿Por qué? Las razones se exponen a continuación:
+Ya que nuestra intención es que el motor sea capaz de establecer interacción con el simulador, es necesario que la API a desarrollar esté escrita en un lenguaje con el que el propio motor sea capaz de trabajar. \textbf{C\#} parecía la opción más sensata. ¿Por qué? Las razones se exponen a continuación:
 
-\begin{itemize}  
-\item\textbf{Porque es el lenguaje más usado en Unity}. Unity admite varios lenguajes de programación con los que desarrollar los scripts asociados a los juegos. C++, usado en otros muchísimos otros motores de videojuegos como Unreal Engine, es uno de ellos. Aunque se trate de un lenguaje increíblemente potente y eficiente, su complejidad de uso es mucho mayor, ya que su nivel de abstracción es altamente inferior. JavaScript es otro de ellos, pero no es tan recomendable como C\#, pues entre otras razones, a diferencia de JS es fuertemente tipado\cite{unityinaction}. En general, Unity es el lenguaje usado por defecto en Unity y el recomendado por todos.
-\item\textbf{Porque son más motores quienes lo utilizan}. Unity está en el podio de entre los motores de videojuegos más usados en el mundo. Como tal se convierte en un referente. El resto de motores miran hacia él y, si quieren atraer a nuevos programadores, tendrán que hacer de su incursión en el nuevo motor algo sencillo. Este es el caso de Godot Engine, que hace unos meses decidió incluir tal lenguaje entre los soportados\cite{godotcs}. Esto quiere decir que la API no solo podrá ser usada en juegos creados en Unity, si no que su terreno de juego se verá ampliado. CryEngine es otro de los motores que permiten el uso de C\# como lenguaje de scripting.
-\item\textbf{Porque, ante todo, es un gran lenguaje}. C\#, similar en cuanto a sintaxis a Java, nació como respuesta a esta de la mano de Microsoft. Se trata de un lenguaje de propósito general aunque se use primordialmente para la construcción de aplicaciones para infraestructuras Windows. Es uno de los lenguajes que componen la plataforma .NET de Microsoft. Tal es su importancia que a día de hoy se posiciona como el cuarto lenguaje de programación más usado a nivel mundial\cite{csisfamous}.
+\begin{itemize}
+\item\textbf{Porque es el lenguaje más usado en Unity}. Unity admite varios lenguajes de programación con los que desarrollar los scripts asociados a los juegos. C++, usado en otros muchísimos otros motores de videojuegos como Unreal Engine, es uno de ellos. Aunque se trate de un lenguaje increíblemente potente y eficiente, su complejidad de uso es mucho mayor, ya que se encuentra a más bajo nivel. JavaScript es otro de ellos, pero no es tan recomendable como C\#, pues entre otras razones, a diferencia de JS, C\# es fuertemente tipado\cite{unityinaction}. En general, C\# es el lenguaje usado por defecto en Unity y el recomendado por todos, documentación incluida.
+\item\textbf{Porque son más motores quienes lo utilizan}. Unity está en el podio de entre los motores de videojuegos más usados en el mundo. Como tal se convierte en un referente. El resto de motores miran hacia él y, si quieren atraer a nuevos programadores, tendrán que hacer de su incursión en el nuevo motor algo sencillo. Este es el caso de Godot Engine, que unos meses atrás decidió incluir tal lenguaje entre los soportados\cite{godotcs}. Esto quiere decir que la API no solo podrá ser usada en juegos creados en Unity, si no que su terreno de juego se verá ampliado. CryEngine es otro de los motores que permiten el uso de C\# como lenguaje de scripting.
+\item\textbf{Porque, ante todo, es un gran lenguaje}. C\#, similar en cuanto a sintaxis a Java, nació como respuesta a este de la mano de Microsoft. Se trata de un lenguaje de propósito general, aunque es usado primordialmente para la construcción de aplicaciones para infraestructuras Windows. Es uno de los lenguajes que componen la plataforma .NET de Microsoft. Tal es su importancia que a día de hoy se posiciona como el cuarto lenguaje de programación más usado a nivel mundial\cite{csisfamous}. Alguna de las características que lo hacen especialmente atractivo:
+\begin{itemize}
+\item Es un \textbf{lenguaje de programación orientado a objetos}, con lo que posee todas las características propias de estos (encapsulado, herencia y poliformismo). Sin embargo, no admite multiherencia. Su componente fundamental es una unidad de encapsulamiento de datos y
+funciones llamada \textit{type} o "tipo". C\# tiene un sistema de tipos unificado, donde todos los tipos en última instancia comparten un tipo de base común.
+\item Aunque es principalmente un lenguaje orientado a objetos, también \textbf{toma prestado del paradigma de programación funcional}. Las funciones pueden ser tratadas como valores mediante el uso de delegados, permite el uso de expresiones lambda, acercándose a los patrones declarativos del paradigma funcional...
+\item Admite \textbf{tipado estatico}, lo cual se traduce en que el lenguaje obliga a que haya coherencia entre los tipos durante el tiempo de compilado. El tipado estático elimina un gran número de errores antes de que se ejecute un programa. Desplaza la carga del momento de la ejecución hacia el compilador para verificar que todos los tipos en un programa encajan correctamente. Esto hace que las aplicaciones grandes sean mucho más fáciles de administrar, más predecibles y más robustas. Además, la escritura estática permite que herramientas como IntelliSense en Visual Studio ayuden a desarrollar, pues conoce el tipo de una variable determinada y, por lo tanto, qué métodos puede utilizar está habilitada a usar.\cite{csnutshell}
+\end{itemize}
 \end{itemize}
 Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
 
@@ -29,18 +34,32 @@ Antes de desarrollar la API es necesario reflexionar sobre la forma que tendrá.
 \subsubsection[''Interacción con GNS3'']{¿Cómo debe interactuar con el simulador?}
 Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión.
 
-Tratándose de una API REST, lo único que no es necesario para la conexión es un cliente web. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que no será necesario el uso de alguna tecnología más.
-
+Tratándose de una API REST, lo único que nos es necesario para la conexión es un \textbf{cliente web}. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que habremos de emplear alguna tecnología más.
 
 \subsubsection[''Acceso a la API'']{¿Cómo queremos que interactúe con el exterior?}
+Es importante tener esto claro, pues el uso de la librería y de sus métodos por parte de una aplicación externa deben ser lo más cómodos posibles. Aquel que vaya a hacer uso de ellas debe tener un esquema claro del modo en que puede gestionar la interacción, haciéndola cercana pues al usuario (más bien desarrollador) último.
 
+GNS3 funciona a través de proyectos. En un proyecto se puede incluir tantos nodos como se desee e interconectarlos a placer. Las posibilidades son infinitas. La singularidad del proyecto apenas pasa por permitir arrancar o apagar todos los nodos contenidos en él a la vez.
+
+Siendo así, se ha optado por concentrar lo crucial de la interacción entre el simulador y el desarrollador en \textbf{una sola clase-objeto}. Esta clase, que se explicará con detalle más adelante, permitirá hacer de puente entre el proyecto y los distintos elementos que lo componen y aquel que haga uso de ella.
 
 \subsubsection[''Utilidad'']{Más importante aún, ¿qué queremos que haga?}
+Todo lo explicado hasta ahora es correcto: definimos una forma con la que el código pueda acceder al simulador y reflexionamos en la manera en la que el desarrollador que la use pueda sacarle partido. Sin embargo, ¿qué significa entonces \textit{sacarle partido}?
+
+Para responder no hay más que irse al propio GNS3 y ver todas las opciones que nos ofrece: desplegar nodos, enlazarlos entre sí, cortar esos enlaces, arrancar todos los nodos juntos, parar algunos de ellos a voluntad... 
+
+Y por supuesto y aún más importante, \textbf{gestionar los aparatos desplegados desde dentro}. Es aquí donde está su verdadero potencial. Manejar un switch conectado a varios PCs, modificar sus VLANs dinámicamente; un router conectado a varias redes distintas, desactivando y activando algunas de ellas en función de un booleano con el que estemos trabajando... Y todo esto sin necesidad de acceder a GNS3 directamente; todo mediante scripting. ¡Se abre un mundo de posibilidades!
 
 \subsection{Estructura de clases}
+Nuestra API hará uso de todas las características propias de los lenguajes orientados a objetos, ya expuestas. A nivel de estructura, la que nos interesa citar ahora es la \textbf{herencia}.
+
+La herencia es un mecanismo por el que una clase hija (llamémosla "B") va a heredar los métodos y las propiedades de una clase padre (llamémosla "A"). La cantidad de elementos heredados entre padre e hijo puede ser determinado en C\# mediante el uso de modificadores de acceso. Como dato adicional, este lenguaje no admite herencia de constructores, así que nuestra clase "B" tendrá que definir su propio constructor (o bien explicitar su herencia respecto al de "A").
+
+
+
 \begin{figure}[h]
   \centering
-  \includegraphics{imagenes/diagrama_api1}
+  \includegraphics[scale=0.75]{imagenes/diagrama_api1}
   \caption{Boceto de diagrama UML de la API}
   \label{fig:diagrama_api1}
 \end{figure}
