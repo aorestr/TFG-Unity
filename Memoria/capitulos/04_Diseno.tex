@@ -68,7 +68,7 @@ Aclarado el concepto de herencia, mostramos la estructura básica sobre la que n
 A continuación pasamos a desarrollar cada una de las clases conceptualmente:
 
 \subsubsection[''La clase principal'']{GNS3sharp, la clase principal}
-Tal y como expusimos en la sección~\ref{subsec:accesoapi}, crearemos una clase principal que gestionará toda la interacción con el simulador de redes. Hemos llamado a esta clase del mismo modo que a la API, \texttt{GNS3sharp}. Recalcamos entonces: los objetos que se encarguen de gestionar los proyectos serán del tipo \texttt{GNS3sharp}.
+Tal y como expusimos en la sección~\ref{subsec:accesoapi}, crearemos una clase principal que gestionará toda la interacción con el simulador de redes. Hemos llamado a esta clase del mismo modo que a la API, \GNSCS. Recalcamos entonces: los objetos que se encarguen de gestionar los proyectos serán del tipo \GNSCS.
 
 ¿Y en qué consistirá está gestión concretamente? Básicamente, esta clase debe encargarse de:
 \begin{enumerate}
@@ -90,12 +90,12 @@ Sin lugar a dudas es aquí donde se encuentra la característica más interesant
 
 Esta es la finalidad de la clase \texttt{Nodo}. Su deber será el de contener todos los parámetros necesarios para habilitar la conexión con el nodo y así abrir un canal de comunicación con él; un canal que habilite tanto el envío como la recepción de mensajes.
 
-Para la creación de las instancias de la clase se tendrá que recurrir a \texttt{GNS3sharp}, que mediante los datos que recoja del servidor de GNS3 será capaz de crear asimismo el objeto.
+Para la creación de las instancias de la clase se tendrá que recurrir a \GNSCS, que mediante los datos que recoja del servidor de GNS3 será capaz de crear asimismo el objeto.
 
-Como GNS3 admite todo tipo de aparatos de red, cada uno con sus peculiaridades, lo más sensato es crear una clase para cada uno de esos equipos. Esta individualización permite definir métodos propios para cada elemento y, de este modo, facilitar su uso final. Tal y como se puede ver en el diagrama de la figura~\ref{fig:diagrama_api1}, definiremos tres clases principales (\texttt{Guest}, \texttt{Router} y \texttt{Switch}) que heredarán de \texttt{Node}. De estas clases nacerán asimismo otra serie de clases referidas a aparatos concretos y a no tipos genéricos.
+Como GNS3 admite todo tipo de aparatos de red, cada uno con sus peculiaridades, lo más sensato es crear una clase para cada uno de esos equipos. Esta individualización permite definir métodos propios para cada elemento y, de este modo, facilitar su uso final. Tal y como se puede ver en el diagrama de la figura~\ref{fig:diagrama_api1}, definiremos tres clases principales (\texttt{Guest}, \texttt{Router} y \texttt{Switch}) que heredarán de \NODE. De estas clases nacerán asimismo otra serie de clases referidas a aparatos concretos y a no tipos genéricos.
 
 \subsubsection{Link}
-Los nodos están interconectados entre sí mediante enlaces. Representaremos cada uno de ellos mediante la clase \texttt{Link}. Esta clase guardará como objetos a los nodos que interconecta así como información sobre el propio enlace (cuánto jitter, latencia... posee). Al igual que \texttt{Link}, la generación de instancias de esta clase pasará por \texttt{GNS3sharp}.
+Los nodos están interconectados entre sí mediante enlaces. Representaremos cada uno de ellos mediante la clase \LINK. Esta clase guardará como objetos a los nodos que interconecta así como información sobre el propio enlace (cuánto jitter, latencia... posee). Al igual que \LINK, la generación de instancias de esta clase pasará por \GNSCS.
 
 La clave de representar los enlaces en la API es que nos permitirá añadir, eliminar o incluso eliminarlos del proyecto desde el código, ampliando las posibilidades de interacción con el simulador.
 
@@ -105,12 +105,38 @@ Además de las anteriormente expuestas, se creará otra serie de clases que, o b
 \subsection{GitHub y la comunidad}
 Hemos considerado esencial que la API sea reutilizable. El objetivo de su desarrollo en ningún caso ha sido el de nacer y morir para el presente trabajo. Lejos de esto, se pretende que esta librería pueda ser utilizada por quien quiera, ya tenga como propósito la construcción de un videojuego o cualquier otra aplicación.
 
-Con esto en mente, todo el código utilizado por la librería se encuentra disponible en \MYhref{https://github.com/aorestr/GNS3sharp}{este enlace} de mi GitHub personal. Está liberado bajo una licencia MIT, tremendamente permisiva.
+Con esto en mente, todo el código utilizado por la librería se encuentra disponible en \MYhref{https://github.com/aorestr/GNS3sharp}{este repositorio} de mi GitHub personal. Está liberado bajo una licencia MIT, tremendamente permisiva a la hora de reutilizar el código.
 
 Además de los archivos de la propia API se puede encontrar un README que explica algunos puntos importantes que considerar a la hora de utilizarla. En el repositorio de GitHub existe asimismo una sección de ``releases'', donde se suben los distintos compilados de la librería en formato ``.dll'' a medida que esta se expande o se reparan problemas aparecidos.
 
 \section{Diseño del videojuego}
+Establecida una plataforma sobre la que GNS3 pueda interactuar con código, llega el momento de diseñar el videojuego que haga uso de ella. 
+
 \subsection{Interacción con el simulador}
+A grandes rasgos, esto ya ha sido explicado. Ahora se va a dar una visión de la interacción desde el punto de vista del motor del videojuego; desde la creación del juego.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=1.4]{imagenes/diagrama_interaccion}
+  \caption{Diagrama de la interacción entre Unity y GNS3}
+  \label{fig:diagrama_interaccion}
+\end{figure}
+
+Los proyectos de Unity están basados en un elemento llamado \GAOBJ. Todos los objetos que componen las escenas del proyecto se pueden abstraer en última instancia en ese tipo. El primer paso para que un proyecto de Unity pueda conectarse y controlar un esquema de red de GNS3 pasa por \textbf{insertar un \GAOBJ~ que tenga una instancia de la clase \GNSCS}. La única condición que se le impone a este objeto es que este parámetro contenido en él (la instancia) ha de ser accesible por todo el resto de elementos de la escena.
+
+¿Para qué? Pura simplicidad: para que todos esos elementos no tengan que crear la suya propia. Creando una sola instancia de la clase centralizamos el trabajo en un solo objeto. La instancia contendrá información de los datos del proyecto de GNS3; información que podrá ser tomada por todos los componentes de la escena sin más que copiar la referencia al objeto. Si estos decidieran su propia instancia cada uno perdería en tiempo (la recopilación de datos desde el servidor no es instantánea) y en eficiencia.
+
+La idea es que el jugador (en otros términos, el usuario final), posea interacción con el simulador de redes de forma que \textbf{las consecuencias puedan verse reflejadas en el juego}. Pongamos un ejemplo e invirtamos el orden lógico de desarrollo para entender mejor cómo funcionaría esto:
+
+\begin{enumerate}
+\item El jugador se encuentra en una habitación que no es más que una \textbf{representación de un router}. Tiene un botón justo delante suya. En la pantalla se le avisa de que si lo pulsa, la puerta asociada a una determinada interfaz se cerrará, de forma que los enemigos que se ven acercarse en esa dirección no podrán pasar. Lo pulsa entonces.
+\item Ese botón es un \GAOBJ~ de la escena actual que tiene un \textit{trigger} asociado a él y un script que lo gestiona. Uno de los atributos de tal código es la referencia a la instancia del objeto \GNSCS, construido al arrancar la escena y que suponemos ya contiene toda la información del proyecto de GNS3. Cuando se activa el trigger (una condición del script pasa a ser \texttt{True}), se toma la referencia del objeto asociado al router donde el personaje está. Se utiliza tal objeto para enviar un comando al router que le haga apagar la interfaz correspondiente.
+\item El mensaje llega al router. Este lo ejecuta y devuelve el resultado.
+\item El script recibe la respuesta y, tras analizarla, confirma que la interfaz se ha cerrado. Envía un mensaje al \GAOBJ~ de la puerta para que la cierre.
+\end{enumerate}
+
+Este flujo es de alguna forma lo que se ha representado en la figura~\ref{fig:diagrama_interaccion}. El bloque morado hace referencia a todo el entorno que comprende una escena de Unity. Esta escena contendrá una serie de \GAOBJ s, cuyo comportamiento vendrá determinado mayormente mediante lógica programada por scripts. El bloque azul hace referencia a este compendio. Alguno de esos scripts será el encargado de contener una instancia de \GNSCS . Al ser creada, esta se conecta al servidor de GNS3 desde donde recibe toda la información del proyecto con el que se quiere trabajar. A partir de ahí, el resto de \GAOBJ s de la escena no tendrán más que usar esa instancia para poder conectarse a los nodos (entre otras cosas) de la simulación. 
+
 \subsection{Propuestas de modelo de videojuego}
 
 
