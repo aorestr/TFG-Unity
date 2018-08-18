@@ -22,21 +22,21 @@ Ya que nuestra intención es que el motor sea capaz de establecer interacción c
 \item\textbf{Porque, ante todo, es un gran lenguaje}. C\#, similar en cuanto a sintaxis a Java, nació como respuesta a este de la mano de Microsoft. Se trata de un lenguaje de propósito general, aunque es usado primordialmente para la construcción de aplicaciones para infraestructuras Windows. Es uno de los lenguajes que componen la plataforma .NET de Microsoft. Tal es su importancia que a día de hoy se posiciona como el cuarto lenguaje de programación más usado a nivel mundial\cite{csisfamous}. Alguna de las características que lo hacen especialmente atractivo:
 \begin{itemize}
 \item Es un \textbf{lenguaje de programación orientado a objetos}, con lo que posee todas las características propias de estos (encapsulado, herencia y poliformismo). Sin embargo, no admite multiherencia. Su componente fundamental es una unidad de encapsulamiento de datos y
-funciones llamada \textit{type} o "tipo". C\# tiene un sistema de tipos unificado, donde todos los tipos en última instancia comparten un tipo de base común.
+funciones llamada \texttt{type} o ``tipo''. C\# tiene un sistema de tipos unificado, donde todos los tipos en última instancia comparten un tipo de base común.
 \item Aunque es principalmente un lenguaje orientado a objetos, también \textbf{toma prestado del paradigma de programación funcional}. Las funciones pueden ser tratadas como valores mediante el uso de delegados, permite el uso de expresiones lambda, acercándose a los patrones declarativos del paradigma funcional...
-\item Admite \textbf{tipado estatico}, lo cual se traduce en que el lenguaje obliga a que haya coherencia entre los tipos durante el tiempo de compilado. El tipado estático elimina un gran número de errores antes de que se ejecute un programa. Desplaza la carga del momento de la ejecución hacia el compilador para verificar que todos los tipos en un programa encajan correctamente. Esto hace que las aplicaciones grandes sean mucho más fáciles de administrar, más predecibles y más robustas. Además, la escritura estática permite que herramientas como IntelliSense en Visual Studio ayuden a desarrollar, pues conoce el tipo de una variable determinada y, por lo tanto, qué métodos puede utilizar está habilitada a usar.\cite{csnutshell}
+\item Admite \textbf{tipado estatico}, lo cual se traduce en que el lenguaje obliga a que haya coherencia entre los tipos durante el tiempo de compilado. El tipado estático elimina un gran número de errores antes de que se ejecute un programa. Desplaza la carga del momento de la ejecución hacia el compilador para verificar que todos los tipos en un programa encajan correctamente. Esto hace que las aplicaciones grandes sean mucho más fáciles de administrar, más predecibles y más robustas. Además, la escritura estática permite que herramientas como IntelliSense en Visual Studio ayuden a desarrollar, pues conoce el tipo de una variable determinada y, por lo tanto, qué métodos puede utilizar está habilitada a usar. C\# incluye además el tipo \texttt{dynamic} que permite sortear el tipado estático y dejar que el tipo de variable se averigüe durante el momento de la ejecución\cite{csnutshell}.
 \end{itemize}
 \end{itemize}
 Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
 
 \subsection{La API}
-Antes de desarrollar la API es necesario reflexionar sobre la forma que tendrá. Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
+Antes de desarrollar la API, que llamaremos \textbf{GNS3sharp} por un ingenioso juego de palabras entre GNS3 y C\#, es necesario reflexionar sobre la forma que tendrá. Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
 \subsubsection[''Interacción con GNS3'']{¿Cómo debe interactuar con el simulador?}
 Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión.
 
 Tratándose de una API REST, lo único que nos es necesario para la conexión es un \textbf{cliente web}. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que habremos de emplear alguna tecnología más.
 
-\subsubsection[''Acceso a la API'']{¿Cómo queremos que interactúe con el exterior?}
+\subsubsection[''Acceso a la API'']{¿Cómo queremos que interactúe con el exterior?}\label{subsec:accesoapi}
 Es importante tener esto claro, pues el uso de la librería y de sus métodos por parte de una aplicación externa deben ser lo más cómodos posibles. Aquel que vaya a hacer uso de ellas debe tener un esquema claro del modo en que puede gestionar la interacción, haciéndola cercana pues al usuario (más bien desarrollador) último.
 
 GNS3 funciona a través de proyectos. En un proyecto se puede incluir tantos nodos como se desee e interconectarlos a placer. Las posibilidades son infinitas. La singularidad del proyecto apenas pasa por permitir arrancar o apagar todos los nodos contenidos en él a la vez.
@@ -53,19 +53,47 @@ Y por supuesto y aún más importante, \textbf{gestionar los aparatos desplegado
 \subsection{Estructura de clases}
 Nuestra API hará uso de todas las características propias de los lenguajes orientados a objetos, ya expuestas. A nivel de estructura, la que nos interesa citar ahora es la \textbf{herencia}.
 
-La herencia es un mecanismo por el que una clase hija (llamémosla "B") va a heredar los métodos y las propiedades de una clase padre (llamémosla "A"). La cantidad de elementos heredados entre padre e hijo puede ser determinado en C\# mediante el uso de modificadores de acceso. Como dato adicional, este lenguaje no admite herencia de constructores, así que nuestra clase "B" tendrá que definir su propio constructor (o bien explicitar su herencia respecto al de "A").
+La herencia es un mecanismo por el que una clase hija (llamémosla \texttt{B}) va a heredar los métodos y las propiedades de una clase padre (llamémosla \texttt{A}). La cantidad de elementos heredados entre padre e hijo puede ser determinado en C\# mediante el uso de modificadores de acceso. Como dato adicional, este lenguaje no admite herencia de constructores, así que nuestra clase \texttt{B} tendrá que definir su propio constructor (o bien explicitar su herencia respecto al de \texttt{A}).
 
-
+Aclarado el concepto de herencia, mostramos la estructura básica sobre la que nuestra librería será construida:
 
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=0.75]{imagenes/diagrama_api1}
+  \includegraphics[scale=0.6]{imagenes/diagrama_api1}
   \caption{Boceto de diagrama UML de la API}
   \label{fig:diagrama_api1}
 \end{figure}
+
+A continuación pasamos a desarrollar cada una de las clases conceptualmente:
+
 \subsubsection[''La clase principal'']{GNS3sharp, la clase principal}
-\subsubsection{Nodes}
-\subsubsection{Links}
+Tal y como expusimos en la sección~\ref{subsec:accesoapi}, crearemos una clase principal que gestionará toda la interacción con el simulador de redes. Hemos llamado a esta clase del mismo modo que a la API, \texttt{GNS3sharp}. Recalcamos entonces: los objetos que se encarguen de gestionar los proyectos serán del tipo \texttt{GNS3sharp}.
+
+¿Y en qué consistirá está gestión concretamente? Básicamente, esta clase debe encargarse de:
+\begin{enumerate}
+\item Establecer la conexión con el servidor de GNS3 y recopilar toda la información acerca del proyecto que se pretende controlar.
+\item Convertir toda es información en objetos útiles que puedan ser utilizados.
+\item Crear una gestión eficiente de esos recursos de manera que sean fácilmente accesibles y manipulables.
+\end{enumerate}
+
+Estos recursos de los que hablamos serán en gran medida los representados por las clases que se desarrollarán justo debajo.
+
+Sin embargo, la creación de proyectos y despliegue de nodos en los mismos quedarán excluidos, ya sea por la complejidad añadida que conlleva o porque no son funciones que nos sean vitales para la construcción de juegos. Estas funcionalidades deberán ser llevadas a cabo manualmente. Más adelante podrán ser controladas desde la librería sin problema.
+
+\subsubsection{Node}
+//////////////////////// Esto mejor para el capítulo 3 ////////
+Cada elemento de una red está representado en GNS3 por un elemento llamado \textbf{nodo}. Estos nodos, que pueden ser desde un router a un switch, no son más que virtualizaciones de aparatos reales. De normal, estas virtualizaciones se realizan en base a imágenes de los sistemas operativos que se integran en los aparatos. Así, podemos tener varios routers distintos de Cisco montados sobre la misma estructura, permitiéndonos jugar con ellos con verdadera facilidad.
+///////////////////////////////////////////////////////////////
+
+Sin lugar a dudas es aquí donde se encuentra la característica más interesante de GNS3 y es hacia donde nuestros esfuerzos deben dirigirse. Dado que cada nodo representa un aparato de la red, lo ideal es que ese aparato pueda ser convertido a un objeto en nuestra biblioteca desde el que se nos permita su control. 
+
+Esta es la finalidad de la clase \texttt{Nodo}. Su deber será el de contener todos los parámetros necesarios para habilitar la conexión con el nodo y así abrir un canal de comunicación con él; un canal que habilite tanto el envío como la recepción de mensajes.
+
+Para la creación de las instancias de la clase se tendrá que recurrir a \texttt{GNS3sharp}, que mediante los datos que recoja del servidor de GNS3 será capaz de crear asimismo el objeto.
+
+Como GNS3 admite todo tipo de aparatos de red, cada uno con sus peculiaridades, lo más sensato es crear una clase para cada uno de esos equipos. Esta individualización permite definir métodos propios para cada elemento y, de este modo, facilitar su uso final. Tal y como se puede ver en el diagrama de la figura~\ref{fig:diagrama_api1}, definiremos tres clases principales (\texttt{Guest}, \texttt{Router} y \texttt{Switch}) que heredarán de \texttt{Node}. De estas clases nacerán asimismo otra serie de clases referidas a aparatos concretos y a no tipos genéricos.
+
+\subsubsection{Link}
 \subsubsection{Otras clases}
 \subsection{GitHub y la comunidad}
 
