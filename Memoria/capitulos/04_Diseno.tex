@@ -26,6 +26,7 @@ funciones llamada \texttt{type} o ``tipo''. C\# tiene un sistema de tipos unific
 \item Aunque es principalmente un lenguaje orientado a objetos, también \textbf{toma prestado del paradigma de programación funcional}. Las funciones pueden ser tratadas como valores mediante el uso de delegados, permite el uso de expresiones lambda, acercándose a los patrones declarativos del paradigma funcional...
 \item Admite \textbf{tipado estatico}, lo cual se traduce en que el lenguaje obliga a que haya coherencia entre los tipos durante el tiempo de compilado. El tipado estático elimina un gran número de errores antes de que se ejecute un programa. Desplaza la carga del momento de la ejecución hacia el compilador para verificar que todos los tipos en un programa encajan correctamente. Esto hace que las aplicaciones grandes sean mucho más fáciles de administrar, más predecibles y más robustas. Además, la escritura estática permite que herramientas como IntelliSense en Visual Studio ayuden a desarrollar, pues conoce el tipo de una variable determinada y, por lo tanto, qué métodos puede utilizar está habilitada a usar. C\# incluye además el tipo \texttt{dynamic} que permite sortear el tipado estático y dejar que el tipo de variable se averigüe durante el momento de la ejecución\cite{csnutshell}.
 \end{itemize}
+Particularmente, nosotros haremos uso de C\#7, lanzado a la vez que Visual Studio 2017. Entre sus características más interesantes se incluye la aparición de tuplas, especialmente útil cuando queremos devolver más de una variable como resultado de una función.
 \end{itemize}
 Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
 
@@ -57,9 +58,9 @@ La herencia es un mecanismo por el que una clase hija (llamémosla \texttt{B}) v
 
 Aclarado el concepto de herencia, mostramos la estructura básica sobre la que nuestra librería será construida:
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[scale=0.6]{imagenes/diagrama_api1}
+  \includegraphics[scale=0.75]{imagenes/diagrama_api1}
   \caption{Boceto de diagrama UML de la API}
   \label{fig:diagrama_api1}
 \end{figure}
@@ -94,9 +95,19 @@ Para la creación de las instancias de la clase se tendrá que recurrir a \textt
 Como GNS3 admite todo tipo de aparatos de red, cada uno con sus peculiaridades, lo más sensato es crear una clase para cada uno de esos equipos. Esta individualización permite definir métodos propios para cada elemento y, de este modo, facilitar su uso final. Tal y como se puede ver en el diagrama de la figura~\ref{fig:diagrama_api1}, definiremos tres clases principales (\texttt{Guest}, \texttt{Router} y \texttt{Switch}) que heredarán de \texttt{Node}. De estas clases nacerán asimismo otra serie de clases referidas a aparatos concretos y a no tipos genéricos.
 
 \subsubsection{Link}
-\subsubsection{Otras clases}
-\subsection{GitHub y la comunidad}
+Los nodos están interconectados entre sí mediante enlaces. Representaremos cada uno de ellos mediante la clase \texttt{Link}. Esta clase guardará como objetos a los nodos que interconecta así como información sobre el propio enlace (cuánto jitter, latencia... posee). Al igual que \texttt{Link}, la generación de instancias de esta clase pasará por \texttt{GNS3sharp}.
 
+La clave de representar los enlaces en la API es que nos permitirá añadir, eliminar o incluso eliminarlos del proyecto desde el código, ampliando las posibilidades de interacción con el simulador.
+
+\subsubsection{Otras clases}
+Además de las anteriormente expuestas, se creará otra serie de clases que, o bien ayuden al desarrollo de la API (una clase con funciones de ayuda), o bien faciliten la representación de los datos (tal será el caso de \texttt{RoutingTable}, que puede atisbarse en la figura~\ref{fig:diagrama_api1}).
+
+\subsection{GitHub y la comunidad}
+Hemos considerado esencial que la API sea reutilizable. El objetivo de su desarrollo en ningún caso ha sido el de nacer y morir para el presente trabajo. Lejos de esto, se pretende que esta librería pueda ser utilizada por quien quiera, ya tenga como propósito la construcción de un videojuego o cualquier otra aplicación.
+
+Con esto en mente, todo el código utilizado por la librería se encuentra disponible en \MYhref{https://github.com/aorestr/GNS3sharp}{este enlace} de mi GitHub personal. Está liberado bajo una licencia MIT, tremendamente permisiva.
+
+Además de los archivos de la propia API se puede encontrar un README que explica algunos puntos importantes que considerar a la hora de utilizarla. En el repositorio de GitHub existe asimismo una sección de ``releases'', donde se suben los distintos compilados de la librería en formato ``.dll'' a medida que esta se expande o se reparan problemas aparecidos.
 
 \section{Diseño del videojuego}
 \subsection{Interacción con el simulador}
