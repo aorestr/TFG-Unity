@@ -8,20 +8,5 @@ huigk
 
 \section{Estructura del trabajo}
 
-\begin{lstlisting}[style=CodigoCs]
-foreach(Node n in handler.Nodes){
-	Console.Write("host: {0}, port: {1}, name: {2}, component: {3}",
-		n.ConsoleHost, n.Port, n.Name, n.GetType().ToString());
-	foreach(Link link in n.LinksAttached){
-		Console.Write($", link: {link.ID}");
-	}
-	foreach(Dictionary<string,dynamic> port in n.Ports){
-		Console.Write($",\n\tport, adapter number: {port["adapterNumber"]}");
-		Console.Write($",\n\tport, port number: {port["portNumber"]}");
-		Console.Write($",\n\tport, link: {port["link"]}");
-	}
-	Console.WriteLine();
-}
-\end{lstlisting}
 
 

@@ -2,7 +2,7 @@
 
 Expuestas ya las distintas tecnologías que serán implementadas en nuestro trabajo, queda definir de qué modo estas serán utilizadas y cuál será su papel en la creación del proyecto.
 
-\section{Diseño de la API}
+\section{Diseño de la API}\label{sec:dis_api}
 La programación se rige por \textbf{capas de abstracción}. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en eficiencia y agilidad de escritura sin perder flexibilidad de desarrollo.
 
 Una \textbf{API}, a grandes rasgos, no es más que una capa de abstracción sobre un lenguaje de programación o, más aún, sobre un framework del mismo. Comprende una serie de funciones que facilitan en mayor o menor medida trabajar sobre un cierto motivo. Como ejemplo de API famosa tenemos la de Google Maps, que contiene un compendio de métodos para JavaScript que permiten interactuar directamente con la plataforma de Google y crear nuestros programas jugando con ella\cite{googlemaps}. Podemos verlo como una biblioteca de funciones.
@@ -32,10 +32,10 @@ Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
 
 \subsection{La API}
 Antes de desarrollar la API, que llamaremos \textbf{GNS3sharp} por un ingenioso juego de palabras entre GNS3 y C\#, es necesario reflexionar sobre la forma que tendrá. Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
-\subsubsection[''Interacción con GNS3'']{¿Cómo debe interactuar con el simulador?}
+\subsubsection[Interacción con GNS3]{¿Cómo debe interactuar con el simulador?}
 Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión.
 
-Tratándose de una API REST, lo único que nos es necesario para la conexión es un \textbf{cliente web}. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que habremos de emplear alguna tecnología más.
+Tratándose de una API REST, lo único que nos es necesario para la conexión es un \textbf{cliente web}. El framework de .NET ya cuenta con una clase dedicada a ello denominada WebClient, que contiene métodos más que suficientes para nuestro uso\cite{webclient}. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que habremos de emplear alguna tecnología más.
 
 \subsubsection[''Acceso a la API'']{¿Cómo queremos que interactúe con el exterior?}\label{subsec:accesoapi}
 Es importante tener esto claro, pues el uso de la librería y de sus métodos por parte de una aplicación externa deben ser lo más cómodos posibles. Aquel que vaya a hacer uso de ellas debe tener un esquema claro del modo en que puede gestionar la interacción, haciéndola cercana pues al usuario (más bien desarrollador) último.
@@ -82,10 +82,6 @@ Estos recursos de los que hablamos serán en gran medida los representados por l
 Sin embargo, la creación de proyectos y despliegue de nodos en los mismos quedarán excluidos, ya sea por la complejidad añadida que conlleva o porque no son funciones que nos sean vitales para la construcción de juegos. Estas funcionalidades deberán ser llevadas a cabo manualmente. Más adelante podrán ser controladas desde la librería sin problema.
 
 \subsubsection{Node}
-//////////////////////// Esto mejor para el capítulo 3 ////////
-Cada elemento de una red está representado en GNS3 por un elemento llamado \textbf{nodo}. Estos nodos, que pueden ser desde un router a un switch, no son más que virtualizaciones de aparatos reales. De normal, estas virtualizaciones se realizan en base a imágenes de los sistemas operativos que se integran en los aparatos. Así, podemos tener varios routers distintos de Cisco montados sobre la misma estructura, permitiéndonos jugar con ellos con verdadera facilidad.
-///////////////////////////////////////////////////////////////
-
 Sin lugar a dudas es aquí donde se encuentra la característica más interesante de GNS3 y es hacia donde nuestros esfuerzos deben dirigirse. Dado que cada nodo representa un aparato de la red, lo ideal es que ese aparato pueda ser convertido a un objeto en nuestra biblioteca desde el que se nos permita su control. 
 
 Esta es la finalidad de la clase \texttt{Nodo}. Su deber será el de contener todos los parámetros necesarios para habilitar la conexión con el nodo y así abrir un canal de comunicación con él; un canal que habilite tanto el envío como la recepción de mensajes.

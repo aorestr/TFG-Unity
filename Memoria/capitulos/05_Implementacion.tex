@@ -1,0 +1,144 @@
+\chapter{Integración}\label{chap:Integration}
+Trazado el esquema del trabajo a realizar, el siguiente es lógicamente llevarlo a cabo. Las soluciones empleadas para todo el proceso será lo que componga este capítulo.
+
+\section{Desarrollo de la API}
+Si bien en la sección~\ref{sec:dis_api} ya se habló de la estructura con la que nuestra API contaría, ahora ha llegado el momento de contar con todo detalle el modo en el que ha sido desarrollado. Se describirán los puntos más importantes de cada una de las clases así como el modo en que estos fueron originados. Para finalizar se explicará la relación existente entre las clases con ayuda de un diagrama UML así como la forma en la que estas han sido compiladas para ser unificadas como librería.
+
+\subsection[GNS3sharp]{\href{https://github.com/aorestr/GNS3sharp/blob/master/gsn3sharp.cs}{GNS3sharp}}
+\subsubsection{Constructor}
+El constructor de \GNSCS~es sin duda uno de los elementos más importantes de toda a API. ¿Por qué? Tendrá la responsabilidad de conectarse al servidor de GNS3, recibir todos los datos de un cierto proyecto que solicitemos, procesarlos y guardarlos de tal forma que sean útiles. Su cabecera se muestra justo a continuación:
+\begin{lstlisting}[language={[Sharp]C}, caption={Cabecera del constructor de \texttt{GNS3sharp}}, label={constructor1}]
+public GNS3sharp(string _projectID, string _host = "localhost", ushort _port = 3080)
+\end{lstlisting}
+
+Cosas que serán necesarias entonces para inicializarlo:
+\begin{itemize}
+\item \textbf{ID del proyecto}: cada proyecto de GNS3 tiene un ID asociado que el servidor guarda junto a su referencia. Más adelante, en la subsección \ref{subsec:aux}, veremos cómo no es necesario conocer el ID del proyecto sino que con el nombre del mismo será más que suficiente.
+\item \textbf{Host}: la dirección del equipo donde el servidor está alojado. Por defecto se toma \texttt{localhost}; se supone que la mayor parte de las veces se encontrará en el mismo equipo desde el que se utiliza la API.
+\item \textbf{Puerto}: además de la dirección del servidor, es necesario conocer el puerto en el que está montado. GNS3 determina el \texttt{3080} por defecto.
+\end{itemize}
+
+De acuerdo, ¿y qué hace exactamente con estos tres parámetros?
+\begin{enumerate}
+\item Crea la cadena de texto de la URI donde está el recurso asociado a los nodos del proyecto. En esta dirección existe únicamente un JSON con toda la información sobre él. Se instancia un cliente web y \textbf{se descarga el recurso como cadena de texto}.
+\item Hay que \textbf{deserializar el JSON}. Este paso no es en absoluto trivial, ya que los métodos de \textit{Json.NET} son incapaces de extraer los datos que necesitamos directamente. Así que, valiéndonos de las herramientas en forma de clases que nos ofrece, lo hacemos manualmente.
+\begin{lstlisting}[language={[Sharp]C}, caption={Deserialización de JSON}, label={constructor2}]
+// JSON array object
+JArray jsonArray = JArray.Parse(json);
+Dictionary<string,object> tempDict = new Dictionary<string, object>();
+
+// Variables in which store the JSON info temporaly
+string name; object value;        
+if (jsonArray.HasValues){
+    foreach (JObject jO in jsonArray.Children<JObject>()) {
+        foreach (JProperty jP in jO.Properties()) {                
+            name = jP.Name;
+            value = (object)jP.Value;
+            tempDict.Add(name,value);
+            // The last key of every node
+            if (jP.Name.Equals(lastKey)) {
+                // If we do not copy the content of the dictionary into another
+                // we will be copying by reference and erase the content once
+                // we 'clear' the dict
+                Dictionary<string, object> copyDict = new Dictionary<string, object>(tempDict);
+                dictList.Add(copyDict);
+                tempDict.Clear();
+            }
+        }
+    }
+}
+\end{lstlisting}
+Sin entrar mucho al detalle, lo que hace es parsear el objeto como objeto de tipo \texttt{JArray} y luego este se discretiza por cada elemento de esa cadena. Cada elemento representa a un nodo. Se recorre a su vez cada subelemento que lo conforma, que no son más que sus pares \textit{llave-valor}.
+
+Los datos que se han extraído se guardan en una lista de diccionarios de par \texttt{<string,object>}. Se usa la clase genérica \texttt{object} porque el tipo del valor asociado a la clave varía.
+\item Se hace lo mismo para los enlaces. El proceso es similar.
+\item A partir de los objectos extraídos de la deserialización del JSON, se \textbf{crean las instancias representantes} de los nodos del proyecto. Existe un problema de cierta gravedad en esto: en el JSON no existe ningún parámetro que explicite de que tipo de nodo estamos hablando. Es decir, que no podemos conocer directamente con qué aparato concreto estamos tratando.
+
+La solución que nosotros hemos tomado para sortear este problema es el añadir una etiqueta al nombre del nodo en el momento de la creación de la red en GNS3. Por ejemplo, si el nodo es un \textit{VPC} (nodo predefinido y propio del simulador), su nombre sería de la forma ``[VPC]NombreDelNodo''. Será necesario entonces definir una etiqueta por cada tipo de aparato a utilizar.
+
+Sin embargo, sigue existiendo un problema de peso en todo esto: no conocemos el tipo de cada nodo antes del tiempo de ejecución (\textit{runtime}, en inglés) del código. En otras palabras, hasta el momento de la descarga y el análisis del JSON es imposible saber con qué tipo de nodos estamos lidiando, con lo que es a su vez imposible escribir el constructor que se va a utilizar. Recordemos que nuestra intención es usar una clase por cada modelo de nodo concreto. Por supuesto, se podría crear una sentencia condicional en la que, dependiendo de la etiqueta, llevara al constructor de una clase u otra. Sin embargo, requeriría de muchas líneas de código y sería necesario añadir más cada vez que se introduzca una nueva clase de modelo de aparato en la API.
+
+La solución pasa entonces por lo que en programación se conoce como \textit{reflexión}. Poniéndolo en términos puramente técnicos: ``inspeccionar los metadatos y el código compilado en tiempo de ejecución se llama reflexión''\cite{csnutshell}.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Instanciación de los nodos}, label={constructor3}]
+Type classType; int i = 0;
+try{
+    foreach(Dictionary<string, object> node in JSON){
+        try{
+            Console.WriteLine($"Gathering information for node #{i}... ");
+            // Assign a class or another depending on the node
+            classType = Aux.NodeType(node["name"].ToString());
+            listOfNodes[i] = (Node)Activator.CreateInstance(
+                classType,
+                node["console_host"].ToString(), 
+                ushort.Parse(node["console"].ToString()), 
+                node["name"].ToString(),
+                node["node_id"].ToString(),
+                GetNodeListOfPorts(node)
+            );
+            nodesByName.Add(listOfNodes[i].Name, listOfNodes[i]);
+            nodesByID.Add(listOfNodes[i].ID, listOfNodes[i]);
+            i++;
+        } catch(Exception err1){
+            Console.Error.WriteLine(
+                "Impossible to save the configuration for the node #{0}: {1}", 
+                i.ToString(), err1.Message
+            );
+        }
+    }
+} catch(Exception err2){
+    Console.Error.WriteLine(
+        "Some problem occured while saving the nodes information: {0}",
+        err2.Message
+    );
+    listOfNodes = null;
+}
+\end{lstlisting}
+Con esto en mente pues, tomamos el tipo de la clase asociada al aparato mediante la etiqueta que ya hemos mencionado y usamos el método \texttt{Activator.CreateInstance()} para instanciar el objecto. Únicamente requiere los metadatos del tipo representante (la clase) del nodo (representados a su vez por la clase \texttt{System.Type}) y los parámetros que el constructor de la clase necesita.
+
+Creado el objeto, lo añadimos a una lista donde se guardan todos los objetos representantes de los nodos. Esta propiedad se verá más adelante.
+
+\end{enumerate}
+
+\subsubsection{Propiedades}
+hgjfjc
+
+\subsubsection{Métodos}
+zfgdzfhzh
+
+\subsection{Node}
+\subsubsection{Constructor}
+<sg<sg<gf
+
+\subsubsection{Propiedades}
+fxdgjhjxfhj
+
+\subsubsection{Métodos}
+gawrgarwtwy
+
+\subsection{Link}
+\subsubsection{Constructor}
+\subsubsection{Propiedades}
+\subsubsection{Métodos}
+
+\subsection{Routers}
+
+\subsection{Equipos finales}
+
+\subsection{Clases auxiliares}\label{subsec:aux}
+
+\subsection{Compilación}
+
+\section{Desarrollo del videojuego}
+
+\subsection{El proyecto de GNS3}
+
+\subsubsection{Aparatos usados}
+
+\subsubsection{Despliegue}
+
+\subsection{El proyecto de Unity}
+
+\subsubsection{Materiales}
+
+\subsubsection{Creación del juego}

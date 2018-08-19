@@ -136,20 +136,61 @@ pdfproducer = {pdflatex}
 \lstnewenvironment{listing}[1][]
    {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
 
-\lstdefinestyle{CodigoCs}
-   {
-	basicstyle=\scriptsize,
-	frame=single,
+\renewcommand{\lstlistingname}{Código}
+\lstloadlanguages{C,C++,csh,Java}
+
+\definecolor{red}{rgb}{0.6,0,0} 
+\definecolor{blue}{rgb}{0,0,0.6}
+\definecolor{green}{rgb}{0,0.8,0}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+\definecolor{cloudwhite}{rgb}{0.9529,0.949,0.9056}
+
+\lstset{
 	language=csh,
-	numbers=none
-   }
- 
-\lstdefinestyle{Consola}
-   {basicstyle=\scriptsize\bf\ttfamily,
-    backgroundcolor=\color{gray30},
-    frame=single,
-    numbers=none
-   }
+	basicstyle=\footnotesize\ttfamily,
+	numbers=none,
+	numberstyle=\tiny,
+	numbersep=5pt,
+	tabsize=2,
+	extendedchars=true,
+	breaklines=true,
+	frame=b,
+	stringstyle=\color{blue}\ttfamily,
+	showspaces=false,
+	showtabs=false,
+	xleftmargin=17pt,
+	framexleftmargin=17pt,
+	framexrightmargin=5pt,
+	framexbottommargin=4pt,
+	commentstyle=\color{green},
+	morecomment=[l]{//}, %use comment-line-style!
+	morecomment=[s]{/*}{*/}, %for multiline comments
+	showstringspaces=false,
+	morekeywords={ abstract, event, new, struct,
+	as, explicit, null, switch,
+	base, extern, object, this,
+	bool, false, operator, throw,
+	break, finally, out, true,
+	byte, fixed, override, try,
+	case, float, params, typeof,
+	catch, for, private, uint,
+	char, foreach, protected, ulong,
+	checked, goto, public, unchecked,
+	class, if, readonly, unsafe,
+	const, implicit, ref, ushort,
+	continue, in, return, using,
+	decimal, int, sbyte, virtual,
+	default, interface, sealed, volatile,
+	delegate, internal, short, void,
+	do, is, sizeof, while,
+	double, lock, stackalloc,
+	else, long, static,
+	enum, namespace, string},
+	keywordstyle=\color{cyan},
+	identifierstyle=\color{red},
+	backgroundcolor=\color{cloudwhite},
+}
+  
 
 
 \newcommand{\bigrule}{\titlerule[0.5mm]}
@@ -185,7 +226,7 @@ pdfproducer = {pdflatex}
 % 0. Tablas de contenido
 \frontmatter
 \tableofcontents
-%\listoffigures
+\listoffigures
 %\listoftables
 
 % Capítulos
@@ -195,8 +236,7 @@ pdfproducer = {pdflatex}
 \input{capitulos/02_Planificacion}
 \input{capitulos/03_EstadoArte}
 \input{capitulos/04_Diseno}
-%
-%\input{capitulos/06_Implementacion}
+\input{capitulos/05_Implementacion}
 %
 %\input{capitulos/07_Pruebas}
 %
