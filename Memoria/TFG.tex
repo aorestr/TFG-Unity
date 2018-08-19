@@ -4,11 +4,12 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 
-%\usepackage[style=list, number=none]{glossary} %
-%\usepackage{titlesec}
-%\usepackage{pailatino}
-
+%% Allows 'H' property in images, which makes possible
+%% to force an image into a certain position
 \usepackage{float}
+
+%% In order to crop images
+\usepackage{graphicx}
 
 \usepackage[nottoc]{tocbibind}
 
@@ -29,7 +30,7 @@
 
 \usepackage{longtable}
 
-\usepackage[pdfborder={000}]{hyperref} %referencia
+\usepackage[hidelinks=true,pdfborder={000}]{hyperref} %referencia
 \newcommand{\MYhref}[3][blue]{\href{#2}{\color{#1}{#3}}}%
 
 % ********************************************************************

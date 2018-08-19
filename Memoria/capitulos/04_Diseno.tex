@@ -107,7 +107,7 @@ Hemos considerado esencial que la API sea reutilizable. El objetivo de su desarr
 
 Con esto en mente, todo el código utilizado por la librería se encuentra disponible en \MYhref{https://github.com/aorestr/GNS3sharp}{este repositorio} de mi GitHub personal. Está liberado bajo una licencia MIT, tremendamente permisiva a la hora de reutilizar el código.
 
-Además de los archivos de la propia API se puede encontrar un README que explica algunos puntos importantes que considerar a la hora de utilizarla. En el repositorio de GitHub existe asimismo una sección de ``releases'', donde se suben los distintos compilados de la librería en formato ``.dll'' a medida que esta se expande o se reparan problemas aparecidos.
+Además de los archivos de la propia API, se puede encontrar un README que explica algunos puntos importantes que considerar a la hora de utilizarla. En el repositorio de GitHub existe asimismo una sección de ``releases'', donde se suben los distintos compilados de la librería en formato ``.dll'' a medida que esta se expande o se reparan problemas aparecidos. Por supuesto, todo el código y su documentación están escritos en inglés para así llegar a más desarrolladores.
 
 \section{Diseño del videojuego}
 Establecida una plataforma sobre la que GNS3 pueda interactuar con código, llega el momento de diseñar el videojuego que haga uso de ella. 
@@ -137,7 +137,35 @@ La idea es que el jugador (en otros términos, el usuario final), posea interacc
 
 Este flujo es de alguna forma lo que se ha representado en la figura~\ref{fig:diagrama_interaccion}. El bloque morado hace referencia a todo el entorno que comprende una escena de Unity. Esta escena contendrá una serie de \GAOBJ s, cuyo comportamiento vendrá determinado mayormente mediante lógica programada por scripts. El bloque azul hace referencia a este compendio. Alguno de esos scripts será el encargado de contener una instancia de \GNSCS . Al ser creada, esta se conecta al servidor de GNS3 desde donde recibe toda la información del proyecto con el que se quiere trabajar. A partir de ahí, el resto de \GAOBJ s de la escena no tendrán más que usar esa instancia para poder conectarse a los nodos (entre otras cosas) de la simulación. 
 
-\subsection{Propuestas de modelo de videojuego}
+\subsection{Modelo de videojuego}
+Ahora que sabemos de qué forma se interconecta el juego con la red y en qué consiste exactamente la interacción, queda por concretizar qué clase de juegos podríamos crear. Hay que tener en mente en todo momento que pretendemos crear un \textbf{juego didáctico}, así que no nos vale cualquier construcción. La dificultad es, entonces, doble, pues es necesario seguir los cánones que dictan el buen hacer de un videojuego (véase un inteligente diseño de niveles, una estética atractiva y coherente, apartado técnico gráfico y sonoro propio, niveles a prueba de bugs...) a la vez que planear \textbf{qué} se quiere enseñar en ellos y \textbf{cómo} se pretende hacerlo.
 
+Para sortear estas dificultades se ha decidido que la estructura del juego esté basada en pequeños niveles interconectados entre sí por una plataforma común. La linealidad de un juego exige de un guion y de una cohesividad de los que el juego ``federado'' puede permitirse  prescindir.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.35, trim={0 9cm 0 9cm}]{imagenes/hall_juego}
+  \caption{Boceto del juego}
+  \label{fig:hall}
+\end{figure}
 
+En el boceto de la figura de arriba se quiere ejemplificar (de forma extremadamente simplista) en qué consistiría este diseño.
+\begin{itemize}
+\item Cada vez que el jugador entre en el juego se encontrará en una suerte de ``hall''. El hall estará acotado por paredes con un número determinado de puertas.
+\item Estas puertas conducen a los distintos niveles del juego. Cada puerta corresponde a una lección diferente sobre redes y telemática. El jugador no tiene que superar una lección (un nivel, una zona) para acceder a la siguiente, sino que puede elegir qué quiere aprender indistintamente. Por supuesto, se podría vetar la entrada a una zona hasta que supere una concreta. Idealmente, cada nivel al que se accede contaría con varias fases que van incrementando en dificultad.
+\item Al superar estas zonas, se desbloquea un ``manual'' acerca de lo aprendido en esa sala. Este manual puede ser consultado en un monitor localizado en el centro del hall. Gracias a esto, se podría repasar rápidamente lo aprendido en niveles anteriores desde un solo lugar.
+\end{itemize}
+Esta forma de acceder a los niveles es similar a la que siguen los videojuegos de la saga \textit{Crash Bandicoot} (\textit{2}, \textit{3}, \textit{La venganza de Cortex...}), donde existe una sala de ``descanso'' desde la que elegir cuál será la siguiente fase a jugar. Abstrayendo esta idea algo más, no es más que un menú estático desde donde elegir el nivel (juegos de corte más ``clásico'' como \textit{Super Meat Boy} utilizan este patrón) salvo que gozando de una interacción más directa y natural con el jugador, integrándolo más.
+
+Existen dos aproximaciones al modo en el que estos niveles se conectan con el simulador de redes:
+\begin{itemize}
+\item Por un lado, podría existir \textbf{un proyecto de GNS3 por cada nivel} y/o fase. Aunque mucho más estructurado y por ende posiblemente más sencillo de gestionar, es necesario establecer conexión con el servidor de GNS3 por cada nivel para recopilar la información del mismo. Esto se traduce en tiempo. Además, el servidor de GNS3 no registra el proyecto de GNS3 a menos que este se abra manualmente desde GNS3 en una sesión. Más tiempo.
+\item La otra solución pasa por crear \textbf{un solo proyecto} para todo el juego. Sería necesario desplegar todos los aparatos que vayan a ser utilizados en él, incrementando altamente los recursos que el sistema utiliza. Para paliar este último problema existen dos opciones:
+\begin{enumerate}
+\item Encender los aparatos que vayan a ser necesitados en el nivel a jugar y cerciorarse de que el resto permanece apagado.
+\item Reconfigurar los aparatos que vayan a ser utilizados para que sus propiedades se correspondan a lo que se necesita para el respectivo nivel.
+\end{enumerate}
+De entre estos dos acercamientos al problema, quizás el primero sea más simple, pero el arranque de cada nodo no es inmmediato. El segundo entraña una mayor dificultad ingenieril y mayor propensión al error aunque la configuración de los aparatos conlleve menos tiempo.
+\end{itemize}
+
+Sin embargo, aunque todas estas ideas pueden sonar realmente interesantes, el juego final desarrollado no ha podido alcanzarlas. En el siguiente capítulo, donde se detalla la integración real de lo expuesto en este capítulo, se comprobarán cuáles han sido las dificultas encontradas en el camino que han frenado de una forma u otra el prometedor escenario inicial. 
