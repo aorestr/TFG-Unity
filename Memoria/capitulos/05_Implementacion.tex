@@ -2,12 +2,14 @@
 Trazado el esquema del trabajo a realizar, el siguiente es lógicamente llevarlo a cabo. Las soluciones empleadas para todo el proceso será lo que componga este capítulo.
 
 \section{Desarrollo de la API}
-Si bien en la sección~\ref{sec:dis_api} ya se habló de la estructura con la que nuestra API contaría, ahora ha llegado el momento de contar con todo detalle el modo en el que ha sido desarrollado. Se describirán los puntos más importantes de cada una de las clases así como el modo en que estos fueron originados. Para finalizar se explicará la relación existente entre las clases con ayuda de un diagrama UML así como la forma en la que estas han sido compiladas para ser unificadas como librería.
+Si bien en la sección~\ref{sec:dis_api} ya se habló de la estructura con la que nuestra API contaría, en esta ocasión se contará con todo detalle el modo en el que esta ha sido desarrollada. Se describirán los puntos más importantes de cada una de las clases así como el modo en que fueron originados. Naturalmente, no se pretende explicar todo el contenido, pues no es su propósito. Se evitará así explicar en muchos casos métodos y propiedades privadas para centrarnos en aquellas públicas.
+
+Para finalizar se explicará la relación existente entre las clases con ayuda de un diagrama UML así como la forma en la que estas han sido compiladas para ser unificadas como librería. Conviene recalcar el hecho de que la API ha sido desarrollada desde cero.
 
 \subsection[GNS3sharp]{\href{https://github.com/aorestr/GNS3sharp/blob/master/gsn3sharp.cs}{GNS3sharp}}
 \subsubsection{Constructor}
 El constructor de \GNSCS~es sin duda uno de los elementos más importantes de toda a API. ¿Por qué? Tendrá la responsabilidad de conectarse al servidor de GNS3, recibir todos los datos de un cierto proyecto que solicitemos, procesarlos y guardarlos de tal forma que sean útiles. Su cabecera se muestra justo a continuación:
-\begin{lstlisting}[language={[Sharp]C}, caption={Cabecera del constructor de \texttt{GNS3sharp}}, label={constructor1}]
+\begin{lstlisting}[language={[Sharp]C}, caption={Cabecera del constructor de \texttt{GNS3sharp}}, label={gnscs1}]
 public GNS3sharp(string _projectID, string _host = "localhost", ushort _port = 3080)
 \end{lstlisting}
 
@@ -21,8 +23,9 @@ Cosas que serán necesarias entonces para inicializarlo:
 De acuerdo, ¿y qué hace exactamente con estos tres parámetros?
 \begin{enumerate}
 \item Crea la cadena de texto de la URI donde está el recurso asociado a los nodos del proyecto. En esta dirección existe únicamente un JSON con toda la información sobre él. Se instancia un cliente web y \textbf{se descarga el recurso como cadena de texto}.
+
 \item Hay que \textbf{deserializar el JSON}. Este paso no es en absoluto trivial, ya que los métodos de \textit{Json.NET} son incapaces de extraer los datos que necesitamos directamente. Así que, valiéndonos de las herramientas en forma de clases que nos ofrece, lo hacemos manualmente.
-\begin{lstlisting}[language={[Sharp]C}, caption={Deserialización de JSON}, label={constructor2}]
+\begin{lstlisting}[language={[Sharp]C}, caption={Deserialización de JSON}, label={gnscs2}]
 // JSON array object
 JArray jsonArray = JArray.Parse(json);
 Dictionary<string,object> tempDict = new Dictionary<string, object>();
@@ -51,7 +54,9 @@ if (jsonArray.HasValues){
 Sin entrar mucho al detalle, lo que hace es parsear el objeto como objeto de tipo \texttt{JArray} y luego este se discretiza por cada elemento de esa cadena. Cada elemento representa a un nodo. Se recorre a su vez cada subelemento que lo conforma, que no son más que sus pares \textit{llave-valor}.
 
 Los datos que se han extraído se guardan en una lista de diccionarios de par \texttt{<string,object>}. Se usa la clase genérica \texttt{object} porque el tipo del valor asociado a la clave varía.
+
 \item Se hace lo mismo para los enlaces. El proceso es similar.
+
 \item A partir de los objectos extraídos de la deserialización del JSON, se \textbf{crean las instancias representantes} de los nodos del proyecto. Existe un problema de cierta gravedad en esto: en el JSON no existe ningún parámetro que explicite de que tipo de nodo estamos hablando. Es decir, que no podemos conocer directamente con qué aparato concreto estamos tratando.
 
 La solución que nosotros hemos tomado para sortear este problema es el añadir una etiqueta al nombre del nodo en el momento de la creación de la red en GNS3. Por ejemplo, si el nodo es un \textit{VPC} (nodo predefinido y propio del simulador), su nombre sería de la forma ``[VPC]NombreDelNodo''. Será necesario entonces definir una etiqueta por cada tipo de aparato a utilizar.
@@ -60,7 +65,7 @@ Sin embargo, sigue existiendo un problema de peso en todo esto: no conocemos el 
 
 La solución pasa entonces por lo que en programación se conoce como \textit{reflexión}. Poniéndolo en términos puramente técnicos: ``inspeccionar los metadatos y el código compilado en tiempo de ejecución se llama reflexión''\cite{csnutshell}.
 
-\begin{lstlisting}[language={[Sharp]C}, caption={Instanciación de los nodos}, label={constructor3}]
+\begin{lstlisting}[language={[Sharp]C}, caption={Instanciación de los nodos}, label={gnscs3}]
 Type classType; int i = 0;
 try{
     foreach(Dictionary<string, object> node in JSON){
@@ -96,15 +101,104 @@ try{
 \end{lstlisting}
 Con esto en mente pues, tomamos el tipo de la clase asociada al aparato mediante la etiqueta que ya hemos mencionado y usamos el método \texttt{Activator.CreateInstance()} para instanciar el objecto. Únicamente requiere los metadatos del tipo representante (la clase) del nodo (representados a su vez por la clase \texttt{System.Type}) y los parámetros que el constructor de la clase necesita.
 
-Creado el objeto, lo añadimos a una lista donde se guardan todos los objetos representantes de los nodos. Esta propiedad se verá más adelante.
+Añadimos la instancia a una lista donde se guardan todos los objetos representantes de los nodos. Esta propiedad se verá más adelante.
+
+La obtención de las interfaces que cada nodo posee así como de cuáles están libres y cuáles están usadas por cierto enlace requiere de más trabajo que no se considera necesario explicar aquí.
+
+\item Es ahora el momento de instanciar los enlaces a través de la información extraída previamente. Aunque el problema que vimos con los nodos no se va a dar aquí, la obtención de los enlaces y sus parámetros tampoco es fácil. La principal dificultad aparece, una vez más, cuando se trata con las interfaces de los nodos.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Matcheo entre los enlaces y las interfaces de los nodos}, label={gnscs4}]
+List<Dictionary<string,object>> dictList = null;
+try{
+    dictList = DeserializeJSONList(nodesJSON, "port_number");
+} catch (Exception err){
+    Console.Error.WriteLine(
+        "Some problem occured while trying to gather information about the nodes connect to the link: {0}",
+        err.Message
+    );
+}
+
+if (dictList.Count > 0){
+    // Iterates through the JSON dictionary
+    foreach (Dictionary<string, object> nodeTemp in dictList){
+        // Iterates through the nodes the link connects
+        foreach (Node node in link.Nodes){
+            if (node != null && node.ID.Equals(nodeTemp["node_id"].ToString())){
+                // Search for the port that matches the found one
+                var foundPort = node.Ports.Where(
+                    x => (
+                        x["adapterNumber"].ToString() == nodeTemp["adapter_number"].ToString() &&
+                        x["portNumber"].ToString() == nodeTemp["port_number"].ToString()
+                    )
+                );
+                // If exists, add the link into the key "link" of the ports list
+                // of dictionaries of the node
+                if (foundPort.Count() > 0) foundPort.First()["link"] = link;
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+Una vez localizada la sección relacionada con los nodos en el diccionario que contiene la información de los enlaces extraída del JSON, se deserializa y se hace un barrido por entre esos nodos. Hecho esto, se busca entre los nodos que ya tenemos almacenados aquel que posea la misma ID que el del nodo sobre el que estamos barriendo. Si se encuentra, se busca la interfaz del mismo que dicte el nodo del barrido. De encontrarse, el puerto (usado aquí como sinónimo de interfaz) del nodo que teníamos almacenado guardará la información del enlace que contiene todos esos nodos que se están analizando. Es bastante confuso, sí.
+
+El método principal que se encarga de la extracción de los enlaces, \texttt{GetLinks()}, se verá ayudado por un par de funciones declaradas localmente. Estas funciones locales aparecen por vez primera en C\#7.
+
+Se guardan todos estos enlaces como lista en otra de las propiedades que se verán más adelante.
+
+\item Finalmente, se añade a cada nodo la información de los enlaces a los que está conectado.
 
 \end{enumerate}
 
 \subsubsection{Propiedades}
-hgjfjc
+\begin{itemize}
+\item \texttt{ProjectID}, \texttt{Host} y \texttt{Port}: propiedades que se toman directamente de los parámetros que el constructor necesitaba.
+\item \texttt{NodesJSON} y \texttt{LinksJSON}: diccionarios que contienen los JSON descargados desde el servidor una vez han sido parseados. Por lo general esta propiedad no tendría porque ser usada por un usuario que no esté desarrollando la API, pero se mantiene como \texttt{public} por si hay algún caso en el que sí.
+\item \texttt{Nodes} y \texttt{Links}: posiblemente las propiedades más importantes de la clase. Son listas que contienen los objetos que representan los nodos y enlaces, respectivamente, del proyecto.
+\end{itemize}
 
 \subsubsection{Métodos}
-zfgdzfhzh
+La mayor parte de los métodos de esta clase son privados, pues son usados internamente como subrutinas de otros métodos más grandes. Sin embargo podemos encontrar algunos accesibles desde fuera de la clase:
+\begin{itemize}
+\item \texttt{StartNode()} y \texttt{StopNode()}: activan/desactivan un nodo del proyecto. Esto se consigue haciendo uso del método POST de REST hacia la URI correspondiente al nodo. En el código se lleva a cabo mediante la clase \texttt{System.Net.Http.HttpClient}, que provee las herramientas suficientes para enviar y recibir datos de un recurso web.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Activación/desactivación de un nodo}, label={gnscs5}]
+// First part of the URL
+string URLHeader = $"http://{host}:{port}/v2/projects/{projectID}/nodes";
+
+// Pack the content we will send
+ByteArrayContent byteContent = null;
+try{
+    string content = JsonConvert.SerializeObject(new Dictionary<string, string> { { "", "" } });
+    byteContent = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(content));
+    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+} catch(JsonSerializationException err){
+    Console.Error.WriteLine("Impossible to serialize the JSON to send it to the API: {0}", err.Message);
+}
+
+if (byteContent != null){
+    try{
+        responseStatus = HTTPclient.PostAsync(
+            $"{URLHeader}/{node.ID}/{status}", byteContent
+        ).Result.IsSuccessStatusCode;
+    } catch(HttpRequestException err){
+        Console.Error.WriteLine("Some problem occured with the HTTP connection: {0}", err.Message);
+        responseStatus = false;
+    } catch(Exception err){
+        Console.Error.WriteLine("Impossible to {2} node {0}: {1}", node.Name, err.Message, status);
+        responseStatus = false;
+    }
+} else{
+    responseStatus = false;
+}
+\end{lstlisting}
+
+\item \texttt{StartProject()} y \texttt{StopProject()}: activan/desactivan todos los nodos del proyecto. Se intentó paralelizar el activado/desactivado de los nodos sin resultado.
+\item \texttt{SetLink()}: pasándole los objetos representantes de dos nodos del proyecto, es capaz de descubrir cuáles de sus interfaces están vacías y, de haber, crea un enlace entre ellas. También se consigue mediante POST. Actualiza \texttt{Links} y otra serie de parámetros tras la inserción. Es un método de cierta longitud (algo más de 100 líneas sin contar otras definidas fuera de las que hace uso).
+\item \texttt{EditLink()}: método polimórfico, pues dependiendo de si su parámetro es un \LINK~o dos \NODE~su comportamiento varía. Se parece a \texttt{SetLink()} pero este hace PUT y no POST a la URI. Ambas formas del método llaman a un método interno de \LINK. Tal y como su nombre indica, edita un enlace, permitiendo hacer variar los parámetros del mismo.
+\item \texttt{RemoveLink()}: con la misma base polimórfica que el anterior. Elimina un enlace del proyecto de GNS3 con un DELETE e inmediatamente a su representante objeto.
+\item \texttt{GetNodeByName()} y \texttt{GetNodeByID()}: dado un nombre o un identificador, respectivamente, devuelve el objecto representante de tal nodo.
+\end{itemize}
 
 \subsection{Node}
 \subsubsection{Constructor}
@@ -121,9 +215,7 @@ gawrgarwtwy
 \subsubsection{Propiedades}
 \subsubsection{Métodos}
 
-\subsection{Routers}
-
-\subsection{Equipos finales}
+\subsection{Herederos de Node}
 
 \subsection{Clases auxiliares}\label{subsec:aux}
 
