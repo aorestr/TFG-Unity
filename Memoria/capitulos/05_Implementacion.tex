@@ -4,7 +4,9 @@ Trazado el esquema del trabajo a realizar, el siguiente es lógicamente llevarlo
 \section{Desarrollo de la API}
 Si bien en la sección~\ref{sec:dis_api} ya se habló de la estructura con la que nuestra API contaría, en esta ocasión se contará con todo detalle el modo en el que esta ha sido desarrollada. Se describirán los puntos más importantes de cada una de las clases así como el modo en que fueron originados. Naturalmente, no se pretende explicar todo el contenido, pues no es su propósito. Se evitará así explicar en muchos casos métodos y propiedades privadas para centrarnos en aquellas públicas.
 
-Para finalizar se explicará la relación existente entre las clases con ayuda de un diagrama UML así como la forma en la que estas han sido compiladas para ser unificadas como librería. Conviene recalcar el hecho de que la API ha sido desarrollada desde cero.
+Para finalizar se explicará la relación existente entre las clases con ayuda de un diagrama UML así como la forma en la que estas han sido compiladas para ser unificadas como librería.
+
+Todas estas clases conforman un único \texttt{namespace} o espacio de nombres. Conviene recalcar que la API ha sido enteramente desarrollada desde cero.
 
 \subsection[GNS3sharp]{\href{https://github.com/aorestr/GNS3sharp/blob/master/gsn3sharp.cs}{GNS3sharp}}
 \subsubsection{Constructor}
@@ -202,13 +204,70 @@ if (byteContent != null){
 
 \subsection{Node}
 \subsubsection{Constructor}
-<sg<sg<gf
+El constructor principal de \NODE~solo es llamado desde \GNSCS. Es bastante sencillo: asigna parámetros básicos que la instancia de \GNSCS~toma del servidor. Entre ellos se encuentra la dirección del nodo. Gracias a ella y mediante otro método interno de la clase, se crea un cliente TCP y se establece un flujo de conexión para el envío y recepción de mensajes.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Establecimiento de la conexión con el nodo}, label={node2}]
+protected (TcpClient Connection, NetworkStream Stream) Connect(int timeout = 10000){
+    // Network endpoint as an IP address and a port number
+    IPEndPoint address = new IPEndPoint(IPAddress.Parse(this.consoleHost),this.port);
+    // Set the socket for the connection
+    TcpClient newConnection = new TcpClient();
+    // Stream used to send and receive data
+    NetworkStream newStream = null;
+    try{
+        newConnection.Connect(address);
+        newStream = newConnection.GetStream();
+        newStream.ReadTimeout = timeout; newStream.WriteTimeout = timeout;
+    } catch(Exception err){
+        Console.Error.WriteLine("Impossible to connect to the node {0}: {1}", this.name, err.Message);
+        newConnection = null;
+    }
+    return (newConnection, newStream);
+}
+\end{lstlisting}
+
+Especial atención a este método, que devuelve una tupla (recordemos, también nuevo en C\#7) en lugar de una simple variable.
+
+Para que solo clases que pertenecen a esta librería puedan hacer uso del constructor, se ha aplicado el modificador de clase \texttt{internal}, el cual solo permite llamadas desde el espacio de nombres donde esté definido. Encapsulamiento en estado puro. La API no permite la creación de nodos nuevos así que se ha optado por ocultar este método del desarrollador final.
+
+No obstante, sí que se incluye un constructor-clonador. Se trata de un constructor de clase cuyo parámetro de entrada es otro \NODE, de forma que se replica enteramente en una nueva instancia.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Clonador de nodos}, label={node2}]
+public Node(Node clone){
+    this.consoleHost = clone.ConsoleHost; this.port = clone.Port;
+    this.name = clone.Name; this.id = clone.ID; this.ports = clone.Ports;
+    this.tcpConnection = clone.TCPConnection; this.netStream = clone.NetStream;
+}
+\end{lstlisting}
 
 \subsubsection{Propiedades}
-fxdgjhjxfhj
+\begin{itemize}
+\item \texttt{ConsoleHost} y \texttt{Port}: dirección y puerto donde el nodo está ubicado. Gracias a estos datos podremos establecer una conexión con el aparato.
+\item \texttt{Name} y \texttt{ID}: nombre e identificador único del nodo. El nombre debería comenzar por \textit{[$<$EtiquetaDelNodo$>$]} para que \GNSCS~sea capaz de construir el objeto con la clase asociada a tal aparato.
+\item \texttt{Ports}: interfaces que posee el nodo. Es un diccionario de tres llaves: ``adapterNumber'', ``portNumber'' y ``link''. Los dos primeros son parámetros que GNS3 asigna a las interfaces. El último guarda la referencia del enlace asociado a la interfaz en caso de que esté siendo utilizada y \texttt{null} si no.
+\item \texttt{LinksAttached}: lista de \LINK. Referencias a los que el nodo está conectado.
+\end{itemize}
 
 \subsubsection{Métodos}
-gawrgarwtwy
+Esta clase destaca por sus dos métodos principales: \texttt{Send()} y \texttt{Receive()}.
+
+\begin{itemize}
+\item \texttt{Send()}: haciendo uso del flujo establecido durante la creación del objeto, se envía una cadena de texto previamente convertida a bytes. Antes de enviar cualquier mensaje, comprueba que es posible escribir en el canal.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Envío de mensajes a un nodo}, label={node3}]
+byte[] out_txt = Encoding.Default.GetBytes($"{message}\n");
+this.netStream.Write(buffer: out_txt, offset: 0, size: out_txt.Length);
+this.netStream.Flush();
+\end{lstlisting}
+
+\item \texttt{Receive()}: algo más complejo que \texttt{Send()}, hace también uso del canal establecido, aunque necesita de pasos adicionales para gestionar correctamente la información que se recibe.
+
+\end{itemize}
+
+\subsubsection{Destructor}
+Esta es la única clase de la librería que hace uso de un destructor personalizado. Los destructores ayudan a definir las sentencias que serán ejecutadas junto antes de que el objeto en cuestión sea destruido (se desreferencie).
+
+Únicamente se encarga de cerrar la conexión establecida con el nodo.
 
 \subsection{Link}
 \subsubsection{Constructor}
