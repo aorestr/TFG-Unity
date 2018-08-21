@@ -41,6 +41,7 @@ Memoria/*.aux
 Memoria/*.bbl
 Memoria/*.blg
 Memoria/*.log
+Memoria/*.lof
 Memoria/*/*.log
 Memoria/*.out
 Memoria/*.lot

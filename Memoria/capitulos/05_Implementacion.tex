@@ -202,7 +202,7 @@ if (byteContent != null){
 \item \texttt{GetNodeByName()} y \texttt{GetNodeByID()}: dado un nombre o un identificador, respectivamente, devuelve el objecto representante de tal nodo.
 \end{itemize}
 
-\subsection{Node}
+\subsection[Node]{\href{https://github.com/aorestr/GNS3sharp/blob/master/node.cs}{Node}}
 \subsubsection{Constructor}
 El constructor principal de \NODE~solo es llamado desde \GNSCS. Es bastante sencillo: asigna parámetros básicos que la instancia de \GNSCS~toma del servidor. Entre ellos se encuentra la dirección del nodo. Gracias a ella y mediante otro método interno de la clase, se crea un cliente TCP y se establece un flujo de conexión para el envío y recepción de mensajes.
 
@@ -262,6 +262,8 @@ this.netStream.Flush();
 
 \item \texttt{Receive()}: algo más complejo que \texttt{Send()}, hace también uso del canal establecido, aunque necesita de pasos adicionales para gestionar correctamente la información que se recibe.
 
+Cada mensaje recibido se convierte en una cadena de texto que va siendo añadida a una lista. A cada nueva recepción se consulta al canal si existe nueva información a leer; si no, se esperan unos segundos confiando en que existan datos a procesar por parte del servidor. Se vuelve a hacer la comprobación y, si efectivamente no queda nada más por leer, se analizan las líneas recibidas en busca de caracteres inválidos y se guardan. 
+
 \end{itemize}
 
 \subsubsection{Destructor}
@@ -269,16 +271,50 @@ Esta es la única clase de la librería que hace uso de un destructor personaliz
 
 Únicamente se encarga de cerrar la conexión establecida con el nodo.
 
-\subsection{Link}
-\subsubsection{Constructor}
-\subsubsection{Propiedades}
-\subsubsection{Métodos}
-
 \subsection{Herederos de Node}
+La clase \NODE~no hace más que de padre para todo un abanico de clases. A partir de ahí se crea una estructura en árbol desde la que se ramifican una serie de subclases. Las tres herederas directas son \texttt{Router}, \texttt{Switch} y \texttt{Guest}, correspondientes a los tres amplios grupos de nodos que pueden encontrarse en GNS3. Estas tres clases son abstractas; su labor no es otra que la de declarar métodos importantes que cada uno de estos aparatos se espera que posean.
+
+La definición de los métodos se encuentra en sus clases herederas, que no representan otra cosa que modelos concretos. Pongamos un ejemplo para que se vea más sencillo:
+
+\NODE~es la clase padre. Define el constructor, la forma de establecer la conexión con los nodos y los métodos para enviar y recibir mensajes de estos. De esta clase parte otra, \texttt{Router}, que por consiguiente es hija suya. Esta clase declara métodos abstractos que se espera que las clases representantes de los routers posean, como por ejemplo \texttt{GetIPByInterface()}, que dado el nombre de una interfaz ha de ser capaz de averiguar cuál es su IPv4 asociada. Finalmente, la clase \texttt{OpenWRT} va a heredar de \texttt{Router}. Definirá los métodos abstractos de la anterior y los suyos propios.
+
+Es muy importante señalar que cada una de estas clases representantes de aparatos concretos contarán con una propiedad estática que contiene la etiqueta que el nodo deberá tener en su nombre. De nuevo con ejemplos, si queremos que el constructor de \GNSCS~pueda construir correctamente el objeto representante a un router OpenWRT de nuestro proyecto de GNS3, es necesario que a este se le ponga por nombre algo como \textit{[OPENWRT]NombreDelRouter}.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Etiqueta de \texttt{OpenWRT}}, label={herederosnode1}]
+private const string label = "OPENWRT";
+/// <summary>
+/// Label you must set in the name of the node at the GNS3 project
+/// <para>Name of the node must look like "[OPENWRT]Name"</para>
+/// </summary>
+/// <value>Label as a string</value>
+public static string Label { get => label; }
+\end{lstlisting}
+
+Si se hace correctamente, se instanciará un objeto \texttt{OpenWRT}. De lo contrario, se optará por el genérico \NODE.
+
+\subsection[Link]{\href{https://github.com/aorestr/GNS3sharp/blob/master/link.cs}{Link}}
+\subsubsection{Constructor}
+Una vez más, el constructor es únicamente accesible desde el espacio de nombres y solo será llamado desde \GNSCS. Se han definido dos concretamente: uno que supone que todos los parámetros del enlace de GNS3 son nulos (es un enlace ideal) y otro que supone que al menos uno de ellos es distinto.
+
+\subsubsection{Propiedades}
+\begin{itemize}
+\item \texttt{ID}: identificador único del nodo. Como el resto de IDs, lo asigna automáticamente GNS3.
+\item \texttt{Nodes}: array de objetos \NODE~que contienen los objetos representantes de los nodos que el enlace une en el proyecto.
+\item Parámetros del enlace: \texttt{FrequencyDrop}, \texttt{PacketLoss}, \texttt{Latency}, \texttt{Jitter} y \texttt{Corrupt}. Son parámetros que GNS3 permite para eliminar idealidades de las conexiones. Todos son números enteros.
+\end{itemize}
+
+\subsubsection{Métodos}
+Esta clase solo cuenta con un método, \texttt{EditLink()}. Permite editar uno de los parámetros del enlace. Para ello, además de ser este alterado en el objeto, se modifica en el proyecto de GNS3 haciendo un PUT a la URI asociada al enlace. Ya se mencionó este método tratando uno de los de \GNSCS.
 
 \subsection{Clases auxiliares}\label{subsec:aux}
+\begin{itemize}
+\item \texttt{Aux}: define métodos de ayuda para otras clases del espacio de nombres como un identificador de direcciones IP. También guarda un mapeo entre entre las etiquetas de los nodos y el tipo asociado a cada una.
+\item \texttt{RoutingTable}: define una estructura para las tablas de enrutamiento. Es usada por las clases herederas de \texttt{Router} para una gestión más eficiente de esas tablas. Dentro de la propia clase se define un \texttt{struct} usado para trabajar más cómodamente con cada una de las rutas de la tabla. 
+\item \texttt{ServerProjects}: en esta clase deben definirse métodos asociados a la URI del server donde se lista el conjunto de proyectos definidos en él. Por el momento solo cuenta con un método (\texttt{GetProjectIDByName()}) que extrae el ID de un proyecto dado su nombre, realmente útil a la hora de instanciar \GNSCS.
+\end{itemize}
 
 \subsection{Compilación}
+
 
 \section{Desarrollo del videojuego}
 
