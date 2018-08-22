@@ -196,7 +196,7 @@ if (byteContent != null){
 \end{lstlisting}
 
 \item \texttt{StartProject()} y \texttt{StopProject()}: activan/desactivan todos los nodos del proyecto. Se intentó paralelizar el activado/desactivado de los nodos sin resultado.
-\item \texttt{SetLink()}: pasándole los objetos representantes de dos nodos del proyecto, es capaz de descubrir cuáles de sus interfaces están vacías y, de haber, crea un enlace entre ellas. También se consigue mediante POST. Actualiza \texttt{Links} y otra serie de parámetros tras la inserción. Es un método de cierta longitud (algo más de 100 líneas sin contar otras definidas fuera de las que hace uso).
+\item \texttt{SetLink()}: pasándole los objetos representantes de dos nodos del proyecto, es capaz de descubrir cuáles de sus interfaces están vacías y, de haber, crea un enlace entre ellas. También se consigue mediante POST. Actualiza \texttt{Links} y otra serie de parámetros tras la inserción. Es un método de cierta longitud (algo más de 100 líneas sin contar otras definidas fuera de las que hace uso). En este método y en similares es muy recurrido el tipo \texttt{dynamic}, que obliga al compilador a averiguar el tipo real de la variable en el momento de ejecución del código. Algo similar a lo que ocurre en lenguajes interpretados como Python y Matlab.
 \item \texttt{EditLink()}: método polimórfico, pues dependiendo de si su parámetro es un \LINK~o dos \NODE~su comportamiento varía. Se parece a \texttt{SetLink()} pero este hace PUT y no POST a la URI. Ambas formas del método llaman a un método interno de \LINK. Tal y como su nombre indica, edita un enlace, permitiendo hacer variar los parámetros del mismo.
 \item \texttt{RemoveLink()}: con la misma base polimórfica que el anterior. Elimina un enlace del proyecto de GNS3 con un DELETE e inmediatamente a su representante objeto.
 \item \texttt{GetNodeByName()} y \texttt{GetNodeByID()}: dado un nombre o un identificador, respectivamente, devuelve el objecto representante de tal nodo.
@@ -313,12 +313,47 @@ Esta clase solo cuenta con un método, \texttt{EditLink()}. Permite editar uno d
 \item \texttt{ServerProjects}: en esta clase deben definirse métodos asociados a la URI del server donde se lista el conjunto de proyectos definidos en él. Por el momento solo cuenta con un método (\texttt{GetProjectIDByName()}) que extrae el ID de un proyecto dado su nombre, realmente útil a la hora de instanciar \GNSCS.
 \end{itemize}
 
-\subsection{Compilación}
+\subsection{Estructura de la API}
+A continuación se muestra el diagrama UML de la API, desde el que puede observarse esquemáticamente el diseño de cada una de las clases y la relación que existe entre ellas.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.4]{imagenes/diagrama_api2}
+  \caption{Diagrama UML de la API}
+  \label{fig:uml_api}
+\end{figure}
+
+\subsection{Compilación}
+C\# es un ``lenguaje gestionado'' (del inglés \textit{managed code}) pues es compilado en código gestionado. Este código gestionado es representado en un lenguaje intermedio. Aparece entonces la figura del \textit{Common Language Runtime} (CLR), núcleo del Microsoft .NET Framework. Se encarga de traducir este código intermedio al código nativo de la máquina desde la que se ejecuta.
+
+Los contenedores de código gestionado se llaman ensamblados, y pueden ser archivos ejecutables (\textit{.exe}) o bien librerías (\textit{.dll})\cite{csnutshell}. Nuestro propósito es el de contener el código de la API en un ensamblado para librerías.
+
+El editor de código Visual Studio de Microsoft tiene integradas decenas de herramientas para trabajar con proyectos dirigidos a .NET. Así, entre otras muchas cosas, facilita la compilación del código en C\# para extraer de él un ensamblado que pueda ser incluido en otro proyecto como librería externa.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.225]{imagenes/creacion_ensamblado}
+  \caption{Elección del tipo de proyecto en Visual Studio 2017}
+  \label{fig:creacion_ensamblado}
+\end{figure}
+
+Como framework con el que realizar la compilación se ha elegido \textit{.NET Standard 2.0}. De esta forma la librería será portable y correrá sin modificaciones en versiones modernas de todos los frameworks principales de .NET (.NET Core, .NET Framework...) pues únicamente posee el núcleo común de todos ellos. En realidad, .NET Standard no es un Framework: es simplemente una especificación que describe una base mínima de funcionalidad (tipos y miembros), que garantiza la compatibilidad con un cierto conjunto de frameworks.
+
+Para el correcto ensamblado del código de la API hará falta la importación de dos librerías externas: \href{https://www.nuget.org/packages/Newtonsoft.Json/}{\textit{Json.NET}}, como ya se ha dicho en varias ocasiones, y \href{https://www.nuget.org/packages/Microsoft.CSharp/}{\textit{Microsoft.CSharp}}. Esta última, no incluida por defecto en .NET Standard, añade funcionalidades para la compilación dinámica de código (el modificador de acceso \texttt{dynamic} o el propio instanciador de clases por reflexión).
+
+Con el fin de facilitar a los desarrolladores la importación de código de terceros, Visual Studio integra una herramienta que permite instalar esas dependencias en tus proyectos a través de \textit{NuGet}. NuGet es el formato de empaquetamiento de librerías de .NET para simplificar su compartición. Cuenta con una plataforma de hosting donde hospedar paquetes públicos paraser descrgados con facilidad por el resto de desarrolladores. La herramienta de Visual Studio se conecta directamente a este host, descarga el paquete y lo instala en el proyecto que esté siendo usado. Las dos librerías señaladas anteriormente se encuentran en tal plataforma.
+
+Establecidos una serie de parámetros que servirán de metadatos para el ensamblado, se compila el proyecto. Visual Studio crea entonces el archivo \textit{.dll} así como un archivo \textit{.xml} que, enlazado al ensamblado, aporta la documentación de nuestra librería. Para lograr esto último fue necesario la inclusión de etiquetas XML como encabezado de cada uno elemento de la API (clases, métodos, propiedades...) cuya sintaxis puede \href{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments}{consultarse online}. Similar al Javadoc de Java.
+
+Ya tenemos preparada la librería para que Unity haga uso de ella.
 
 \section{Desarrollo del videojuego}
+En esta sección se detalla la construcción del videojuego. En primer lugar se habla del juego en sí, qué se ha creado y qué no y qué se puede esperar de él. Inmediatamente después se describe el entorno generado en GNS3 para ser usado por Unity para, más adelante, mostrar cómo y qué ha sido desarrollado mediante él.
+
+\subsection{Descripción del juego}
 
 \subsection{El proyecto de GNS3}
+
 
 \subsubsection{Aparatos usados}
 
