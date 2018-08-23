@@ -68,30 +68,37 @@ Sin embargo, sigue existiendo un problema de peso en todo esto: no conocemos el 
 La solución pasa entonces por lo que en programación se conoce como \textit{reflexión}. Poniéndolo en términos puramente técnicos: ``inspeccionar los metadatos y el código compilado en tiempo de ejecución se llama reflexión''\cite{csnutshell}.
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Instanciación de los nodos}, label={gnscs3}]
-Type classType; int i = 0;
+System.Reflection.ConstructorInfo ctor; int i = 0;
 try{
     foreach(Dictionary<string, object> node in JSON){
         try{
             Console.WriteLine($"Gathering information for node #{i}... ");
-            // Assign a class or another depending on the node
-            classType = Aux.NodeType(node["name"].ToString());
-            listOfNodes[i] = (Node)Activator.CreateInstance(
-                classType,
-                node["console_host"].ToString(), 
-                ushort.Parse(node["console"].ToString()), 
-                node["name"].ToString(),
-                node["node_id"].ToString(),
-                GetNodeListOfPorts(node)
+
+            // Get the main constructor of the node type
+            ctor = Aux.NodeType(node["name"].ToString()).GetConstructors(
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+            ).Last();
+
+            // Invoke the previous constructor and create the instance through it
+            listOfNodes[i] = (Node)ctor.Invoke(
+                new object[]{
+                    node["console_host"].ToString(), 
+                    ushort.Parse(node["console"].ToString()), 
+                    node["name"].ToString(),
+                    node["node_id"].ToString(),
+                    GetNodeListOfPorts(node)
+                }
             );
+            
             nodesByName.Add(listOfNodes[i].Name, listOfNodes[i]);
             nodesByID.Add(listOfNodes[i].ID, listOfNodes[i]);
-            i++;
         } catch(Exception err1){
             Console.Error.WriteLine(
                 "Impossible to save the configuration for the node #{0}: {1}", 
                 i.ToString(), err1.Message
             );
         }
+        i++;
     }
 } catch(Exception err2){
     Console.Error.WriteLine(
@@ -101,7 +108,7 @@ try{
     listOfNodes = null;
 }
 \end{lstlisting}
-Con esto en mente pues, tomamos el tipo de la clase asociada al aparato mediante la etiqueta que ya hemos mencionado y usamos el método \texttt{Activator.CreateInstance()} para instanciar el objecto. Únicamente requiere los metadatos del tipo representante (la clase) del nodo (representados a su vez por la clase \texttt{System.Type}) y los parámetros que el constructor de la clase necesita.
+Con esto en mente pues, tomamos el tipo de la clase asociada al aparato mediante la etiqueta que ya hemos mencionado. Obtenemos gracias a él el constructor que nos es útil. El siguiente paso es invocarlo para generar la instancia del objeto. Previamente se pensó en utilizar el método \texttt{Activator.CreateInstance()}, que instancia un objeto directamente con los metadatos del tipo representante (representados a su vez por la clase \texttt{System.Type}) y los parámetros del constructor, pero solo funciona cuando los constructores son públicos y no es el caso de aquellos que usamos.
 
 Añadimos la instancia a una lista donde se guardan todos los objetos representantes de los nodos. Esta propiedad se verá más adelante.
 
@@ -272,13 +279,13 @@ Esta es la única clase de la librería que hace uso de un destructor personaliz
 Únicamente se encarga de cerrar la conexión establecida con el nodo.
 
 \subsection{Herederos de Node}
-La clase \NODE~no hace más que de padre para todo un abanico de clases. A partir de ahí se crea una estructura en árbol desde la que se ramifican una serie de subclases. Las tres herederas directas son \texttt{Router}, \texttt{Switch} y \texttt{Guest}, correspondientes a los tres amplios grupos de nodos que pueden encontrarse en GNS3. Estas tres clases son abstractas; su labor no es otra que la de declarar métodos importantes que cada uno de estos aparatos se espera que posean.
+La clase \NODE~no hace más que de padre para todo un abanico de clases. A partir de ahí se crea una estructura en árbol desde la que se ramifica una serie de subclases. Las tres herederas directas son \texttt{Router}, \texttt{Switch} y \texttt{Guest}, correspondientes a los tres amplios grupos de nodos que pueden encontrarse en GNS3. Estas tres clases son abstractas; su labor no es otra que la de declarar métodos importantes que cada uno de estos aparatos se espera que posean.
 
-La definición de los métodos se encuentra en sus clases herederas, que no representan otra cosa que modelos concretos. Pongamos un ejemplo para que se vea más sencillo:
+La definición de los métodos se encuentra en sus clases herederas, que no representan otra cosa que dispositivos concretos. Pongamos un ejemplo para que se vea más sencillo:
 
 \NODE~es la clase padre. Define el constructor, la forma de establecer la conexión con los nodos y los métodos para enviar y recibir mensajes de estos. De esta clase parte otra, \texttt{Router}, que por consiguiente es hija suya. Esta clase declara métodos abstractos que se espera que las clases representantes de los routers posean, como por ejemplo \texttt{GetIPByInterface()}, que dado el nombre de una interfaz ha de ser capaz de averiguar cuál es su IPv4 asociada. Finalmente, la clase \texttt{OpenWRT} va a heredar de \texttt{Router}. Definirá los métodos abstractos de la anterior y los suyos propios.
 
-Es muy importante señalar que cada una de estas clases representantes de aparatos concretos contarán con una propiedad estática que contiene la etiqueta que el nodo deberá tener en su nombre. De nuevo con ejemplos, si queremos que el constructor de \GNSCS~pueda construir correctamente el objeto representante a un router OpenWRT de nuestro proyecto de GNS3, es necesario que a este se le ponga por nombre algo como \textit{[OPENWRT]NombreDelRouter}.
+Es muy importante señalar que cada una de estas clases representantes de aparatos concretos deberán contar con una propiedad estática que contiene la etiqueta que el nodo deberá tener en su nombre. De nuevo con ejemplo: si queremos que el constructor de \GNSCS~pueda construir correctamente el objeto representante a un router OpenWRT de nuestro proyecto de GNS3, es necesario que a este se le ponga por nombre algo como \textit{[OPENWRT]NombreDelRouter}. De esta forma, automáticamente y una vez más haciendo uso de reflexión, la API es capaz de encontrar la clase a la que se hace referencia.
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Etiqueta de \texttt{OpenWRT}}, label={herederosnode1}]
 private const string label = "OPENWRT";
@@ -291,6 +298,50 @@ public static string Label { get => label; }
 \end{lstlisting}
 
 Si se hace correctamente, se instanciará un objeto \texttt{OpenWRT}. De lo contrario, se optará por el genérico \NODE.
+
+Este punto del trabajo es importante. Una de las cosas que más nos interesaban de la creación de la API era su reutilización por manos ajenas. La estructura establecida en ella permite que cualquiera que quiera hacer uso de ella y pretenda implementar un cierto tipo de nodos en su proyecto de GNS3 lo tenga fácil a la hora de crear un tipo que le dé soporte en la librería.
+
+Actualmente GNS3 cuenta con implementaciones de docenas de dispositivos de gestión de red del mercado. Crear una clase representante de todas ellas es ciertamente un trabajo inviable. Sin embargo, se ha buscado que cada usuario que haga uso de ella lo tenga fácil para insertar la que necesite. Tan solo necesita añadir una clase que herede de su tipo de aparato correspondiente (\texttt{Router}...) y definir los métodos que le gustaría que esta tuviera.
+
+El número de métodos definidos para cada clase va en función de las necesidades de cada uno. Un dispositivo real cuenta con cientos de funciones; abstraerlas todas como métodos es descabellado.
+
+A continuación se muestra uno de los métodos que nosotros hemos generado para \texttt{OpenWRT}, clase que ha sido usada abundantemente en la integración final de este proyecto ya que el router al que hace referencia nos ha sido de gran utilidad.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Método \texttt{GetIPByInterface()} de \texttt{OpenWRT}}, label={herederosnode2}]
+public override string[] GetIPByInterface(string iface){
+
+    string GetParameterIfconfig(string _iface, string type){
+
+        string result = null; string command = null;
+        if (type.Equals("IP"))
+            command = $"ifconfig {_iface} | grep 'inet addr' | cut -d: -f2 | awk '{{print $1}}'";
+        else if (type.Equals("NETMASK"))
+            command = $"ifconfig {_iface} | grep 'inet addr' | cut -d: -f4 | awk '{{print $1}}'";
+        if (command != null){
+            string lineTemp;
+            Send(command);
+            foreach (string line in Receive()) {
+                lineTemp = line.Trim();
+                if (Aux.IsIP(lineTemp)){
+                    result = lineTemp;
+                    break;
+                }
+            }
+        }
+        return result;
+
+    }
+
+    return new string[]{ 
+        GetParameterIfconfig(iface, "IP"), GetParameterIfconfig(iface, "NETMASK") 
+    };
+    
+}
+\end{lstlisting}
+
+El método se encarga de encontrar la IP relacionada con cierta interfaz del router. Básicamente, envía un comando al router mediante \texttt{Send()} y de la respuesta obtenida con \texttt{Receive()} extrae la IP.
+
+La conclusión que ha de sacarse de esto es que todos los métodos, o la mayor parte de ellos, van a ser definidos en base a estas dos funciones, \texttt{Send()} y \texttt{Receive()}. Podemos llevar esta lógica algo más allá: si no existe método creado en cierta clase para realizar una operación que nos es necesaria, podemos hacer uso de aquellas dos funciones para, sobre la marcha, conseguir lo que esperamos.
 
 \subsection[Link]{\href{https://github.com/aorestr/GNS3sharp/blob/master/link.cs}{Link}}
 \subsubsection{Constructor}
@@ -308,7 +359,7 @@ Esta clase solo cuenta con un método, \texttt{EditLink()}. Permite editar uno d
 
 \subsection{Clases auxiliares}\label{subsec:aux}
 \begin{itemize}
-\item \texttt{Aux}: define métodos de ayuda para otras clases del espacio de nombres como un identificador de direcciones IP. También guarda un mapeo entre entre las etiquetas de los nodos y el tipo asociado a cada una.
+\item \texttt{Aux}: define métodos de ayuda para otras clases del espacio de nombres como un identificador de direcciones IP. También se encarga de generar, mediante reflexión, un mapeo entre los tipos de nodos existentes en la API y la etiqueta asociada a ellos. Todo esto es realizado de forma automática.
 \item \texttt{RoutingTable}: define una estructura para las tablas de enrutamiento. Es usada por las clases herederas de \texttt{Router} para una gestión más eficiente de esas tablas. Dentro de la propia clase se define un \texttt{struct} usado para trabajar más cómodamente con cada una de las rutas de la tabla. 
 \item \texttt{ServerProjects}: en esta clase deben definirse métodos asociados a la URI del server donde se lista el conjunto de proyectos definidos en él. Por el momento solo cuenta con un método (\texttt{GetProjectIDByName()}) que extrae el ID de un proyecto dado su nombre, realmente útil a la hora de instanciar \GNSCS.
 \end{itemize}
