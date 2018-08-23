@@ -402,6 +402,19 @@ Ya tenemos preparada la librería para que Unity haga uso de ella.
 En esta sección se detalla la construcción del videojuego. En primer lugar se habla del juego en sí, qué se ha creado y qué no y qué se puede esperar de él. Inmediatamente después se describe el entorno generado en GNS3 para ser usado por Unity para, más adelante, mostrar cómo y qué ha sido desarrollado mediante él.
 
 \subsection{Descripción del juego}
+Aunque al comienzo el propósito del proyecto era desarrollar algo similar a lo descrito en la subsección \ref{subsec:modelojuego}, la complejidad que existente para llevarlo a cabo era demasiado grande. En su lugar, se ha preferido crear un único pequeño nivel que sirva como demostración del potencial del proyecto.
+
+Con este propósito, se desarrollará un minijuego basado en tablas de enrutamiento. El objetivo del jugador es ser capaz de alcanzar un dispositivo marcado de la red en el menor tiempo posible. Por supuesto, habrá de atravesar una serie de nodos para alcanzarlo.
+
+El mapa estará compuesto por varias plataformas y en cada una de ellas un cartel con la tabla de enrutamiento del respectivo router. Son estas plataformas entonces una suerte de representantes de los routers de la red. Al jugador se le darán varias posibles opciones como siguiente salto. Cada opción es una interfaz del router.
+
+Con este juego tan sencillo conseguimos dos cosas:
+\begin{itemize}
+\item Dar un ejemplo de juego didáctico con redes. Se ponen a prueba los conocimientos del jugador sobre redes y se le anima a hacerlo lo mejor posible a través de un contador ascendente.
+\item Mostrar cómo se lleva a cabo la interacción entre el simulador y el juego. Dicho en otras palabras, demostrar que, efectivamente, la API es funcional y puede ser usada con el propósito que se esperaba.
+\end{itemize}
+
+Se cimentan unos pilares sobre los que podrán construirse cosas mucho mayores en el futuro.
 
 \subsection{El proyecto de GNS3}
 
