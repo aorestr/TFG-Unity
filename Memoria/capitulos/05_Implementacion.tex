@@ -1,5 +1,5 @@
 \chapter{Integración}\label{chap:Integration}
-Trazado el esquema del trabajo a realizar, el siguiente es lógicamente llevarlo a cabo. Las soluciones empleadas para todo el proceso será lo que componga este capítulo.
+Trazado el esquema del trabajo a realizar, el siguiente paso es lógicamente llevarlo a cabo. Las soluciones empleadas para todo el proceso será lo que compongan este capítulo.
 
 \section{Desarrollo de la API}
 Si bien en la sección~\ref{sec:dis_api} ya se habló de la estructura con la que nuestra API contaría, en esta ocasión se contará con todo detalle el modo en el que esta ha sido desarrollada. Se describirán los puntos más importantes de cada una de las clases así como el modo en que fueron originados. Naturalmente, no se pretende explicar todo el contenido, pues no es su propósito. Se evitará así explicar en muchos casos métodos y propiedades privadas para centrarnos en aquellas públicas.
@@ -8,7 +8,7 @@ Para finalizar se explicará la relación existente entre las clases con ayuda d
 
 Todas estas clases conforman un único \texttt{namespace} o espacio de nombres. Conviene recalcar que la API ha sido enteramente desarrollada desde cero.
 
-\subsection[GNS3sharp]{\href{https://github.com/aorestr/GNS3sharp/blob/master/gsn3sharp.cs}{GNS3sharp}}
+\subsection[GNS3sharp]{\href{https://github.com/aorestr/GNS3sharp/blob/master/gsn3sharp.cs}{GNS3sharp}}\label{subsec:gnscsclass}
 \subsubsection{Constructor}
 El constructor de \GNSCS~es sin duda uno de los elementos más importantes de toda a API. ¿Por qué? Tendrá la responsabilidad de conectarse al servidor de GNS3, recibir todos los datos de un cierto proyecto que solicitemos, procesarlos y guardarlos de tal forma que sean útiles. Su cabecera se muestra justo a continuación:
 \begin{lstlisting}[language={[Sharp]C}, caption={Cabecera del constructor de \texttt{GNS3sharp}}, label={gnscs1}]
@@ -397,6 +397,14 @@ Con el fin de facilitar a los desarrolladores la importación de código de terc
 Establecidos una serie de parámetros que servirán de metadatos para el ensamblado, se compila el proyecto. Visual Studio crea entonces el archivo \textit{.dll} así como un archivo \textit{.xml} que, enlazado al ensamblado, aporta la documentación de nuestra librería. Para lograr esto último fue necesario la inclusión de etiquetas XML como encabezado de cada uno elemento de la API (clases, métodos, propiedades...) cuya sintaxis puede \href{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments}{consultarse online}. Similar al Javadoc de Java.
 
 Ya tenemos preparada la librería para que Unity haga uso de ella.
+
+\subsection{GitHub y la comunidad}
+Hemos considerado esencial que la API sea reutilizable. El objetivo de su desarrollo en ningún caso ha sido el de nacer y morir para el presente trabajo. Lejos de esto, se pretende que esta librería pueda ser utilizada por quien quiera, ya tenga como propósito la construcción de un videojuego o cualquier otra aplicación.
+
+Con esto en mente, todo el código utilizado por la librería se encuentra disponible en \MYhref{https://github.com/aorestr/GNS3sharp}{este repositorio} de mi GitHub personal. Está liberado bajo una licencia MIT, tremendamente permisiva a la hora de reutilizar el código.
+
+Además de los archivos de la propia API, se puede encontrar un README que explica algunos puntos importantes que considerar a la hora de utilizarla. En el repositorio de GitHub existe asimismo una sección de ``releases'', donde se suben los distintos compilados de la librería en formato ``.dll'' a medida que esta se expande o se reparan problemas aparecidos. Por supuesto, todo el código y su documentación están escritos en inglés para así llegar a más desarrolladores.
+
 
 \section{Desarrollo del videojuego}
 En esta sección se detalla la construcción del videojuego. En primer lugar se habla del juego en sí, qué se ha creado y qué no y qué se puede esperar de él. Inmediatamente después se describe el entorno generado en GNS3 para ser usado por Unity para, más adelante, mostrar cómo y qué ha sido desarrollado mediante él.

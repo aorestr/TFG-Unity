@@ -1,15 +1,28 @@
 \chapter{Diseño de la solución}\label{chap:Design}
+En este capítulo se describirá el modo en el que la API será construida y cómo el juego ha de ser llevado a cabo para cumplir con los propósitos que se han ido repitiendo a lo largo del texto.
 
-Expuestas ya las distintas tecnologías que serán implementadas en nuestro trabajo, queda definir de qué modo estas serán utilizadas y cuál será su papel en la creación del proyecto.
+\section{La API: GNS3sharp}\label{sec:dis_api}
+Para llevar a cabo la interacción entre el videojuego y el simulador de redes es necesario desarrollar previamente alguna herramienta que lo posibilite. Con esta fin, se ha construido una librería propia que lo posibilita.
 
-\section{Diseño de la API}\label{sec:dis_api}
-La programación se rige por \textbf{capas de abstracción}. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en eficiencia y agilidad de escritura sin perder flexibilidad de desarrollo.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=1.4]{imagenes/capa_api}
+  \caption{La API en el proyecto}
+  \label{fig:capa_api}
+\end{figure}
 
-Una \textbf{API}, a grandes rasgos, no es más que una capa de abstracción sobre un lenguaje de programación o, más aún, sobre un framework del mismo. Comprende una serie de funciones que facilitan en mayor o menor medida trabajar sobre un cierto motivo. Como ejemplo de API famosa tenemos la de Google Maps, que contiene un compendio de métodos para JavaScript que permiten interactuar directamente con la plataforma de Google y crear nuestros programas jugando con ella\cite{googlemaps}. Podemos verlo como una biblioteca de funciones.
+El lugar de esta API (aquí usaremos indistintamente API y librería) en nuestro proyecto se encuentra entre el juego y GNS3 tal y como se deja entrever en la figura \ref{fig:capa_api}. Todos sus detalles serán explicados en las próximas páginas.
+
+\subsection{Introducción}
+Según Wikipedia, una \textbf{API} ``es un conjunto de subrutinas, funciones y procedimientos (o métodos, en la programación orientada a objetos) que ofrece cierta biblioteca para ser utilizado por otro software como una capa de abstracción''\cite{wiki:api}. Comprende una serie de funciones que facilitan en mayor o menor medida trabajar sobre un cierto elemento. Como ejemplo de API famosa tenemos la de Google Maps, que contiene un compendio de métodos para JavaScript que permiten interactuar directamente con la plataforma de Google y crear nuestros programas jugando con ella\cite{googlemaps}. En resumen, una API no es más que un conjunto de funciones definidas para acceder a un servicio determinado.
+
+La programación se rige por \textbf{capas de abstracción}. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en agilidad de escritura y sencillez en el diseño sin perder flexibilidad de desarrollo.
+
+\textit{Pondría más bien que para facilitar esta comunicación, una de las alternativas que exsiten en sistemas complejos, es aplicar el concepto de capa. Una capa sería.. (en redes, el modelo OSI o el TCP/IP usan capas, en la que la superior solicita servicios a la inferior, y esta se lo facilita... En TCP/IP se define de forma abstracta, no a nivel de programación).}
 
 Como se ha citado previamente, GNS3 hace uso de una \textbf{API REST} (\textit{REpresentational State Transfer}). Esto es, mediante una serie de métodos (los conocidos GET, POST...) asociados a una URI concreta podemos interactuar \textbf{vía web} con una aplicación. La diferencia fundamental con otra clase de servicios web es que REST está orientado a recursos y no a métodos. Esto permite a la web utilizar comunicaciones sin estado, facilitando de este modo su escalabilidad\cite{REST}.
 
-Aunque de increíble utilidad (ya veremos qué papel concreto juega en nuestro trabajo), necesitamos algo más para poder propiciar la interacción entre el simulador de redes y el videojuego. Necesitamos crear nuestra propia API que haga uso de la API REST de GNS3 y que defina métodos que permita a Unity interactuar con el simulador de redes de forma automática.
+Aunque de gran utilidad (ya veremos qué papel concreto juega en nuestro trabajo), hace falta algo más para poder propiciar la interacción entre el simulador de redes y el videojuego; la API trabaja a un nivel mucho más bajo del que requerimos para desarrollar los juegos. Surge la necesidad entonces de crear nuestra propia API que haga uso de la API REST de GNS3 y que defina las funciones necesarias, a un nivel más abstracto y con más facilidades, que haga de intermediaria entre GNS3 y Unity.
 
 \subsection{Elección del lenguaje}
 En pleno 2018 la cantidad de lenguajes de programación existentes roza el absurdo. Desde el tradicional C, pasando por el multifuncional Java, el sencillo Python o incluso los llamados lenguajes esotéricos como LOLCODE\cite{esotericlang}. De entre todos ellos nosotros elegiremos uno sobre el que trabajar. Esta decisión está condicionada, como es natural, por el motor de videojuegos a utilizar.
@@ -30,33 +43,33 @@ Particularmente, nosotros haremos uso de C\#7, lanzado a la vez que Visual Studi
 \end{itemize}
 Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
 
-\subsection{La API}
-Antes de desarrollar la API, que llamaremos \textbf{GNS3sharp} por un ingenioso juego de palabras entre GNS3 y C\#, es necesario reflexionar sobre la forma que tendrá. Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
+\subsection{Diseño de la API}
+Antes de desarrollar la API, que se ha decidido llamar \textbf{GNS3sharp} por la fusión entre las dos tecnologías que la conforman, es necesario reflexionar sobre la forma que tendrá. Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
 \subsubsection[Interacción con GNS3]{¿Cómo debe interactuar con el simulador?}
-Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión.
+Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión. Todo esto volverá a ser ilustrado en la subsección \ref{subsec:interac_emul} con mayor detalle.
 
-Tratándose de una API REST, lo único que nos es necesario para la conexión es un \textbf{cliente web}. El framework de .NET ya cuenta con una clase dedicada a ello denominada \texttt{System.Net.WebClient}, que contiene métodos más que suficientes para nuestro uso\cite{webclient}. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que habremos de emplear alguna tecnología más.
+Tratándose de una API REST, lo único que nos es necesario para la conexión es un \textbf{cliente web}. El framework de .NET ya cuenta con una clase dedicada a ello denominada \texttt{System.Net.WebClient}\cite{webclient}, que contiene métodos más que suficientes para nuestro uso. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que habremos de emplear alguna tecnología más.
 
-\subsubsection[''Acceso a la API'']{¿Cómo queremos que interactúe con el exterior?}\label{subsec:accesoapi}
-Es importante tener esto claro, pues el uso de la librería y de sus métodos por parte de una aplicación externa deben ser lo más cómodos posibles. Aquel que vaya a hacer uso de ellas debe tener un esquema claro del modo en que puede gestionar la interacción, haciéndola cercana pues al usuario (más bien desarrollador) último.
+\subsubsection[Acceso a la API]{¿Cómo queremos que interactúe con el exterior?}\label{subsec:accesoapi}
+Es importante tener esto claro, pues el uso de la librería y de sus métodos por parte de una aplicación externa debe optimizar la productividad y agilizar el desarrollo lo máximo posible. Aquel que vaya a hacer uso de ellas debe tener un esquema claro del modo en que puede gestionar la interacción, siendo pues cercana al usuario (más bien desarrollador) último.
 
-GNS3 funciona a través de proyectos. En un proyecto se puede incluir tantos nodos como se desee e interconectarlos a placer. Las posibilidades son infinitas. La singularidad del proyecto apenas pasa por permitir arrancar o apagar todos los nodos contenidos en él a la vez.
+GNS3 funciona a través de proyectos. En un proyecto se pueden incluir tantos nodos como se desee para, a posteriori, ser interconectados. Las posibilidades son muy amplias y dejan poder absoluto al usuario. La singularidad del proyecto apenas pasa por permitir arrancar o apagar todos los nodos contenidos en él a la vez.
 
 Siendo así, se ha optado por concentrar lo crucial de la interacción entre el simulador y el desarrollador en \textbf{una sola clase-objeto}. Esta clase, que se explicará con detalle más adelante, permitirá hacer de puente entre el proyecto y los distintos elementos que lo componen y aquel que haga uso de ella.
 
-\subsubsection[''Utilidad'']{Más importante aún, ¿qué queremos que haga?}
+\subsubsection[Funcionalidad]{Más importante aún, ¿qué queremos que haga?}
 Todo lo explicado hasta ahora es correcto: definimos una forma con la que el código pueda acceder al simulador y reflexionamos en la manera en la que el desarrollador que la use pueda sacarle partido. Sin embargo, ¿qué significa entonces \textit{sacarle partido}?
 
 Para responder no hay más que irse al propio GNS3 y ver todas las opciones que nos ofrece: desplegar nodos, enlazarlos entre sí, cortar esos enlaces, arrancar todos los nodos juntos, parar algunos de ellos a voluntad... 
 
 Y por supuesto y aún más importante, \textbf{gestionar los aparatos desplegados desde dentro}. Es aquí donde está su verdadero potencial. Manejar un switch conectado a varios PCs, modificar sus VLANs dinámicamente; un router conectado a varias redes distintas, desactivando y activando algunas de ellas en función de un booleano con el que estemos trabajando... Y todo esto sin necesidad de acceder a GNS3 directamente; todo mediante scripting. ¡Se abre un mundo de posibilidades!
 
-\subsection{Estructura de clases}
-Nuestra API hará uso de todas las características propias de los lenguajes orientados a objetos, ya expuestas. A nivel de estructura, la que nos interesa citar ahora es la \textbf{herencia}.
+\subsection{Diseño de clases}
+Nuestra API hará uso de todas las características propias de los lenguajes orientados a objetos ya expuestas. A nivel de estructura, la que nos interesa citar ahora es la \textbf{herencia}.
 
-La herencia es un mecanismo por el que una clase hija (llamémosla \texttt{B}) va a heredar los métodos y las propiedades de una clase padre (llamémosla \texttt{A}). La cantidad de elementos heredados entre padre e hijo puede ser determinado en C\# mediante el uso de modificadores de acceso. Como dato adicional, este lenguaje no admite herencia de constructores, así que nuestra clase \texttt{B} tendrá que definir su propio constructor (o bien explicitar su herencia respecto al de \texttt{A}).
+La herencia es un mecanismo por el que una clase hija (llamémosla \texttt{B}) va a heredar los métodos y las propiedades de una clase padre (llamémosla \texttt{A}). La cantidad de elementos heredados entre padre e hijo puede ser determinado mediante el uso de modificadores de acceso. Como dato adicional, este lenguaje no admite herencia de constructores, así que nuestra clase \texttt{B} tendrá que definir su propio constructor (o bien explicitar su herencia respecto al de \texttt{A}).
 
-Aclarado el concepto de herencia, mostramos la estructura básica sobre la que nuestra librería será construida:
+Aclarado el concepto, mostramos la estructura básica sobre la que nuestra librería será construida:
 
 \begin{figure}[H]
   \centering
@@ -65,12 +78,14 @@ Aclarado el concepto de herencia, mostramos la estructura básica sobre la que n
   \label{fig:diagrama_api1}
 \end{figure}
 
+El diagrama UML de la figura \ref{fig:diagrama_api1} dibuja cuáles son las clases que componen la librería y da pistas acerca de la relación entre ellas. Así, es claro que las tales \texttt{Switch}, \texttt{Node} y \texttt{Router} heredan de de \NODE~y que a su vez esta es usada por \GNSCS~por alguna propiedad llamada \texttt{Nodes} (que hasta la subsección \ref{subsec:gnscsclass} no se analizará).
+
 A continuación pasamos a desarrollar cada una de las clases conceptualmente:
 
 \subsubsection[''La clase principal'']{GNS3sharp, la clase principal}
 Tal y como expusimos en la sección~\ref{subsec:accesoapi}, crearemos una clase principal que gestionará toda la interacción con el simulador de redes. Hemos llamado a esta clase del mismo modo que a la API, \GNSCS. Recalcamos entonces: los objetos que se encarguen de gestionar los proyectos serán del tipo \GNSCS.
 
-¿Y en qué consistirá está gestión concretamente? Básicamente, esta clase debe encargarse de:
+¿Y en qué consistirá esta gestión concretamente? Básicamente, la clase debe encargarse de:
 \begin{enumerate}
 \item Establecer la conexión con el servidor de GNS3 y recopilar toda la información acerca del proyecto que se pretende controlar.
 \item Convertir toda es información en objetos útiles que puedan ser utilizados.
@@ -88,7 +103,14 @@ Esta es la finalidad de la clase \texttt{Nodo}. Su deber será el de contener to
 
 Para la creación de las instancias de la clase se tendrá que recurrir a \GNSCS, que mediante los datos que recoja del servidor de GNS3 será capaz de crear asimismo el objeto.
 
-Como GNS3 admite todo tipo de aparatos de red, cada uno con sus peculiaridades, lo más sensato es crear una clase para cada uno de esos equipos. Esta individualización permite definir métodos propios para cada elemento y, de este modo, facilitar su uso final. Tal y como se puede ver en el diagrama de la figura~\ref{fig:diagrama_api1}, definiremos tres clases principales (\texttt{Guest}, \texttt{Router} y \texttt{Switch}) que heredarán de \NODE. De estas clases nacerán asimismo otra serie de clases referidas a aparatos concretos y a no tipos genéricos.
+Como GNS3 admite todo tipo de aparatos de red, cada uno con sus peculiaridades, lo más sensato es crear una clase para cada uno de esos equipos. Esta individualización permite definir métodos propios para cada elemento y, de este modo, facilitar su uso final. Tal y como se puede ver en el diagrama de la figura~\ref{fig:diagrama_api1}, definiremos tres clases principales:
+\begin{enumerate}
+\item \texttt{Guest}, representante de dispositivos \textit{end-point} como son los PCs.
+\item \texttt{Router}, representante de dispositivos de la tercera capa OSI.
+\item \texttt{Switch}, representantes de dispositivos de la segunda capa OSI.
+\end{enumerate}
+
+Todas ellas heredarán de \NODE. De estas clases nacerán asimismo otra serie de clases referidas a aparatos concretos y a no tipos genéricos.
 
 \subsubsection{Link}
 Los nodos están interconectados entre sí mediante enlaces. Representaremos cada uno de ellos mediante la clase \LINK. Esta clase guardará como objetos a los nodos que interconecta así como información sobre el propio enlace (cuánto jitter, latencia... posee). Al igual que \LINK, la generación de instancias de esta clase pasará por \GNSCS.
@@ -98,18 +120,11 @@ La clave de representar los enlaces en la API es que nos permitirá añadir, eli
 \subsubsection{Otras clases}
 Además de las anteriormente expuestas, se creará otra serie de clases que, o bien ayuden al desarrollo de la API (una clase con funciones de ayuda), o bien faciliten la representación de los datos (tal será el caso de \texttt{RoutingTable}, que puede atisbarse en la figura~\ref{fig:diagrama_api1}).
 
-\subsection{GitHub y la comunidad}
-Hemos considerado esencial que la API sea reutilizable. El objetivo de su desarrollo en ningún caso ha sido el de nacer y morir para el presente trabajo. Lejos de esto, se pretende que esta librería pueda ser utilizada por quien quiera, ya tenga como propósito la construcción de un videojuego o cualquier otra aplicación.
-
-Con esto en mente, todo el código utilizado por la librería se encuentra disponible en \MYhref{https://github.com/aorestr/GNS3sharp}{este repositorio} de mi GitHub personal. Está liberado bajo una licencia MIT, tremendamente permisiva a la hora de reutilizar el código.
-
-Además de los archivos de la propia API, se puede encontrar un README que explica algunos puntos importantes que considerar a la hora de utilizarla. En el repositorio de GitHub existe asimismo una sección de ``releases'', donde se suben los distintos compilados de la librería en formato ``.dll'' a medida que esta se expande o se reparan problemas aparecidos. Por supuesto, todo el código y su documentación están escritos en inglés para así llegar a más desarrolladores.
-
 \section{Diseño del videojuego}
 Establecida una plataforma sobre la que GNS3 pueda interactuar con código, llega el momento de diseñar el videojuego que haga uso de ella. 
 
-\subsection{Interacción con el simulador}
-A grandes rasgos, esto ya ha sido explicado. Ahora se va a dar una visión de la interacción desde el punto de vista del motor del videojuego; desde la creación del juego.
+\subsection{Interacción con el emulador}\label{subsec:interac_emul}
+A continuación se dará una visión de la interacción desde el punto de vista del motor del videojuego; desde la creación del juego. Se facilita el siguiente esquema a la espera de que sea de ayuda a la hora de comprender la sección.
 
 \begin{figure}[H]
   \centering
@@ -120,7 +135,7 @@ A grandes rasgos, esto ya ha sido explicado. Ahora se va a dar una visión de la
 
 Los proyectos de Unity están basados en un elemento llamado \GAOBJ. Todos los objetos que componen las escenas del proyecto se pueden abstraer en última instancia en ese tipo. El primer paso para que un proyecto de Unity pueda conectarse y controlar un esquema de red de GNS3 pasa por \textbf{insertar un \GAOBJ~ que tenga una instancia de la clase \GNSCS}. La única condición que se le impone a este objeto es que este parámetro contenido en él (la instancia) ha de ser accesible por todo el resto de elementos de la escena.
 
-¿Para qué? Pura simplicidad: para que todos esos elementos no tengan que crear la suya propia. Creando una sola instancia de la clase centralizamos el trabajo en un solo objeto. La instancia contendrá información de los datos del proyecto de GNS3; información que podrá ser tomada por todos los componentes de la escena sin más que copiar la referencia al objeto. Si estos decidieran su propia instancia cada uno perdería en tiempo (la recopilación de datos desde el servidor no es instantánea) y en eficiencia.
+¿Para qué? De este modo, todos esos elementos no necesitan crear la suya propia. Creando una sola instancia de la clase centralizamos el trabajo en un solo objeto. La instancia contendrá información de los datos del proyecto de GNS3; información que podrá ser tomada por todos los componentes de la escena sin más que copiar la referencia al objeto. Si estos declararán su propia instancia cada uno perdería en tiempo (la recopilación de datos desde el servidor no es instantánea) y en eficiencia.
 
 La idea es que el jugador (en otros términos, el usuario final), posea interacción con el simulador de redes de forma que \textbf{las consecuencias puedan verse reflejadas en el juego}. Pongamos un ejemplo e invirtamos el orden lógico de desarrollo para entender mejor cómo funcionaría esto:
 
@@ -164,4 +179,4 @@ Existen dos aproximaciones al modo en el que estos niveles se conectan con el si
 De entre estos dos acercamientos al problema, quizás el primero sea más simple, pero el arranque de cada nodo no es inmmediato. El segundo entraña una mayor dificultad ingenieril y mayor propensión al error aunque la configuración de los aparatos conlleve menos tiempo.
 \end{itemize}
 
-Sin embargo, aunque todas estas ideas pueden sonar realmente interesantes, el juego final desarrollado no ha podido alcanzarlas. En el siguiente capítulo, donde se detalla la integración real de lo expuesto en este capítulo, se comprobarán cuáles han sido las dificultas encontradas en el camino que han frenado de una forma u otra el prometedor escenario inicial. 
+Sin embargo, aunque todas estas ideas pueden sonar realmente interesantes, el juego final desarrollado no ha podido alcanzarlas. En el siguiente capítulo, donde se detalla la integración real de lo expuesto en este capítulo, se comprobarán cuáles han sido las dificultas encontradas en el camino que han frenado de una forma u otra el escenario inicial. 
