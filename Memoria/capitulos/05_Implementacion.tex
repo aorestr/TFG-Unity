@@ -410,13 +410,13 @@ Además de los archivos de la propia API, se puede encontrar un README que expli
 En esta sección se detalla la construcción del videojuego. En primer lugar se habla del juego en sí, qué se ha creado y qué no y qué se puede esperar de él. Inmediatamente después se describe el entorno generado en GNS3 para ser usado por Unity para, más adelante, mostrar cómo y qué ha sido desarrollado mediante él.
 
 \subsection{Descripción del juego}
-Aunque al comienzo el propósito del proyecto era desarrollar algo similar a lo descrito en la subsección \ref{subsec:modelojuego}, la complejidad que existente para llevarlo a cabo era demasiado grande. En su lugar, se ha preferido crear un único pequeño nivel que sirva como demostración del potencial del proyecto.
+Aunque al comienzo el propósito del proyecto era desarrollar algo similar a lo descrito en la subsección \ref{subsec:modelojuego}, la complejidad existente para llevarlo a cabo era demasiado grande. En su lugar, se ha preferido crear un único pequeño escenario que sirva como demostración del potencial del proyecto.
 
 Con este propósito, se desarrollará un minijuego basado en tablas de enrutamiento. El objetivo del jugador es ser capaz de alcanzar un dispositivo marcado de la red en el menor tiempo posible. Por supuesto, habrá de atravesar una serie de nodos para alcanzarlo.
 
 El mapa estará compuesto por varias plataformas y en cada una de ellas un cartel con la tabla de enrutamiento del respectivo router. Son estas plataformas entonces una suerte de representantes de los routers de la red. Al jugador se le darán varias posibles opciones como siguiente salto. Cada opción es una interfaz del router.
 
-Con este juego tan sencillo conseguimos dos cosas:
+Con este nivel tan sencillo conseguimos dos cosas:
 \begin{itemize}
 \item Dar un ejemplo de juego didáctico con redes. Se ponen a prueba los conocimientos del jugador sobre redes y se le anima a hacerlo lo mejor posible a través de un contador ascendente.
 \item Mostrar cómo se lleva a cabo la interacción entre el simulador y el juego. Dicho en otras palabras, demostrar que, efectivamente, la API es funcional y puede ser usada con el propósito que se esperaba.
@@ -425,11 +425,57 @@ Con este juego tan sencillo conseguimos dos cosas:
 Se cimentan unos pilares sobre los que podrán construirse cosas mucho mayores en el futuro.
 
 \subsection{El proyecto de GNS3}
+Para empezar será necesario construir la red sobre la que se apoyará el videojuego. Se ha construido una pequeña, de apenas cinco routers y dos PCs, uno como plataforma de inicio y otro como destino a alcanzar.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.225]{imagenes/redGNS3}
+  \caption{Red desplegada para el videojuego}
+  \label{fig:esquematico_red}
+\end{figure}
 
-\subsubsection{Aparatos usados}
+La figura \ref{fig:esquematico_red} está tomada directamente de la red desplegada en GNS3. Se comentarán a continuación los distintos aparatos usados y el modo en que han sido configurados.
+
+\subsubsection{Dispositivos usados}
+\begin{itemize}
+\item \textbf{VPCs}: Los VPCs son unos de los pocos nodos interactivos que GNS3 incluye por defecto. Como su propio nombre indica, no son más que PCs virtuales que incluyen \textbf{funciones básicas} que se espera que un PC pueda usar en una red. Entre esas funciones está la de asignar una dirección a su interfaz y la de lanzar PINGs a través de ella. VPC es una gran herramienta para añadir hosts simples a GNS3 y probar la conectividad entre los nodos\cite{bookGNS}.
+
+Nuestra red cuenta con dos de ellos: \textit{[VPC]L1PC1} y \textit{[VPC]L1PC2}. Nótese la etiqueta con la que comienza su nombre, ya que como se comentó en anteriores ocasiones, esta sirve para que la API sea capaz de instanciar el objeto cuya clase representa este tipo de nodos (en este caso, la clase \texttt{VPC}). Solo consumen 2MB de RAM y la propia máquina anfitriona puede encargarse de gestionarlos (no es necesario pasar por GNS3 VM \textbf{ESTE CONCEPTO SERÁ EXPLICADO CUANDO HABLEMOS DE GNS3 AL COMIENZO}).
+
+El único papel con el que cuentan estos dispositivos es el de representar mediante una dirección el inicio y el final del escenario.
+
+\item \textbf{OpenWRT}: OpenWrt es una distribución GNU/Linux altamente extensible para dispositivos embebidos (típicamente routers inalámbricos). A diferencia de muchas otras distribuciones para estos routers, OpenWrt está construido desde cero para ser un sistema operativo completo y fácilmente modificable para el router. Esto significa que es posible tener todas las características que son necesarias en estos dispositivos con el añadido que corresponde a contar con un núcleo Linux\cite{aboutopenwrt}.
+
+La principal razón por la que se eligió esta arquitectura como dispositivo de enrutamiento para el proyecto es su \textbf{gratuidad}: el proyecto OpenWRT es open source liberado bajo una licencia GPL. Debido a esto y a su filosofía de ``cada uno adapta su sistema operativo a sus propias necesidades particulares'', no se trata del firmware idóneo para un router al uso. Sin embargo, para nuestro propósito es más que suficiente.
+
+Al estar basado en un sistema operativo Linux, gran parte de los comandos más famosos relacionados con redes como \texttt{ifconfig} aparecen aquí. Es un punto a su favor si conocemos tal arquitectura y las posibilidades que ofrece.
+
+GNS3 cuenta con ``plantillas'' con las que se facilitar el importado de dispositivos como nodos a GNS3. Con el fin de incluir aparatos con OpenWRT instalado usamos la plantilla que puede descargarse desde \MYhref{https://www.gns3.com/marketplace/appliance/openwrt-2}{aquí}. Una vez descargada, siguiendo una serie de pasos GNS3 permite importar el nodo con mucha facilidad. La versión del firmware de OpenWRT que nosotros usamos es la 15.05.1. Slgo antigua considerando que data de 2016 y la última versión estable es la 18.06.1.
+
+Todos los nodos que usen OpenWRT han de ser instalados en GNS3 VM, pues el simulador no permite de ningún modo que la máquina anfitriona sea la encargada de gestionarlos. La mayor parte de los aparatos cuyas imágenes son de cierta complejidad como este están obligados a ser usados de este modo.
+
+Cinco de estos dispositivos han sido desplegados en la red. El camino más rápido para cruzar del primer PC1 al PC2 sería, en condiciones normales, \textit{[OPENWRT]L1R1} $\rightarrow$ \textit{[OPENWRT]L1R3} $\rightarrow$ \textit{[OPENWRT]L1R5}.
+
+Las redes que han sido marcadas en los enlaces de la figura \ref{fig:esquematico_red} son únicamente orientativas ya que, como se explicará en el apartado siguiente, se ha pseudo-aleatorizado el establecimiento de estas. De nuevo, atención a \textit{[OPENWRT]} en el nombre de los routers: es la etiqueta asociada a la clase \texttt{OpenWRT} para que \GNSCS~pueda instanciar el objeto apropiado.
+
+\item Otros dispositivos que consideramos añadir pero que, finalmente, por la simplicidad del diseño no se incluyeron, son el switch multicapa \MYhref{https://www.openvswitch.org/}{\textbf{Open vSwitch}} y la variante de Tiny Core, distro Linux altamente modular, \MYhref{https://docs.gns3.com/appliances/microcore-linux.html}{\textbf{Micro Core}}. Ambos son dispositivos de uso libre y gratuito, de ahí nuestro interés por ellos.
+\end{itemize}
 
 \subsubsection{Despliegue}
+Los dispositivos se han interconectado tal y como se aprecia en la ilustración \ref{fig:esquematico_red}. Ninguno de los enlaces cuenta con tipo alguno de filtro, con lo que se consideran ideales.
+
+Por sencillez, todas las redes establecidas en el despliegue tiene máscara de red de 24 bits. Todas ellas son de la forma \texttt{192.168.x0.y}, donde \texttt{x} es un número que se aleatoriza con cada arranque del juego mediante programación (hablaremos de esto cuando se detalle el apartado técnico de construcción del mismo) e \texttt{y} el número asociado a la interfaz del dispositivo que está conectada a esa red. Así, como ejemplo y suponiendo que las redes de la figura citada son las definitivas, a la interfaz de arriba de L1R1 (\texttt{eth3}) se le asignaría la dirección \texttt{192.168.20.3}. En el caso de los PCs, \texttt{y} sera en ambos casos \texttt{11}.
+
+Al arrancar la red (al inicializar cada nodo), los VPCs son funcionales casi inmediatamente. No obstante, no es el caso en absoluto de los routers. Al tratarse de dispositivos que emulan aparatos reales, con un sistema operativo de cierta envergadura, es necesario esperar para que su arranque sea completo. Así, los nodos con OpenWRT necesitan una media de \textbf{HAZ AQUÍ PRUEBAS REALES} minutos en el PC desde el que se han realizado las pruebas para ser completamente funcionales. Esto implica que, o bien se ha de tomar la precaución de que todos los dispositivos estén iniciados al comenzar el juego, o bien que el jugador ha de esperar el tiempo necesario para que los aparatos comiencen a estar disponibles.
+
+La problemática pasa a ser doble, ya que \textbf{GNS3} no guarda el estado de las máquinas tras su apagado. Por más información que se ha buscado para intentar paliar este inconveniente, nada parece ser efectivo. La consecuencia natural es, por consiguiente, que el dispositivo habrá de ser configurado cada vez que se reinicie. Este no es un problema per se, pues gracias a la API puede llevarse a cabo mediante unas líneas de código con total facilidad; el verdadero problema es que, aún así, configurar todas las interfaces de un proyecto lleva tiempo. Se ha calculado cuánto tarda el de la nuestra y es \textbf{AÑADIR AQUÍ DATOS}. El tiempo podría ser minimizado si cada router es configurado paralelamente.
+
+Todo lo anterior se resumen en:
+\begin{enumerate}
+\item La asignación de direcciones se aleatoriza gracias a las posibilidades de scripting de la API.
+\item Los routers requieren de un cierto tiempo de arranque, en absoluto inmediato, para ser completamente funcionales.
+\item La configuración de los dispositivos es descartada cada vez que son apagados, con lo que es necesario reconfigurarlos tras cada arranque. Esto lleva implícito una inevitable inversión de tiempo.
+\end{enumerate}
 
 \subsection{El proyecto de Unity}
 
