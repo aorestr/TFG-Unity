@@ -500,8 +500,8 @@ Ya veremos de qué modo son usados los sprites en el siguiente apartado.
 
 \end{itemize}
 
-\subsubsection{Creación del juego}
-El juego cuenta con, únicamente, dos escenas. La primera, aquella que aparece justo al ser inicializado, consta de únicamente una interfaz de usuario (GUI) que pide al jugador que pulse ``espacio'' para comenzar a jugar. Al hacerlo, se crea una instancia de \GNSCS~y se configura toda la red de GNS3 que pudimos ver en la figura \ref{fig:esquematico_red}. Todo el aspecto relacionado con la programación podrá estudiarse en el punto siguiente.
+\subsubsection{Objetos del juego}
+El juego cuenta con, únicamente, dos escenas. La primera, aquella que aparece justo al ser inicializado, consta de únicamente una interfaz de usuario (GUI) que pide al jugador que pulse ``espacio'' para comenzar a jugar. Al hacerlo, se configura toda la red de GNS3 que pudimos ver en la figura \ref{fig:esquematico_red}. Todo el aspecto relacionado con la programación podrá estudiarse en el punto siguiente.
 
 Pasado un tiempo, después de que todo quede configurado, Unity toma los datos necesarios del proyecto de GNS3 para construir la siguiente escena, la principal.
 
@@ -520,6 +520,7 @@ En la figura \ref{fig:monieco} pueden apreciarse los elementos más importantes 
 \item El \textbf{suelo} del escenario también está formado por tiles. Sin embargo, la diferencia con los anteriores reside en que el tilemap sobre el que están montados contiene un elemento adicional: consta de un \texttt{Tilemap Collider 2D}. Este elemento otorga automáticamente físicas de colisión a todos los tiles que incluyamos en el tilemap. Ello significa que todo tile introducido en el tilemap desplegado colisionará con el protagonista, permitiendo a este moverse sobre él.
 \item Las \textbf{puertas} son la representación de las interfaces de los routers en el videojuego. Llevan a un nodo o a otro. Son, de nuevo, tiles, sobre los que se han dispuesto objetos vacíos que únicamente tienen un \texttt{Box Collider 2D} como elemento integrado. Posee un ``trigger'' (disparados) que manda una señal cada vez que un objeto colisiona con él.
 \item Los carteles de las \textbf{tablas de encaminamiento}. Necesitan ser llenados con la información que se extraiga directamente de los routers.
+\item Además, y aunque en la imagen no pueda ser apreciada, tenemos la cámara principal del juego, que rige lo que ve el jugador en todo momento. El objeto que la representa cuenta con un script predefinido en el paquete ``2D'' que permite seguir automáticamente a un objeto de la escena. Se ha elegido a protagonista como objeto que la cámara debe encargarse de seguir.
 \end{itemize}
 
 Para terminar este apartado, se facilita una vista más general del escenario en la figura \ref{fig:nivel}, donde pueden observarse las distintas plataformas que lo conforman.
@@ -532,4 +533,33 @@ Para terminar este apartado, se facilita una vista más general del escenario en
 \end{figure}
 
 \subsubsection{Scripting}
-El \textit{scripting} de un videojuego no es más que la programación que existe en él para llevar a cabo toda la lógica que lo rige.
+El \textit{scripting} de un videojuego no es más que la programación que existe en él para llevar a cabo toda la lógica que lo rige. Describiremos a continuación los distintos scripts que han sido utilizados para posibilitar el funcionamiento del juego:
+
+\begin{itemize}
+\item \texttt{GNS3Handler}: crea y guarda una instancia de \GNSCS~para ser utilizada por todos los objetos de la escena que la necesiten. Como no queremos que cada elemento de la escena instancie un objeto de esta clase (es un gasto de recursos innecesario), haremos que sea ``singleton''. En programación, un singleton es una clase que tan solo permite que \textbf{una instancia} de sí misma sea creada\cite{csindepth}. Para llevarlo a cabo, cada vez que se intente instanciar la clase, se comprobará si su propiedad estática \texttt{Instance} contiene información. En caso negativo, se crea el objeto; en caso contrario, se destruye el objeto de la escena desde el que se ha intentado instanciar la clase.
+
+\begin{lstlisting}[language={[Sharp]C}, caption={\texttt{GNS3Handler}}, label={GNS3Handler}]
+using UnityEngine;
+
+public class GNS3Handler : MonoBehaviour {
+
+    public static GNS3Handler Instance { get; private set; } = null;
+    public GNS3sharp.GNS3sharp projectHandler;
+
+    // Awake is always called before any Start function
+    void Awake() {
+        if (Instance == null) {
+            Instance = this;
+            this.projectHandler = new GNS3sharp.GNS3sharp(
+                GNS3sharp.ServerProjects.GetProjectIDByName("GameNet")
+            );
+        }
+        else if (Instance != this)  Destroy(gameObject);
+    }
+
+}
+\end{lstlisting}
+
+Este script es colocado en la primera escena. Al arrancar esta, se instancia un objeto de la clase \GNSCS, el cual solicita al servidor de GNS3 información acerca de un proyecto denominado ``GameNet'' (es como fue llamado el proyecto que contiene la red ya vista) para ser gestionado. Dada la simpleza del juego, no se ha creído conveniente habilitar mecanismos de control de errores, entendiendo por estos problemas a la hora de encontrar el proyecto solicitado, etc.  
+
+\end{itemize}
