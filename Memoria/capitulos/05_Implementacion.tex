@@ -466,11 +466,11 @@ Los dispositivos se han interconectado tal y como se aprecia en la ilustración 
 
 Por sencillez, todas las redes establecidas en el despliegue tiene máscara de red de 24 bits. Todas ellas son de la forma \texttt{192.168.x0.y}, donde \texttt{x} es un número que se aleatoriza con cada arranque del juego mediante programación (hablaremos de esto cuando se detalle el apartado técnico de construcción del mismo) e \texttt{y} el número asociado a la interfaz del dispositivo que está conectada a esa red. Así, como ejemplo y suponiendo que las redes de la figura citada son las definitivas, a la interfaz de arriba de L1R1 (\texttt{eth3}) se le asignaría la dirección \texttt{192.168.20.3}. En el caso de los PCs, \texttt{y} sera en ambos casos \texttt{11}.
 
-Al arrancar la red (al inicializar cada nodo), los VPCs son funcionales casi inmediatamente. No obstante, no es el caso en absoluto de los routers. Al tratarse de dispositivos que emulan aparatos reales, con un sistema operativo de cierta envergadura, es necesario esperar para que su arranque sea completo. Así, los nodos con OpenWRT necesitan una media de \textbf{HAZ AQUÍ PRUEBAS REALES} minutos en el PC desde el que se han realizado las pruebas para ser completamente funcionales. Esto implica que, o bien se ha de tomar la precaución de que todos los dispositivos estén iniciados al comenzar el juego, o bien que el jugador ha de esperar el tiempo necesario para que los aparatos comiencen a estar disponibles.
+Al arrancar la red (al inicializar cada nodo), los VPCs son funcionales casi inmediatamente. No obstante, no es el caso en absoluto de los routers. Al tratarse de dispositivos que emulan aparatos reales, con un sistema operativo de cierta envergadura, es necesario \textbf{esperar para que su arranque sea completo}. Así, los nodos con OpenWRT necesitan una media de \textbf{HAZ AQUÍ PRUEBAS REALES} minutos en el PC desde el que se han realizado las pruebas para ser completamente funcionales. Esto implica que, o bien se ha de tomar la precaución de que todos los dispositivos estén iniciados al comenzar el juego, o bien que el jugador ha de esperar el tiempo necesario para que los aparatos comiencen a estar disponibles.
 
-La problemática pasa a ser doble, ya que \textbf{GNS3} no guarda el estado de las máquinas tras su apagado. Por más información que se ha buscado para intentar paliar este inconveniente, nada parece ser efectivo. La consecuencia natural es, por consiguiente, que el dispositivo habrá de ser configurado cada vez que se reinicie. Este no es un problema per se, pues gracias a la API puede llevarse a cabo mediante unas líneas de código con total facilidad; el verdadero problema es que, aún así, configurar todas las interfaces de un proyecto lleva tiempo. Se ha calculado cuánto tarda el de la nuestra y es \textbf{AÑADIR AQUÍ DATOS}. El tiempo podría ser minimizado si cada router es configurado paralelamente.
+La problemática pasa a ser doble, ya que \textbf{GNS3 no guarda el estado de las máquinas tras su apagado}. Por más información que se ha buscado para intentar paliar este inconveniente, nada parece ser efectivo. La consecuencia natural es, por consiguiente, que el dispositivo habrá de ser configurado cada vez que se reinicie. Este no es un problema per se, pues gracias a la API puede llevarse a cabo mediante unas líneas de código con total facilidad; el verdadero problema es que, aún así, configurar todas las interfaces de un proyecto lleva tiempo. Se ha calculado cuánto tarda el de la nuestra y es \textbf{AÑADIR AQUÍ DATOS}. El tiempo podría ser minimizado si cada router es configurado paralelamente.
 
-Todo lo anterior se resumen en:
+Todo lo anterior se resume en:
 \begin{enumerate}
 \item La asignación de direcciones se aleatoriza gracias a las posibilidades de scripting de la API.
 \item Los routers requieren de un cierto tiempo de arranque, en absoluto inmediato, para ser completamente funcionales.
@@ -478,7 +478,58 @@ Todo lo anterior se resumen en:
 \end{enumerate}
 
 \subsection{El proyecto de Unity}
+En esta sección se describe tanto el diseño del nivel de nuestro juego como el proceso que se ha seguido para materializarlo. Se comenzará señalando los materiales que han posibilitado la construcción del escenario.
 
 \subsubsection{Materiales}
+\begin{itemize}
+\item El fondo es una imagen estática tomada de \MYhref{https://opengameart.org/content/industrial-background-2d}{OpenGameArt}, una famosa web que publica arte redistribuible para la elaboración de juegos. Está liberado bajo una licencia	\href{CC 3.0}{https://creativecommons.org/licenses/by/3.0/}, lo que implica que puede ser compartido y copiado siempre y cuando se dé crédito al autor y una referencia al material. Un enlace desde donde puede ser encontrado ya se ha dejado en la línea anterior. Gracias a ``Alucard'' por esta imagen.
+\item El decorado del nivel se ha generado gracias a un conjunto de sprites localizados una vez más en \MYhref{https://opengameart.org/content/sci-fi-platform-tiles}{OpenGameArt}. En esta ocasión, el material tiene licencia \href{https://creativecommons.org/publicdomain/zero/1.0/}{CC0 1.0}, de dominio público; totalmente libre.
+
+Un sprite es más un mapa de bits usado como elemento individual cuyo conjunto posibilita crear escenas en un videojuego. Si atendemos a esa definición y reparamos en la imagen a la que puede accederse desde el enlace anterior, es evidente que esa descripción no se corresponde a la figura. Digamos que esa imagen está formada por decenas de pequeños sprites y es tarea nuestra el extraerlos para nuestro propio uso. Unity nos lo pone fácil, ya que contiene una herramienta llamada ``sprite editor'' (visible en la figura \ref{fig:sprite_editor}), que disecciona imágenes para convertirlas en pequeñas piezas. Si los sprites están repartidos con un tamaño fijo en la imagen, como es nuestro caso, es tan sencillo como indicarle tal dimensiones en píxeles y Unity hará el resto.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.175]{imagenes/sprite_editor}
+  \caption{Editor de sprites de Unity}
+  \label{fig:sprite_editor}
+\end{figure}
+
+Ya veremos de qué modo son usados los sprites en el siguiente apartado.
+
+\item Finalmente, nos hemos visto ayudados por uno de los paquetes que Unity incluye por defecto. Se trata del paquete ``2D'', que puede ser descargado desde el propio cliente de Unity en \textit{Assets} $\rightarrow$ \textit{Import package} $\rightarrow$ \textit{2D}. Incluye una serie de assets (\textbf{ESTE CONCEPTO DEBE EXPLICARSE LA PRIMERA VEZ QUE SE HABLE DE UNITY}) básicos para la creación de niveles bidimensionales. 
+
+\end{itemize}
 
 \subsubsection{Creación del juego}
+El juego cuenta con, únicamente, dos escenas. La primera, aquella que aparece justo al ser inicializado, consta de únicamente una interfaz de usuario (GUI) que pide al jugador que pulse ``espacio'' para comenzar a jugar. Al hacerlo, se crea una instancia de \GNSCS~y se configura toda la red de GNS3 que pudimos ver en la figura \ref{fig:esquematico_red}. Todo el aspecto relacionado con la programación podrá estudiarse en el punto siguiente.
+
+Pasado un tiempo, después de que todo quede configurado, Unity toma los datos necesarios del proyecto de GNS3 para construir la siguiente escena, la principal.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.175]{imagenes/monieco}
+  \caption{Plataforma del nivel del juego}
+  \label{fig:monieco}
+\end{figure}
+
+En la figura \ref{fig:monieco} pueden apreciarse los elementos más importantes del escenario:
+
+\begin{itemize}
+\item Por un lado \textbf{el protagonista}, el objeto sobre el que el jugador tiene poder. Se controla como en cualquier juego de plataformas bidimensional (crucetas para moverse, espacio para saltar...). El personaje es uno de los assets que el paquete ``2D'' trae consigo, con lo que no fue necesario ningún tipo de programación adicional. Cuenta con físicas ya definidas a través de un elemento \texttt{Rigidbody 2D} (deja a un objeto bajo el control del motor de físicas de Unity\cite{rigidbody}) y un par de elementos collider (definen la forma de un objeto para las colisiones físicas\cite{colliders}).
+\item Las \textbf{paredes} del escenario están construidas con sprites procesados como ``tiles''. Los tiles son objetos que permiten a un sprite ser renderizado en un ``tilemap''\cite{tiles}. Los tilemaps son, a su vez, una redecilla de cuadrículas donde se permite la inserción de estos tiles. Todo esto no es más que una herramienta que facilita la creación de niveles. 
+\item El \textbf{suelo} del escenario también está formado por tiles. Sin embargo, la diferencia con los anteriores reside en que el tilemap sobre el que están montados contiene un elemento adicional: consta de un \texttt{Tilemap Collider 2D}. Este elemento otorga automáticamente físicas de colisión a todos los tiles que incluyamos en el tilemap. Ello significa que todo tile introducido en el tilemap desplegado colisionará con el protagonista, permitiendo a este moverse sobre él.
+\item Las \textbf{puertas} son la representación de las interfaces de los routers en el videojuego. Llevan a un nodo o a otro. Son, de nuevo, tiles, sobre los que se han dispuesto objetos vacíos que únicamente tienen un \texttt{Box Collider 2D} como elemento integrado. Posee un ``trigger'' (disparados) que manda una señal cada vez que un objeto colisiona con él.
+\item Los carteles de las \textbf{tablas de encaminamiento}. Necesitan ser llenados con la información que se extraiga directamente de los routers.
+\end{itemize}
+
+Para terminar este apartado, se facilita una vista más general del escenario en la figura \ref{fig:nivel}, donde pueden observarse las distintas plataformas que lo conforman.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.175]{imagenes/nivel}
+  \caption{Escenario creado}
+  \label{fig:nivel}
+\end{figure}
+
+\subsubsection{Scripting}
+El \textit{scripting} de un videojuego no es más que la programación que existe en él para llevar a cabo toda la lógica que lo rige.
