@@ -374,7 +374,7 @@ A continuación se muestra el diagrama UML de la API, desde el que puede observa
   \label{fig:uml_api}
 \end{figure}
 
-\subsection{Compilación}
+\subsection{Compilación} \label{subsec:compilation}
 C\# es un ``lenguaje gestionado'' (del inglés \textit{managed code}) pues es compilado en código gestionado. Este código gestionado es representado en un lenguaje intermedio. Aparece entonces la figura del \textit{Common Language Runtime} (CLR), núcleo del Microsoft .NET Framework. Se encarga de traducir este código intermedio al código nativo de la máquina desde la que se ejecuta.
 
 Los contenedores de código gestionado se llaman ensamblados, y pueden ser archivos ejecutables (\textit{.exe}) o bien librerías (\textit{.dll})\cite{csnutshell}. Nuestro propósito es el de contener el código de la API en un ensamblado para librerías.
@@ -461,6 +461,8 @@ Las redes que han sido marcadas en los enlaces de la figura \ref{fig:esquematico
 \item Otros dispositivos que consideramos añadir pero que, finalmente, por la simplicidad del diseño no se incluyeron, son el switch multicapa \MYhref{https://www.openvswitch.org/}{\textbf{Open vSwitch}} y la variante de Tiny Core, distro Linux altamente modular, \MYhref{https://docs.gns3.com/appliances/microcore-linux.html}{\textbf{Micro Core}}. Ambos son dispositivos de uso libre y gratuito, de ahí nuestro interés por ellos.
 \end{itemize}
 
+Antes de pasar a la siguiente sección, es necesario aclarar que el prefijo ``L1'' del nombre de todos los nodos hace referencia a ``Level 1''. Se da a entender por consiguiente que el proyecto parte de la idea de que los nodos de todos los niveles pasaran a estar en el mismo esquemático.
+
 \subsubsection{Despliegue}
 Los dispositivos se han interconectado tal y como se aprecia en la ilustración \ref{fig:esquematico_red}. Ninguno de los enlaces cuenta con tipo alguno de filtro, con lo que se consideran ideales.
 
@@ -533,12 +535,14 @@ Para terminar este apartado, se facilita una vista más general del escenario en
 \end{figure}
 
 \subsubsection{Scripting}
-El \textit{scripting} de un videojuego no es más que la programación que existe en él para llevar a cabo toda la lógica que lo rige. Describiremos a continuación los distintos scripts que han sido utilizados para posibilitar el funcionamiento del juego:
+El \textit{scripting} de un videojuego no es más que la programación que existe en él para llevar a cabo toda la lógica que lo rige. Describiremos a continuación los distintos scripts que han sido utilizados para posibilitar el funcionamiento del juego.
+
+Para que estos puedan hacer uso de la librería que hemos desarrollado, hace falta depositar el \texttt{.dll} de la misma (y el \texttt{.xml} con la documentación que se generó junto a él) junto al de las dependencias que vimos en la subsección \ref{subsec:compilation} en la carpeta ``Assets'' del proyecto de Unity. Esta carpeta aparece en todo proyecto y contiene, como su propio nombre indica, todos los elementos o assets de los que el juego se valdrá. Con el fin de que Unity procese correctamente la información del ensamblado, se requiere configurar las preferencias del proyecto para que este haga uso de .NET 4.x como motor de ejecutado de los scripts y de .NET Standard 2.0 como nivel de compatibilidad de API.
 
 \begin{itemize}
 \item \texttt{GNS3Handler}: crea y guarda una instancia de \GNSCS~para ser utilizada por todos los objetos de la escena que la necesiten. Como no queremos que cada elemento de la escena instancie un objeto de esta clase (es un gasto de recursos innecesario), haremos que sea ``singleton''. En programación, un singleton es una clase que tan solo permite que \textbf{una instancia} de sí misma sea creada\cite{csindepth}. Para llevarlo a cabo, cada vez que se intente instanciar la clase, se comprobará si su propiedad estática \texttt{Instance} contiene información. En caso negativo, se crea el objeto; en caso contrario, se destruye el objeto de la escena desde el que se ha intentado instanciar la clase.
 
-\begin{lstlisting}[language={[Sharp]C}, caption={\texttt{GNS3Handler}}, label={GNS3Handler}]
+\begin{lstlisting}[language={[Sharp]C}, caption={\texttt{GNS3Handler}}, label={GNS3Handler_code}]
 using UnityEngine;
 
 public class GNS3Handler : MonoBehaviour {
@@ -560,6 +564,87 @@ public class GNS3Handler : MonoBehaviour {
 }
 \end{lstlisting}
 
-Este script es colocado en la primera escena. Al arrancar esta, se instancia un objeto de la clase \GNSCS, el cual solicita al servidor de GNS3 información acerca de un proyecto denominado ``GameNet'' (es como fue llamado el proyecto que contiene la red ya vista) para ser gestionado. Dada la simpleza del juego, no se ha creído conveniente habilitar mecanismos de control de errores, entendiendo por estos problemas a la hora de encontrar el proyecto solicitado, etc.  
+El script es colocado en la primera escena. Al arrancar esta, se instancia un objeto de la clase \GNSCS, el cual solicita al servidor de GNS3 información acerca de un proyecto denominado ``GameNet'' (es como fue llamado el proyecto que contiene la red ya vista) para ser gestionado. Dada la simpleza del juego, no se ha creído conveniente habilitar mecanismos de control de errores, entendiendo por estos problemas a la hora de encontrar el proyecto solicitado, etc.
+
+\item \texttt{L1Mapping}: esta clase define una serie de propiedades y métodos estáticos que son de ayuda para otras clases de la escena. Nació como un baúl donde guardar variables necesarias para ciertos elementos de la escena.
+
+\begin{itemize}
+\item \texttt{L1Mapping.NodeNamesM1}: siguiendo la filosofía recién citada, guarda una cadena de \texttt{string}s con los nombres de los nodos que pueden encontrarse. Con ``L1'' nos referimos al nivel y con el ``M1'' al minijuego o fase dentro del mismo. Dado que no ha sido desarrollada más que una escena, esta sintaxis cae en desuso.
+\item \texttt{L1Mapping.NodeRespawnM1}: para ir de una plataforma a otra del nivel el personaje es teletransportado. Esta propiedad guarda un mapeo entre cada una de las plataformas-nodos y la posición del mapa en la que el personaje debe reaparecer al acceder a cada una de ellas.
+\item \texttt{L1Mapping.DoorsOrderM1}: aleatoriza el orden de las puertas-interfaces de cada plataforma, logrando de esta manera que cambie a cada partida.
+\item \texttt{L1Mapping.RandomizeNets()}: aleatoriza la \texttt{x} de redes del tipo \texttt{192.168.x0.y}; redes como las que usamos en nuestro nivel. Así, la configuración de la red varía también a cada ejecución del programa.
+\begin{lstlisting}[language={[Sharp]C}, caption={\texttt{L1Mapping.RandomizeNets()}}, label={RandomizeNets_code}]
+public static ushort[] RandomizeNets(ushort numLinks)
+{
+    // Result list
+    List<ushort> tempLinks = new List<ushort>(numLinks);
+    // Initial list
+    List<ushort> initialList = new List<ushort>(numLinks);
+    // Random variable
+    System.Random rnd = new System.Random();
+
+    for (ushort i = 10; i <= numLinks * 10; i += 10) initialList.Add(i);
+    for (ushort i = 0; i < numLinks; i++)
+    {
+        // Pick a random net number (10, 20, 30...) from the list
+        var randIdx = rnd.Next(0, initialList.Count);
+        tempLinks.Add(initialList[randIdx]);
+        initialList.RemoveAt(randIdx);
+    }
+    return tempLinks.ToArray();
+}
+\end{lstlisting}
+\end{itemize}
+
+\item \texttt{L1M1Handler}: contiene la mayor parte de la lógica del nivel y, por tanto, ha de cargarse al comienzo de la escena. Inicializa todos los nodos del proyecto de GNS3 asociados al nivel, asigna variables con las referencias de cada uno de ellos y espera cuatro minutos a que todos ellos finalicen su arranque. Tras ello, configura los dispositivos del proyecto, comenzando por los PCs y continuando por los routers. El código del que se dispone a continuación muestra parte del proceso:
+
+\begin{lstlisting}[language={[Sharp]C}, caption={\texttt{L1M1HandlerHelper.SetUpRouters()} y \texttt{L1M1HandlerHelper.SetUpRouters()}}, label={L1M1HandlerHelper_code}]
+public static void SetUpRouters(OpenWRT[] Routers, ushort[] NetsPrefix) {
+    Task[] tasks = new Task[5]
+    {
+        Task.Factory.StartNew(() => SetUpR1(Routers[0], NetsPrefix)),
+        Task.Factory.StartNew(() => SetUpR2(Routers[1], NetsPrefix)),
+        Task.Factory.StartNew(() => SetUpR3(Routers[2], NetsPrefix)),
+        Task.Factory.StartNew(() => SetUpR4(Routers[3], NetsPrefix)),
+        Task.Factory.StartNew(() => SetUpR5(Routers[4], NetsPrefix))
+    };
+    Task.WaitAll(tasks);
+}
+
+private static void SetUpR1(OpenWRT R, ushort[] NetsPrefix) {
+    // Net interfaces
+    R.ActivateInterface(IP: $"192.168.{NetsPrefix[0]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
+    R.ActivateInterface(IP: $"192.168.{NetsPrefix[2]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
+    R.ActivateInterface(IP: $"192.168.{NetsPrefix[1]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
+    R.DisableFirewall();
+    // Routes
+    R.SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
+    R.SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
+    R.SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[1]}.1", netmask: "255.255.255.0");
+    R.SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
+    R.SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[1]}.1", netmask: "255.255.255.0");
+}
+\end{lstlisting}
+
+Los dos métodos mostrados forman parte de \texttt{L1M1HandlerHelper}, una clase contenida dentro de \texttt{L1M1Handler} con algunas funciones que esta necesita. Tal como puede intuirse en las líneas de \texttt{SetUpRouters()}, se ha paralelizado la configuración de los routers, reduciendo drásticamente el tiempo de inicio del nivel. Esto se lleva a cabo mediante la clase predefinida de C\# \texttt{Task}, que permite la definición de tareas ejecutadas en hilos independientes.
+
+Existe una tarea para la configuración de cada router, llevada a cabo con funciones como \texttt{SetUpR1()}.
+
+Finalmente, \texttt{L1M1Handler} también se encarga de cosas como el dibujado de las tablas de enturamiento en el nivel y la creación de un contador ascendente que se muestra continuamente en pantalla. La finalidad de este último es la de incentivar al jugador a terminar el mapa en el menor tiempo posible. De haberse desarrollado más el juego, habría cobrado más sentido, con elementos como bases de datos donde guardar las puntuaciones de cada partida.
+
+\item \texttt{DoorOrder}: tiene como misión asignar el cartel que habrá encima de cada puerta así como determinar cuál será la posición en la que reaparezca el protagonista cuando decida atravesar una de ellas.
+
+El script es insertado en unos \texttt{GameObject}s utilizados para representar las puertas en la escena, permitiéndole a aquel tomar parámetros personalizados de cada una de ellas. Así, conociendo el número de la puerta y la plataforma-nodo en la que reside, mediante \texttt{L1Mapping} puede averiguar fácilmente cuál es la interfaz asociada a ella y cuál es la posición que el personaje obtendrá una vez decida atravesarla.
+
+Como el cartel ubicado encima de cada puerta marcará la IP asociada a la interfaz del nodo correspondiente, es necesario buscar el modo de recibirla. La forma de hacerlo podría ``trampearse'' a través de alguno de los mapeos de \texttt{L1Mapping}, pero se ha decidido llevarlo a cabo mediante el método \texttt{OpenWrt.GetIPByInterface()}, que extrae la información a través de una consulta al router. La problemática asociada a esta solución es el tiempo que requiere, pues ha de hacerse por cada puerta y no es en absoluto un proceso automático.
+
+\item Otras clases de menor calibre que no nos detendremos a explicar son:
+\begin{itemize}
+\item \texttt{EscToExit}: permite que al pulsar ``Esc'' se salga del juego.
+\item \texttt{ExistLevel}: cierra el juego al llegar a la plataforma-PC final.
+\item \texttt{FallDown}: devuelve al personaje a una zona segura si se cae de alguna plataforma.
+\item \texttt{Teletransport}: desplaza la posición del personaje hasta unas ciertas coordenadas del escenario.
+\item \texttt{SceneLoader}: se incrusta en la primera escena y carga desde ella la segunda. El script esta tomado directamente de otra persona, a la que se da crédito en el propio código.
+\end{itemize}
 
 \end{itemize}
