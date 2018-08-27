@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using GNS3sharp;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections;
 
 public class L1M1Handler : MonoBehaviour {
@@ -40,14 +41,12 @@ public class L1M1Handler : MonoBehaviour {
         OpenWRT[] Routers = new OpenWRT[5] { R1, R2, R3, R4, R5 };
 
         // We need to wait. Otherwise, nodes won't boot properly
-        Thread.Sleep(120000);
+        //Thread.Sleep(120000);
 
         // Set up end-point nodes
         L1M1HandlerHelper.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
         // Set-up routers
-        L1M1HandlerHelper.SetUpRouters(
-            Routers, NetsPrefix
-        );
+        L1M1HandlerHelper.SetUpRouters(Routers, NetsPrefix);
         // Set the routing tables signs
         for (int i = 0; i < Routers.Length; i++)
             L1M1HandlerHelper.SetRoutingTables(Routers[i].RoutingTable, NetTables[i]);
@@ -73,74 +72,102 @@ public class L1M1Handler : MonoBehaviour {
 
     private static class L1M1HandlerHelper {
 
-            public static void SetUpPCs(VPC[] PCs, ushort[] NetsPrefix) {
-                PCs[0].SetIP(
-                    IP: $"192.168.{NetsPrefix[0]}.11", gateway: $"192.168.{NetsPrefix[0]}.1"
-                );
-                PCs[1].SetIP(
-                    IP: $"192.168.{NetsPrefix[NetsPrefix.Length - 1]}.11", gateway: $"192.168.{NetsPrefix[NetsPrefix.Length - 1]}.2"
-                );
-            }
+        public static void SetUpPCs(VPC[] PCs, ushort[] NetsPrefix) {
+            PCs[0].SetIP(
+                IP: $"192.168.{NetsPrefix[0]}.11", gateway: $"192.168.{NetsPrefix[0]}.1"
+            );
+            PCs[1].SetIP(
+                IP: $"192.168.{NetsPrefix[NetsPrefix.Length - 1]}.11", gateway: $"192.168.{NetsPrefix[NetsPrefix.Length - 1]}.2"
+            );
+        }
 
-            public static void SetUpRouters(OpenWRT[] Routers, ushort[] NetsPrefix) {
-                // Net interfaces
-                Routers[0].ActivateInterface(IP: $"192.168.{NetsPrefix[0]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
-                Routers[0].ActivateInterface(IP: $"192.168.{NetsPrefix[2]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
-                Routers[0].ActivateInterface(IP: $"192.168.{NetsPrefix[1]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
-                Routers[0].DisableFirewall();
-                //
-                Routers[1].ActivateInterface(IP: $"192.168.{NetsPrefix[1]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
-                Routers[1].ActivateInterface(IP: $"192.168.{NetsPrefix[3]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
-                Routers[1].ActivateInterface(IP: $"192.168.{NetsPrefix[4]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
-                Routers[1].DisableFirewall();
-                //
-                Routers[2].ActivateInterface(IP: $"192.168.{NetsPrefix[5]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
-                Routers[2].ActivateInterface(IP: $"192.168.{NetsPrefix[4]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
-                Routers[2].ActivateInterface(IP: $"192.168.{NetsPrefix[2]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
-                Routers[2].DisableFirewall();
-                //
-                Routers[3].ActivateInterface(IP: $"192.168.{NetsPrefix[3]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
-                Routers[3].ActivateInterface(IP: $"192.168.{NetsPrefix[6]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
-                Routers[3].DisableFirewall();
-                //
-                Routers[4].ActivateInterface(IP: $"192.168.{NetsPrefix[6]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
-                Routers[4].ActivateInterface(IP: $"192.168.{NetsPrefix[7]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
-                Routers[4].ActivateInterface(IP: $"192.168.{NetsPrefix[5]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
-                Routers[4].DisableFirewall();
-                // Routes
-                Routers[0].SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
-                Routers[0].SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
-                Routers[0].SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[1]}.1", netmask: "255.255.255.0");
-                Routers[0].SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
-                Routers[0].SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[1]}.1", netmask: "255.255.255.0");
-                //
-                Routers[1].SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[1]}.3", netmask: "255.255.255.0");
-                Routers[1].SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[4]}.2", netmask: "255.255.255.0");
-                Routers[1].SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[4]}.2", netmask: "255.255.255.0");
-                Routers[1].SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
-                Routers[1].SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
-                //
-                Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[5]}.3", netmask: "255.255.255.0");
-                Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[2]}.2", netmask: "255.255.255.0");
-                Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[2]}.2", netmask: "255.255.255.0");
-                Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[4]}.3", netmask: "255.255.255.0");
-                Routers[2].SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[5]}.3", netmask: "255.255.255.0");
-                //
-                Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
-                Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
-                Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
-                Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
-                Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
-                Routers[3].SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
-                //
-                Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
-                Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
-                Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
-                Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
-                Routers[4].SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
-            }
+        public static void SetUpRouters(OpenWRT[] Routers, ushort[] NetsPrefix) {
+            Task[] tasks = new Task[5]
+            {
+                Task.Factory.StartNew(() => SetUpR1(Routers[0], NetsPrefix)),
+                Task.Factory.StartNew(() => SetUpR2(Routers[1], NetsPrefix)),
+                Task.Factory.StartNew(() => SetUpR3(Routers[2], NetsPrefix)),
+                Task.Factory.StartNew(() => SetUpR4(Routers[3], NetsPrefix)),
+                Task.Factory.StartNew(() => SetUpR5(Routers[4], NetsPrefix))
+            };
+            Task.WaitAll(tasks);
+        }
 
-            public static void SetRoutingTables(RoutingTable RoutTab, GameObject TextToReplicate) {
+        private static void SetUpR1(OpenWRT R, ushort[] NetsPrefix) {
+            // Net interfaces
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[0]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[2]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[1]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
+            R.DisableFirewall();
+            // Routes
+            R.SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[1]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[2]}.3", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[1]}.1", netmask: "255.255.255.0");
+        }
+
+        private static void SetUpR2(OpenWRT R, ushort[] NetsPrefix)
+        {
+            // Net interfaces
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[1]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[3]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[4]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
+            R.DisableFirewall();
+            // Routes
+            R.SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[1]}.3", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[4]}.2", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[4]}.2", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+        }
+
+        private static void SetUpR3(OpenWRT R, ushort[] NetsPrefix)
+        {
+            // Net interfaces
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[5]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[4]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[2]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
+            R.DisableFirewall();
+            // Routes
+            R.SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[5]}.3", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[2]}.2", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[2]}.2", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[4]}.3", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[6]}.0", gateway: $"192.168.{NetsPrefix[5]}.3", netmask: "255.255.255.0");
+        }
+
+        private static void SetUpR4(OpenWRT R, ushort[] NetsPrefix)
+        {
+            // Net interfaces
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[3]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[6]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
+            R.DisableFirewall();
+            // Routes
+            R.SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[3]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[5]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[7]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
+        }
+
+        private static void SetUpR5(OpenWRT R, ushort[] NetsPrefix)
+        {
+            // Net interfaces
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[6]}.1", interfaceNumber: 1, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[7]}.2", interfaceNumber: 2, netmask: "255.255.255.0");
+            R.ActivateInterface(IP: $"192.168.{NetsPrefix[5]}.3", interfaceNumber: 3, netmask: "255.255.255.0");
+            R.DisableFirewall();
+            // Routes
+            R.SetRoute(destination: $"192.168.{NetsPrefix[0]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[1]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[2]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[3]}.0", gateway: $"192.168.{NetsPrefix[6]}.2", netmask: "255.255.255.0");
+            R.SetRoute(destination: $"192.168.{NetsPrefix[4]}.0", gateway: $"192.168.{NetsPrefix[5]}.1", netmask: "255.255.255.0");
+        }
+
+        public static void SetRoutingTables(RoutingTable RoutTab, GameObject TextToReplicate) {
 
                 float positionOffset = 0.2f;
                 // Assign the sign to a new variable

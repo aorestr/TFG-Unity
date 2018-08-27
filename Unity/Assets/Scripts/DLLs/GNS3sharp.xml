@@ -1,0 +1,1200 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GNS3sharp</name>
+    </assembly>
+    <members>
+        <member name="T:GNS3sharp.Aux">
+            <summary>
+            Class that defines some methods and propertiesthat are helpful for
+            the other classes of the namespace
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.Aux.NodesAvailables">
+            <summary>
+            Array of dictionaries. Every dictionary contains two keys: "class" and "label". If you create
+            a new appliance class, you must add its label and type here
+            </summary>
+            <value>Values of the dictionaries are the 'type' related to the chosen label</value>
+        </member>
+        <member name="M:GNS3sharp.Aux.CreateNodesAvailable">
+            <summary>
+            Generate the dictionary for NodesAvailable property
+            </summary>
+            <returns>A map between the type of a node and its label</returns>
+        </member>
+        <member name="M:GNS3sharp.Aux.NodeType(System.String)">
+            <summary>
+            Return the right class type for a certain node. Try to match the label of the node
+            with once of those defined in <c>nodesAvailable</c>
+            </summary>
+            <param name="nodeName">Name set to a node in GNS3</param>
+            <returns>The type of the node. If it can not find the certain type
+            of node, returns <c>typeof(Node)</c></returns>
+        </member>
+        <member name="M:GNS3sharp.Aux.IsIP(System.String)">
+            <summary>
+            Guess whether a string is an IP or not
+            </summary>
+            <param name="IP">String to check</param>
+            <returns>True if the string is an IP, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.Aux.IsNetmask(System.String)">
+            <summary>
+            Guess whether a string is a netmask or not
+            </summary>
+            <param name="netmask">String to check</param>
+            <returns>True if the string is a netmask, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.Aux.NetmaskCIDR(System.String)">
+            <summary>
+            Convert a mask written in numbers and dots into its CIDR notation
+            </summary>
+            <param name="netmaskDecimals">Mask written in numbers and dots</param>
+            <returns>Mask in CIDR notation</returns>
+        </member>
+        <member name="T:GNS3sharp.RoutingTable">
+            <summary>
+            Structure for gathering routing tables
+            <remarks>
+            It is just a structure for better handling routing tables
+            </remarks>
+            </summary>
+        </member>
+        <member name="T:GNS3sharp.RoutingTable.RoutingTableRow">
+            <summary>
+            Class that represents a row (a route) of a routing table
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.RoutingTable.RoutingTableRow.Destination">
+            <summary>
+            Destination of the route
+            </summary>
+            <value>Address as a string</value>
+        </member>
+        <member name="P:GNS3sharp.RoutingTable.RoutingTableRow.Gateway">
+            <summary>
+            Gateway of the route
+            </summary>
+            <value>Address as a string</value>
+        </member>
+        <member name="P:GNS3sharp.RoutingTable.RoutingTableRow.Netmask">
+            <summary>
+            Netmask of the route
+            </summary>
+            <value>Netmask as a string</value>
+        </member>
+        <member name="P:GNS3sharp.RoutingTable.RoutingTableRow.Iface">
+            <summary>
+            Interface related to the route
+            </summary>
+            <value>Interface as a string</value>
+        </member>
+        <member name="P:GNS3sharp.RoutingTable.RoutingTableRow.Metric">
+            <summary>
+            Metric of the route
+            </summary>
+            <value>Metric as an integer</value>
+        </member>
+        <member name="M:GNS3sharp.RoutingTable.RoutingTableRow.#ctor(System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Constructor that initializes every parameter
+            </summary>
+            <param name="_destination">Destination of the route</param>
+            <param name="_gateway">Gateway of the route</param>
+            <param name="_netmask">Netmask of the route</param>
+            <param name="_iface">Interface related to the route</param>
+            <param name="_metric">Metric of the route</param>
+        </member>
+        <member name="P:GNS3sharp.RoutingTable.Routes">
+            <summary>
+            List of the routes the table contains
+            </summary>
+            <returns>List of <c>RoutingTableRow</c></returns>
+        </member>
+        <member name="M:GNS3sharp.RoutingTable.#ctor">
+            <summary>
+            Initialize the object
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.RoutingTable.#ctor(System.UInt16)">
+            <summary>
+            Initialize the object with a fixed size
+            </summary>
+            <param name="numberOfRoutes">Number of routes the table contains</param>
+        </member>
+        <member name="M:GNS3sharp.RoutingTable.AddRoute(System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Add a new route to the table
+            </summary>
+            <param name="_destination">Destination of the route</param>
+            <param name="_gateway">Gateway of the route</param>
+            <param name="_netmask">Netmask of the route</param>
+            <param name="_iface">Interface related to the route</param>
+            <param name="_metric">Metric of the route</param>
+        </member>
+        <member name="T:GNS3sharp.GNS3sharp">
+            <summary>
+            Main class of the namespace. Handles a GNS3 project through its methods. You can list all the nodes
+            of the project, activate them all at once...
+            </summary>
+            <remarks>
+            Contains several methods to interact with a GNS3 project
+            </remarks>
+        </member>
+        <member name="P:GNS3sharp.GNS3sharp.ProjectID">
+            <summary>
+            ID of the project that the object is handling
+            </summary>
+            <value>String ID</value>
+        </member>
+        <member name="P:GNS3sharp.GNS3sharp.Host">
+            <summary>
+            IP where the GNS3 server is hosted
+            </summary>
+            <value>String IP</value>
+        </member>
+        <member name="P:GNS3sharp.GNS3sharp.Port">
+            <summary>
+            Port where the server is hosted
+            </summary>
+            <value>Port number</value>
+        </member>
+        <member name="P:GNS3sharp.GNS3sharp.NodesJSON">
+            <summary>
+            JSON list with info about the nodes inside the project. The list is not filtered
+            </summary>
+            <value>Dictionary: key is the node field and the value its value</value>
+        </member>
+        <member name="F:GNS3sharp.GNS3sharp.linksJSON">
+            <summary>
+            JSON list with info about the links inside the project. The list is not filtered
+            </summary>
+            <value>Dictionary: key is the link field and the value its value</value>
+        </member>
+        <member name="P:GNS3sharp.GNS3sharp.Nodes">
+            <summary>
+            List of nodes contained in the project
+            </summary>
+            <value>Array of <c>Node</c></value>
+        </member>
+        <member name="P:GNS3sharp.GNS3sharp.Links">
+            <summary>
+            List of links contained in the project
+            </summary>
+            <value>List of <c>Link</c></value>
+        </member>
+        <member name="F:GNS3sharp.GNS3sharp.nodesByName">
+            <summary>
+            Map between nodes and their names
+            </summary>
+            <returns>Dictionary. The key is the name of the node and the value its object</returns>
+        </member>
+        <member name="F:GNS3sharp.GNS3sharp.nodesByID">
+            <summary>
+            Map between nodes and their IDs
+            </summary>
+            <returns>Dictionary. The key is the ID of the node and the value its object</returns>
+        </member>
+        <member name="F:GNS3sharp.GNS3sharp.HTTPclient">
+            <summary>
+            HTTP client used to interact with the REST API
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.#ctor">
+            <summary>
+            Wrong constructor. It can not be accessed
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.#ctor(System.String,System.String,System.UInt16)">
+            <summary>
+            Take all the necessary info from a GNS3 project. Initialize a handler object that allows to manage the project
+            </summary>
+            <param name="_projectID">ID of the GNS3 project</param>
+            <param name="_host">Addres where the GNS3 server is. By default is "localhost"</param>
+            <param name="_port">Port of the host where the GNS3 server is. By default is 3080</param>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.ExtractNodesDictionary(System.String)">
+            <summary>
+            Return a dictionary with all the info about nodes downloaded it from the GNS3 server
+            </summary>
+            <param name="URI">Where the resource (a JSON) is in the server</param>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.ExtractLinksDictionary(System.String)">
+            <summary>
+            Return a dictionary with all the info about links downloaded it from the GNS3 server
+            </summary>
+            <param name="URI">Where the resource (a JSON) is in the server</param>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.ExtractDictionary(System.String,System.String)">
+            <summary>
+            Download and extract information from a JSON contained at a certain URI in the server
+            </summary>
+            <param name="URI">Where the resource (a JSON) is in the server</param>
+            <param name="lastKey">Last key of the array of elements in the JSON</param>
+            <returns>List of dictionaries which correspond to an array of JSONs</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.DeserializeJSONList(System.String,System.String)">
+            <summary>
+            Desearialize a certain JSON and store it in a list of dictionaries.
+            </summary>
+            <param name="json">JSON downloaded from the server as a string</param>
+            <param name="lastKey">Last key of the array of elements in the JSON</param>
+            <returns>List of dictionaries which correspond to an array of JSONs</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.SaveLinksInfoInNodes(System.Collections.Generic.List{GNS3sharp.Link})">
+            <summary>
+            Save information within a <c>Node</c> property of links attached to it
+            </summary>
+            <param name="listOfLinks">List of links which attached nodes will store the information of the links</param>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.MatchLinkWithNodePorts(GNS3sharp.Link,System.String)">
+            <summary>
+            Given a certain link and its nodes JSON string, add the link into the correct port of the nodes
+            </summary>
+            <param name="link">A concrete link</param>
+            <param name="nodesJSON">JSON as a string which has information about the nodes attached to the link</param>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.GetNodes(System.Collections.Generic.List{System.Collections.Generic.Dictionary{System.String,System.Object}})">
+            <summary>
+            Create an array with the nodes in the project
+            </summary>
+            <param name="JSON">JSON with the information about nodes as dictionary</param>
+            <returns>An array of nodes</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.GetLinks(System.Collections.Generic.List{System.Collections.Generic.Dictionary{System.String,System.Object}})">
+            <summary>
+            Create an array with the links in the project
+            </summary>
+            <param name="JSON">JSON with the information about links as dictionary</param>
+            <returns>An array of links</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.StartProject">
+            <summary>
+            Initialize all nodes in the GNS3 project
+            </summary>
+            <returns>Array of booleans. Every element determines whether the node has been succesfully started or not</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.StopProject">
+            <summary>
+            Stop all nodes in the GNS3 project
+            </summary>
+            <returns>Array of booleans. Every element determines whether the node has been succesfully stopped or not</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.ChangeProjectStatus(System.String)">
+            <summary>
+            Change the status of the project
+            </summary>
+            <param name="status">"start" or "stop"</param>
+            <returns>Array of booleans. Every element determines whether the node has succesfully changed its status or not</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.StartNode(GNS3sharp.Node)">
+            <summary>
+            Initialize a single node
+            </summary>
+            <param name="node">Node that will be initialized</param>
+            <returns>True if the node was started, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.StopNode(GNS3sharp.Node)">
+            <summary>
+            Stop a single node
+            </summary>
+            <param name="node">Node that will be stopped</param>
+            <returns>True if the node was stopped, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.ChangeNodeStatus(GNS3sharp.Node,System.String)">
+            <summary>
+            Change a single node status
+            </summary>
+            <param name="node">Node whose status will be switched</param>
+            <param name="status">"start" or "stop"</param>
+            <returns>True if the node status was switched, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.SetLink(GNS3sharp.Node,GNS3sharp.Node,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new link in the project between two nodes
+            </summary>
+            <param name="node1">Node 1 where the link will be attached</param>
+            <param name="node2">Node 2 where the link will be attached</param>
+            <param name="frequencyDrop">Parameter that measure the frequency drop of the link</param>
+            <param name="packetLoss">Parameter that measure the packet loss of the link</param>
+            <param name="latency">Parameter that measure the latency of the link</param>
+            <param name="jitter">Parameter that measure the jitter of the link</param>
+            <param name="corrupt">Parameter that measure the corruption of the link</param>
+            <returns></returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.GetLinkByNodes(GNS3sharp.Node,GNS3sharp.Node)">
+            <summary>
+            Find the link two nodes share
+            </summary>
+            <param name="node1">Node 1</param>
+            <param name="node2">Node 2</param>
+            <returns>The link that connects node1 and node2, or null if nothing could be found</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.EditLink(GNS3sharp.Link,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Edit a link according to the parameters introduced
+            </summary>
+            <param name="link">Link whose parameters are going to be changed</param>
+            <param name="frequencyDrop">Parameter that measure the frequency drop of the link</param>
+            <param name="packetLoss">Parameter that measure the packet loss of the link</param>
+            <param name="latency">Parameter that measure the latency of the link</param>
+            <param name="jitter">Parameter that measure the jitter of the link</param>
+            <param name="corrupt">Parameter that measure the corruption of the link</param>
+            <returns>True if the operation was succesfully completed, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.EditLink(GNS3sharp.Node,GNS3sharp.Node,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Edit a link according to the parameters introduced
+            </summary>
+            <param name="node1">Node 1 attached to the link</param>
+            <param name="node2">Node 2 attached to the link</param>
+            <param name="frequencyDrop">Parameter that measure the frequency drop of the link</param>
+            <param name="packetLoss">Parameter that measure the packet loss of the link</param>
+            <param name="latency">Parameter that measure the latency of the link</param>
+            <param name="jitter">Parameter that measure the jitter of the link</param>
+            <param name="corrupt">Parameter that measure the corruption of the link</param>
+            <returns>True if the operation was succesfully completed, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.RemoveLink(GNS3sharp.Link)">
+            <summary>
+            Remove a link from the project
+            </summary>
+            <param name="link">Link to remove</param>
+            <returns>True if the operation was succesfully completed, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.RemoveLink(GNS3sharp.Node,GNS3sharp.Node)">
+            <summary>
+            Remove a link from the project
+            </summary>
+            <param name="node1">Node 1 attached to the link</param>
+            <param name="node2">Node 2 attached to the link</param>
+            <returns>True if the operation was succesfully completed, False otherwise</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.GetNodeByName(System.String)">
+            <summary>
+            Find the node that corresponds to a certain name
+            </summary>
+            <param name="name">Name of the node to find</param>
+            <returns>Node found. A casting to the concrete type of node is compulsory in order to use its methods. Returns null if nothing could be found</returns>
+        </member>
+        <member name="M:GNS3sharp.GNS3sharp.GetNodeByID(System.String)">
+            <summary>
+            Find the node that corresponds to a certain ID
+            </summary>
+            <param name="ID">ID of the node to find</param>
+            <returns>Node found. A casting to the concrete type of node is compulsory in order to use its methods. Returns null if nothing could be found</returns>
+        </member>
+        <member name="T:GNS3sharp.Guest">
+            <summary>
+            Abstract class that serves as a skeleton for the guest devices that are defined
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Guest.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Guest.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.Guest.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a guest from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="M:GNS3sharp.Guest.SetIP(System.String,System.String,System.UInt16,System.String)">
+            <summary>
+            Set an IP for an interface of the device
+            </summary>
+            <param name="IP">IPv4 you plan to set</param>
+            <param name="netmask">Netmask of the address. By default "255.255.255.0"</param>
+            <param name="adapterNumber">Interface number (eth#). By default is 0</param>
+            <param name="gateway">Default gateway packets will use</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="T:GNS3sharp.MicroCore">
+            <summary>
+            Representation of a MicroCore type of node
+            <remarks>
+            Define methods that are only available for this appliance
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.MicroCore.Label">
+            <summary>
+            Label you must set in the name of the node at the GNS3 project
+            <para>Name of the node must look like "[MICROCORE]Name"</para>
+            </summary>
+            <value>Label as a string</value>
+        </member>
+        <member name="M:GNS3sharp.MicroCore.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.MicroCore.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.MicroCore.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a guest from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="M:GNS3sharp.MicroCore.SetIP(System.String,System.String,System.UInt16,System.String)">
+            <summary>
+            Set an IP for an interface of the device
+            </summary>
+            <param name="IP">IPv4 you plan to set</param>
+            <param name="netmask">Netmask of the address. By default "255.255.255.0"</param>
+            <param name="adapterNumber">Interface number (eth#). By default is 0</param>
+            <param name="gateway">Default gateway packets will use</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.MicroCore.SetGateway(System.String)">
+            <summary>
+            Set a default gateway for sending messages
+            </summary>
+            <param name="gateway">Gateway address</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.MicroCore.Ping(System.String,System.UInt16,System.UInt16)">
+            <summary>
+            Send Ping to a certain IP
+            </summary>
+            <param name="IP">IP where ICMP packets will be sent</param>
+            <param name="count">Number of retries. By default 5</param>
+            <param name="timeout">Timeout for retrying</param>
+            <returns>The result messages of the ping as an array of strings</returns>
+        </member>
+        <member name="T:GNS3sharp.VPC">
+            <summary>
+            Representation of a VPC type of node
+            <remarks>
+            Define methods that are only available for this appliance
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.VPC.Label">
+            <summary>
+            Label you must set in the name of the node at the GNS3 project
+            <para>Name of the node must look like "[VPC]Name"</para>
+            </summary>
+            <value>Label as a string</value>
+        </member>
+        <member name="M:GNS3sharp.VPC.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.VPC.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.VPC.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a guest from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="M:GNS3sharp.VPC.ShowArp">
+            <summary>
+            Show arp table
+            </summary>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.VPC.Clear(System.String)">
+            <summary>
+            Clear a certain type of parameters
+            </summary>
+            <param name="parameter">Valid parameters: "ip","ipv6","arp","neighbor","hist"</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.VPC.DHCP">
+            <summary>
+            Use DHCP as the method for assigning the IP in a network
+            </summary>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.VPC.ShowConf">
+            <summary>
+            Show current config
+            </summary>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.VPC.SetIP(System.String,System.String,System.UInt16,System.String)">
+            <summary>
+            Set an IP for an interface of the device
+            </summary>
+            <param name="IP">IPv4 you plan to set</param>
+            <param name="netmask">Netmask of the address. By default "255.255.255.0"</param>
+            <param name="adapterNumber">Interface number (eth#). By default is 0</param>
+            <param name="gateway">Default gateway packets will use</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.VPC.Ping(System.String,System.UInt16,System.UInt32,System.String)">
+            <summary>
+            Send Ping to a certain IP
+            </summary>
+            <param name="IP">IP where ICMP packets will be sent</param>
+            <param name="count">Number of retries. By default 5</param>
+            <param name="msBetweenPackets">Miliseconds between each package</param>
+            <param name="protocol">Sending protocol. Valid values: "ICMP", "TCP", "UDP". By default "ICMP"</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.VPC.PingResult(System.String[])">
+            <summary>
+            Check whether a ping went right or wrong
+            </summary>
+            <param name="pingMessage">Result message of a ping</param>
+            <returns>True if the ping went right, False otherwise</returns>
+            <example>
+            <code>
+            if (PC.PingResult(PC.Ping("192.168.30.5")))
+                Console.WriteLine("The ping went ok");
+            </code>
+            </example>
+        </member>
+        <member name="M:GNS3sharp.VPC.Trace(System.String)">
+            <summary>
+            Show the route to a certain IP
+            </summary>
+            <param name="IP">IP</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="T:GNS3sharp.Link">
+            <summary>
+            This class represents a link of a GNS3 project
+            <remarks>
+            This class can give you information about a link that is attached
+            to a node as well as edit it and change its parameters
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.Link.ID">
+            <summary>
+            ID the link has implicitly
+            </summary>
+            <value>String ID</value>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:GNS3sharp.Link.Nodes" -->
+        <member name="P:GNS3sharp.Link.FrequencyDrop">
+            <summary>
+            Parameter that measure the frequency drop of the link
+            </summary>
+            <value>Throughput as an integer</value>
+        </member>
+        <member name="P:GNS3sharp.Link.PacketLoss">
+            <summary>
+            Parameter that measure the packet loss of the link
+            </summary>
+            <value>Percentage as an integer</value>
+        </member>
+        <member name="P:GNS3sharp.Link.Latency">
+            <summary>
+            Parameter that measure the latency of the link
+            </summary>
+            <value>ms as an integer</value>
+        </member>
+        <member name="P:GNS3sharp.Link.Jitter">
+            <summary>
+            Parameter that measure the jitter of the link
+            </summary>
+            <value>ms as an integer</value>
+        </member>
+        <member name="P:GNS3sharp.Link.Corrupt">
+            <summary>
+            Parameter that measure the corruption of the link
+            </summary>
+            <value>Percentage as an integer</value>
+        </member>
+        <member name="F:GNS3sharp.Link.serverInfo">
+            <summary>
+            Information about the server
+            </summary>
+            <value>Keys: host, port and projectID</value>
+        </member>
+        <member name="F:GNS3sharp.Link.HTTPclient">
+            <summary>
+            HTTP client used to interact with the REST API
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Link.#ctor(System.String,GNS3sharp.Node[],System.Collections.Generic.Dictionary{System.String,System.String},System.Net.Http.HttpClient)">
+            <summary>
+            Constructs the object with all filters equal to 0
+            </summary>
+            <param name="_id">ID the link has implicitly</param>
+            <param name="_nodes">Array of nodes that the link is connecting</param>
+            <param name="_serverInfo">Information about the server (host, port and projectID)</param>
+            <param name="_HTTPclient">HTTP client used by the GNS3sharp object which creates this link</param>
+        </member>
+        <member name="M:GNS3sharp.Link.#ctor(System.String,GNS3sharp.Node[],System.Collections.Generic.Dictionary{System.String,System.String},System.Net.Http.HttpClient,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Constructs the object with some filter different from 0
+            </summary>
+            <param name="_id">ID the link has implicitly</param>
+            <param name="_nodes">Array of nodes that the link is connecting</param>
+            <param name="_serverInfo">Information about the server (host, port and projectID)</param>
+            <param name="_HTTPclient">HTTP client used by the GNS3sharp object which creates this link</param>
+            <param name="_frequencyDrop">Parameter that measure the frequency drop of the link</param>
+            <param name="_packetLoss">Parameter that measure the packet loss of the link</param>
+            <param name="_latency">Parameter that measure the latency of the link</param>
+            <param name="_jitter">Parameter that measure the jitter of the link</param>
+            <param name="_corrupt">Parameter that measure the corruption of the link</param>
+        </member>
+        <member name="M:GNS3sharp.Link.EditLink(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Edit some filter of a link
+            </summary>
+            <param name="_frequencyDrop">Parameter that measure the frequency drop of the link</param>
+            <param name="_packetLoss">Parameter that measure the packet loss of the link</param>
+            <param name="_latency">Parameter that measure the latency of the link</param>
+            <param name="_jitter">Parameter that measure the jitter of the link</param>
+            <param name="_corrupt">Parameter that measure the corruption of the link</param>
+            <returns>True if everything went right, False otherwise</returns>
+        </member>
+        <member name="T:GNS3sharp.Node">
+            <summary>
+            This class represents a node from a GNS3 project. Its main methods are:
+            <list type="bullet">
+            <item>
+            <term>Send</term>
+            <description>Allows you to send some message to a node</description>
+            </item>
+            <item>
+            <term>Receive</term>
+            <description>Allows you to receive messages from a node</description>
+            </item>
+            </list>
+            <remarks>
+            This class can interact directly by telnet to a node
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.Node.ConsoleHost">
+            <summary>
+            IP of the machine where the node is hosted
+            </summary>
+            <value>String IP</value>
+        </member>
+        <member name="P:GNS3sharp.Node.Port">
+            <summary>
+            Port of the machine where the node is hosted
+            </summary>
+            <value>Port number</value>
+        </member>
+        <member name="P:GNS3sharp.Node.Name">
+            <summary>
+            Name of the node stablished in the project
+            </summary>
+            <value>String name</value>
+        </member>
+        <member name="P:GNS3sharp.Node.ID">
+            <summary>
+            ID the node has implicitly
+            </summary>
+            <value>String ID</value>
+        </member>
+        <member name="P:GNS3sharp.Node.Ports">
+            <summary>
+            Array of dictionaries that contains information about every network interface
+            </summary>
+            <value>
+            Keys: adapterNumber, portNumber and link. If the value found in link
+            is null means that interface is not attached to anything yet
+            </value>
+        </member>
+        <member name="P:GNS3sharp.Node.LinksAttached">
+            <summary>
+            List of the links that the node is attach to
+            </summary>
+            <value>List of <c>Link</c></value>
+        </member>
+        <member name="P:GNS3sharp.Node.TCPConnection">
+            <summary>
+            TCP client to stablish connections
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.Node.NetStream">
+            <summary>
+            Network stream through which messages are sent
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Node.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Node.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.Node.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a node from another one
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="M:GNS3sharp.Node.Finalize">
+            <summary>
+            Close the connection with the node before leaving
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Node.Connect(System.Int32)">
+            <summary>
+            Stablish a TCP connection with the node and makes a network stream out of it
+            </summary>
+            <param name="timeout">Timeout (in seconds) before quitting the connection</param>
+            <returns></returns>
+        </member>
+        <member name="M:GNS3sharp.Node.Send(System.String)">
+            <summary>
+            Send a message to the node through a network stream
+            </summary>
+            <param name="message">String with the message that is intended to be sent</param>
+            <example>
+            <code>
+            PC.Send("ifconfig");
+            </code>
+            </example>
+        </member>
+        <member name="M:GNS3sharp.Node.Receive(System.Int32)">
+            <summary>
+            Receive messages from the buffer of the node network stream
+            </summary>
+            <param name="timeBetweenReads">
+            Seconds the method will wait for reading between messages in the server. By default is 2s
+            </param>
+            <returns>Messages as an array of strings</returns>
+            <example>
+            <code>
+            foreach(string line in PC.Receive())
+                Console.WriteLine("${line}");
+            </code>
+            </example>
+        </member>
+        <member name="M:GNS3sharp.Node.Ping(System.String,System.UInt16)">
+            <summary>
+            Send Ping to a certain IP
+            </summary>
+            <param name="IP">IP where ICMP packets will be sent</param>
+            <param name="count">Number of retries. By default 5</param>
+            <returns>The result messages of the ping</returns>
+            <example>
+            <code>
+            foreach(string line in PC.Ping("192.168.30.5"))
+                Console.WriteLine($"{line}");
+            </code>
+            </example>
+        </member>
+        <member name="M:GNS3sharp.Node.Ping(System.String,System.String)">
+            <summary>
+            Template child classes can used a template for creating 'Ping''s with different parameters
+            </summary>
+            <param name="IP">IP where to send the ICMP packets to</param>
+            <param name="additionalParameters">Additional parameters for the ping</param>
+            <returns>The result messages of the ping as an array of strings</returns>
+            <example>
+            <code>
+            foreach(string line in PC.Ping("192.168.30.5"))
+                Console.WriteLine($"{line}");
+            </code>
+            </example>
+        </member>
+        <member name="M:GNS3sharp.Node.PingResult(System.String[])">
+            <summary>
+            Check whether a ping went right or wrong
+            </summary>
+            <param name="pingMessage">Result message of a ping</param>
+            <returns>True if the ping went right, False otherwise</returns>
+            <example>
+            <code>
+            if (PC.PingResult(PC.Ping("192.168.30.5")))
+                Console.WriteLine("The ping went ok");
+            </code>
+            </example>
+        </member>
+        <member name="T:GNS3sharp.LEDE">
+            <summary>
+            Representation of a LEDE type of node
+            <remarks>
+            Define methods that are only available for this appliance
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.LEDE.Label">
+            <summary>
+            Label you must set in the name of the node at the GNS3 project
+            <para>Name of the node must look like "[LEDE]Name"</para>
+            </summary>
+            <value>Label as a string</value>
+        </member>
+        <member name="M:GNS3sharp.LEDE.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.LEDE.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.LEDE.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a router from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="T:GNS3sharp.OpenWRT">
+            <summary>
+            Representation of a OpenWRT type of node
+            <remarks>
+            Define methods that are only available for this appliance
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.OpenWRT.Label">
+            <summary>
+            Label you must set in the name of the node at the GNS3 project
+            <para>Name of the node must look like "[OPENWRT]Name"</para>
+            </summary>
+            <value>Label as a string</value>
+        </member>
+        <member name="P:GNS3sharp.OpenWRT.RoutingTable">
+            <summary>
+            Routing table of the node as an object
+            </summary>
+            <value>Object of type <c>RoutingTable</c></value>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a router from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.ActivateTerminal">
+            <summary>
+            Force the terminal to allow messages by sending a first \n. You should wait for the router to finish of configuring though
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.ActivateInterface(System.String,System.String,System.UInt16)">
+            <summary>
+            Activate an interface of the router
+            </summary>
+            <param name="IP">IPv4 you plan to set</param>
+            <param name="netmask">Netmask of the address. By default "255.255.255.0"</param>
+            <param name="interfaceNumber">Interface number (eth#). By default is 0</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.DeactivateInterface(System.UInt16)">
+            <summary>
+            Deactivate an interface of the router
+            </summary>
+            <param name="interfaceNumber">Interface number (eth#)</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.ChangeInterfaceStatus(System.String,System.String,System.String,System.UInt16)">
+            <summary>
+            Change the status of an interface to 'up' or 'down'
+            </summary>
+            <param name="status">"up" or "down</param>
+            <param name="IP">IPv4 you plan to set</param>
+            <param name="netmask">Netmask of the address. By default "255.255.255.0"</param>
+            <param name="interfaceNumber">Interface number (eth#). By default is 0</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.SetRoute(System.String,System.String,System.String)">
+            <summary>
+            Set a route to a certain destination through a gateway
+            </summary>
+            <param name="destination">Address where the route is planned to get</param>
+            <param name="gateway">Gateway where the packets must initially go through to reach the destination</param>
+            <param name="netmask">Netmask of the IP. By default "255.255.255.0"</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.GetRoutingTable">
+            <summary>
+            Get the routing table of the router
+            </summary>
+            <returns>The routing table as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.GetRoutingTable(System.String[])">
+            <summary>
+            Get the routing table of the router as a RoutingTable object. It's used to get the RoutingTable property of the class
+            </summary>
+            <param name="routingTable">Routing table as a string</param>
+            <returns>The routing table</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.EnableFirewall">
+            <summary>
+            (Re)start the router firewall
+            </summary>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.DisableFirewall">
+            <summary>
+            Stop the router firewall
+            </summary>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.ChangeFirewallStatus(System.String)">
+            <summary>
+            Change router status
+            </summary>
+            <param name="newStatus">"start" or "stop"</param>
+            <returns></returns>
+        </member>
+        <member name="M:GNS3sharp.OpenWRT.GetIPByInterface(System.String)">
+            <summary>
+            Get the IPv4 related to a certain interface. Needs overwriting.
+            </summary>
+            <param name="iface">Interface whose IPv4 will be searched</param>
+            <returns>Array of strings: first corresponds to the IP nad second to the netmask</returns>
+        </member>
+        <member name="T:GNS3sharp.Router">
+            <summary>
+            Abstract class that serves as a skeleton for the routers that are defined
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.Router.RoutingTable">
+            <summary>
+            Routing table of the node as an object
+            </summary>
+            <value>Object of type <c>RoutingTable</c></value>
+        </member>
+        <member name="M:GNS3sharp.Router.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Router.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.Router.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a router from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="M:GNS3sharp.Router.Ping(System.String,System.UInt16,System.UInt16)">
+            <summary>
+            Send Ping to a certain IP
+            </summary>
+            <param name="IP">IP where ICMP packets will be sent</param>
+            <param name="count">Number of retries. By default 5</param>
+            <param name="timeout">Seconds until it stops retrying</param>
+            <returns>The result of the ping as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.Router.GetIPByInterface(System.String)">
+            <summary>
+            Get the IPv4 related to a certain interface. Needs overwriting.
+            </summary>
+            <param name="iface">Interface whose IPv4 will be searched</param>
+            <returns>Array of strings: first corresponds to the IP nad second to the netmask</returns>
+        </member>
+        <member name="M:GNS3sharp.Router.ActivateInterface(System.String,System.String,System.UInt16)">
+            <summary>
+            Activate an interface of the appliance. Needs overwriting
+            </summary>
+            <param name="IP">IPv4 that will be set for the interface</param>
+            <param name="netmask">Netmask that will be set for the interface</param>
+            <param name="interfaceNumber">Number of the interface (0 for eth0...)</param>
+            <returns>The result of the operation as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.Router.DeactivateInterface(System.UInt16)">
+            <summary>
+            Deactivate an interface of the router
+            </summary>
+            <param name="interfaceNumber">Interface number (eth#)</param>
+            <returns>Received message as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.Router.SetRoute(System.String,System.String,System.String)">
+            <summary>
+            Set a route for a certain network
+            </summary>
+            <param name="destination">Destination of the route</param>
+            <param name="gateway">Address where the packets must go in order to reach the destination</param>
+            <param name="netmask">Netmask of the destination</param>
+            <returns>The result of the operation as an array of strings</returns>
+        </member>
+        <member name="M:GNS3sharp.Router.GetRoutingTable">
+            <summary>
+            Get the routing table of the router
+            </summary>
+            <returns>The routing table as an array of strings</returns>
+        </member>
+        <member name="T:GNS3sharp.ServerProjects">
+            <summary>
+            Static class that gathers info about the projects the server contains. Methods:
+            <list type="bullet">
+            <item>
+            <term>GetProjectIDByName</term>
+            <description>Return the ID of a project giving its name</description>
+            </item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.ServerProjects.GetProjectIDByName(System.String,System.String,System.UInt16)">
+            <summary>
+            Return the ID of a project giving its name. It's case sensitive
+            </summary>
+            <param name="projectName">Name of the GNS3 project which ID you plan to get</param>
+            <param name="host">IP where the GNS3 server is hosted. "localhost" by default</param>
+            <param name="port">Port where the server is hosted. 3080 by default</param>
+            <returns></returns>
+        </member>
+        <member name="T:GNS3sharp.EthernetSwitch">
+            <summary>
+            Representation of a Ethernet Switch type of node
+            <remarks>
+            Define methods that are only available for this appliance
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.EthernetSwitch.Label">
+            <summary>
+            Label you must set in the name of the node at the GNS3 project
+            <para>Name of the node must look like "[ETHSW]Name"</para>
+            </summary>
+            <value>Label as a string</value>
+        </member>
+        <member name="M:GNS3sharp.EthernetSwitch.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.EthernetSwitch.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.EthernetSwitch.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a switch from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="T:GNS3sharp.OpenvSwitch">
+            <summary>
+            Representation of a OpenVSwitch type of node
+            <remarks>
+            Define methods that are only available for this appliance
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GNS3sharp.OpenvSwitch.Label">
+            <summary>
+            Label you must set in the name of the node at the GNS3 project
+            <para>Name of the node must look like "[OVS]Name"</para>
+            </summary>
+            <value>Label as a string</value>
+        </member>
+        <member name="M:GNS3sharp.OpenvSwitch.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.OpenvSwitch.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.OpenvSwitch.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a switch from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+        <member name="T:GNS3sharp.Switch">
+            <summary>
+            Abstract class that serves as a skeleton for the switches that are defined
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Switch.#ctor">
+            <summary>
+            Constructor by default. Every property is empty
+            </summary>
+        </member>
+        <member name="M:GNS3sharp.Switch.#ctor(System.String,System.UInt16,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Constructor for any kind of <c>Node</c>. It must be called from a <c>GNS3sharp</c> object
+            </summary>
+            <param name="_consoleHost">IP of the machine where the node is hosted</param>
+            <param name="_port">Port of the machine where the node is hosted</param>
+            <param name="_name">Name of the node stablished in the project</param>
+            <param name="_id">ID the node has implicitly</param>
+            <param name="_ports">Array of dictionaries that contains information about every network interface</param>
+        </member>
+        <member name="M:GNS3sharp.Switch.#ctor(GNS3sharp.Node)">
+            <summary>
+            Constructor that replicates a switch from another node
+            </summary>
+            <param name="clone">Node you want to make the copy from</param>
+        </member>
+    </members>
+</doc>
