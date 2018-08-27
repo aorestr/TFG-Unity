@@ -21,7 +21,7 @@ public class L1M1Handler : MonoBehaviour {
     private uint time = 0;
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
 
         // Activate nodes
         foreach (string nodeName in L1Mapping.NodeNamesM1) {
@@ -41,12 +41,13 @@ public class L1M1Handler : MonoBehaviour {
         OpenWRT[] Routers = new OpenWRT[5] { R1, R2, R3, R4, R5 };
 
         // We need to wait. Otherwise, nodes won't boot properly
-        //Thread.Sleep(120000);
+        Thread.Sleep(240000);
 
         // Set up end-point nodes
         L1M1HandlerHelper.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
         // Set-up routers
         L1M1HandlerHelper.SetUpRouters(Routers, NetsPrefix);
+
         // Set the routing tables signs
         for (int i = 0; i < Routers.Length; i++)
             L1M1HandlerHelper.SetRoutingTables(Routers[i].RoutingTable, NetTables[i]);
@@ -169,28 +170,28 @@ public class L1M1Handler : MonoBehaviour {
 
         public static void SetRoutingTables(RoutingTable RoutTab, GameObject TextToReplicate) {
 
-                float positionOffset = 0.2f;
-                // Assign the sign to a new variable
-                var newTextWrapper = TextToReplicate;
-                foreach (RoutingTable.RoutingTableRow route in RoutTab.Routes)
-                {
-                    if (route.Iface.Contains("eth")) {
-                        // Duplicate the canvas for the routing tables
-                        newTextWrapper = Instantiate(newTextWrapper, newTextWrapper.transform);
-                        // Move it down
-                        newTextWrapper.transform.Translate(0, -positionOffset, 0);
-                        // Write down the parameters into the sign
-                        var dest = newTextWrapper.transform.GetChild(0).GetComponent<Text>();
-                        dest.text = route.Destination;
-                        var gate = newTextWrapper.transform.GetChild(1).GetComponent<Text>();
-                        gate.text = route.Gateway;
-                        var netmask = newTextWrapper.transform.GetChild(2).GetComponent<Text>();
-                        netmask.text = route.Netmask;
-                        var eth = newTextWrapper.transform.GetChild(3).GetComponent<Text>();
-                        eth.text = route.Iface;
-                    }
+            float positionOffset = 0.2f;
+            // Assign the sign to a new variable
+            var newTextWrapper = TextToReplicate;
+            foreach (RoutingTable.RoutingTableRow route in RoutTab.Routes)
+            {
+                if (route.Iface.Contains("eth")) {
+                    // Duplicate the canvas for the routing tables
+                    newTextWrapper = Instantiate(newTextWrapper, newTextWrapper.transform);
+                    // Move it down
+                    newTextWrapper.transform.Translate(0, -positionOffset, 0);
+                    // Write down the parameters into the sign
+                    var dest = newTextWrapper.transform.GetChild(0).GetComponent<Text>();
+                    dest.text = route.Destination;
+                    var gate = newTextWrapper.transform.GetChild(1).GetComponent<Text>();
+                    gate.text = route.Gateway;
+                    var netmask = newTextWrapper.transform.GetChild(2).GetComponent<Text>();
+                    netmask.text = route.Netmask;
+                    var eth = newTextWrapper.transform.GetChild(3).GetComponent<Text>();
+                    eth.text = route.Iface;
                 }
             }
+        }
 
         }
 

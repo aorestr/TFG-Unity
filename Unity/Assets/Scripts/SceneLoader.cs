@@ -1,4 +1,4 @@
-﻿// All credit for this scripts goes to @nickpettit https://gist.github.com/nickpettit/a78cc0a9483c85212a23
+﻿// All credit for this script goes to @nickpettit https://gist.github.com/nickpettit/a78cc0a9483c85212a23
 
 using UnityEngine;
 using System.Collections;

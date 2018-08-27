@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cacheType: 5
-  lastUpdatedAtString: 2018-08-27T18:25:45.286+02:00
-  initializedAtString: 2018-08-27T17:24:47.202+02:00
+  lastUpdatedAtString: 2018-08-27T21:51:12.865+02:00
+  initializedAtString: 2018-08-27T20:26:33.911+02:00
   entries:
   - path: LevelsGNS3\GameNet\GameNet.gns3
     fullPath: C:\Users\aores\Desktop\TFG-Unity\LevelsGNS3\GameNet\GameNet.gns3
@@ -69,33 +69,9 @@ MonoBehaviour:
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Assets\Scenes\LoadingScreen.unity
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Assets\Scenes\LoadingScreen.unity
-    projectPath: Assets\Scenes\LoadingScreen.unity
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\Assets\Scripts\DLLs\GNS3sharp.dll
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Assets\Scripts\DLLs\GNS3sharp.dll
-    projectPath: Assets\Scripts\DLLs\GNS3sharp.dll
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\Assets\Scripts\DLLs\GNS3sharp.xml
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Assets\Scripts\DLLs\GNS3sharp.xml
-    projectPath: Assets\Scripts\DLLs\GNS3sharp.xml
-    originalPath: 
-    status: 1
-    staged: 0
-  - path: Unity\Assets\Scripts\DLLs\GNS3sharp.xml.meta
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Assets\Scripts\DLLs\GNS3sharp.xml.meta
-    projectPath: Assets\Scripts\DLLs\GNS3sharp.xml.meta
-    originalPath: 
-    status: 1
-    staged: 0
-  - path: Unity\Assets\Scripts\GNS3 handlers\GNS3Handler.cs
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Assets\Scripts\GNS3 handlers\GNS3Handler.cs
-    projectPath: Assets\Scripts\GNS3 handlers\GNS3Handler.cs
+  - path: Unity\Assets\Scripts\DoorOrder.cs
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Assets\Scripts\DoorOrder.cs
+    projectPath: Assets\Scripts\DoorOrder.cs
     originalPath: 
     status: 3
     staged: 0
@@ -105,15 +81,15 @@ MonoBehaviour:
     originalPath: 
     status: 3
     staged: 0
-  - path: Unity\Library\assetDatabase3
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\assetDatabase3
-    projectPath: Library\assetDatabase3
+  - path: Unity\Assets\Scripts\SceneLoader.cs
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Assets\Scripts\SceneLoader.cs
+    projectPath: Assets\Scripts\SceneLoader.cs
     originalPath: 
     status: 3
     staged: 0
-  - path: Unity\Library\CurrentLayout.dwlt
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\CurrentLayout.dwlt
-    projectPath: Library\CurrentLayout.dwlt
+  - path: Unity\Library\assetDatabase3
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\assetDatabase3
+    projectPath: Library\assetDatabase3
     originalPath: 
     status: 3
     staged: 0
@@ -121,29 +97,11 @@ MonoBehaviour:
     fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\EditorInstance.json
     projectPath: Library\EditorInstance.json
     originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\Library\expandedItems
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\expandedItems
-    projectPath: Library\expandedItems
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\Library\gfu\cache\branches.yaml
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\gfu\cache\branches.yaml
-    projectPath: Library\gfu\cache\branches.yaml
-    originalPath: 
-    status: 3
+    status: 1
     staged: 0
   - path: Unity\Library\gfu\cache\gitlocks.yaml
     fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\gfu\cache\gitlocks.yaml
     projectPath: Library\gfu\cache\gitlocks.yaml
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\Library\gfu\cache\gitlog.yaml
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\gfu\cache\gitlog.yaml
-    projectPath: Library\gfu\cache\gitlog.yaml
     originalPath: 
     status: 3
     staged: 0
@@ -165,45 +123,21 @@ MonoBehaviour:
     originalPath: 
     status: 3
     staged: 0
-  - path: Unity\Library\LastSceneManagerSetup.txt
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\LastSceneManagerSetup.txt
-    projectPath: Library\LastSceneManagerSetup.txt
+  - path: Unity\Library\metadata\14\14bb0d88253643644a0eb9fddd7098e1
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\14\14bb0d88253643644a0eb9fddd7098e1
+    projectPath: Library\metadata\14\14bb0d88253643644a0eb9fddd7098e1
     originalPath: 
     status: 3
     staged: 0
-  - path: Unity\Library\metadata\01\0186f6cf55076c34db0ecb5809d569f5
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\01\0186f6cf55076c34db0ecb5809d569f5
-    projectPath: Library\metadata\01\0186f6cf55076c34db0ecb5809d569f5
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\Library\metadata\01\01964d940f9440842ba628b27c10262c
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\01\01964d940f9440842ba628b27c10262c
-    projectPath: Library\metadata\01\01964d940f9440842ba628b27c10262c
-    originalPath: 
-    status: 1
-    staged: 0
-  - path: Unity\Library\metadata\01\01964d940f9440842ba628b27c10262c.info
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\01\01964d940f9440842ba628b27c10262c.info
-    projectPath: Library\metadata\01\01964d940f9440842ba628b27c10262c.info
-    originalPath: 
-    status: 1
-    staged: 0
-  - path: Unity\Library\metadata\a6\a67e324e315579246a5da6fdf8c94c4b
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\a6\a67e324e315579246a5da6fdf8c94c4b
-    projectPath: Library\metadata\a6\a67e324e315579246a5da6fdf8c94c4b
+  - path: Unity\Library\metadata\3c\3c80bf6d88a215d4a9da73461d7926de
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\3c\3c80bf6d88a215d4a9da73461d7926de
+    projectPath: Library\metadata\3c\3c80bf6d88a215d4a9da73461d7926de
     originalPath: 
     status: 3
     staged: 0
   - path: Unity\Library\metadata\d5\d56a8ba45dea94c4980d2036f938a73d
     fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\d5\d56a8ba45dea94c4980d2036f938a73d
     projectPath: Library\metadata\d5\d56a8ba45dea94c4980d2036f938a73d
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\Library\metadata\e3\e31940da4899e054ea9c2abd00dd0eb5
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\metadata\e3\e31940da4899e054ea9c2abd00dd0eb5
-    projectPath: Library\metadata\e3\e31940da4899e054ea9c2abd00dd0eb5
     originalPath: 
     status: 3
     staged: 0
@@ -219,21 +153,9 @@ MonoBehaviour:
     originalPath: 
     status: 3
     staged: 0
-  - path: Unity\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
-    projectPath: obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\obj\Debug\Assembly-CSharp-Editor.csproj.CoreCompileInputs.cache
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\obj\Debug\Assembly-CSharp-Editor.csproj.CoreCompileInputs.cache
-    projectPath: obj\Debug\Assembly-CSharp-Editor.csproj.CoreCompileInputs.cache
-    originalPath: 
-    status: 3
-    staged: 0
-  - path: Unity\obj\Debug\Assembly-CSharp-Editor.csprojAssemblyReference.cache
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\obj\Debug\Assembly-CSharp-Editor.csprojAssemblyReference.cache
-    projectPath: obj\Debug\Assembly-CSharp-Editor.csprojAssemblyReference.cache
+  - path: Unity\Library\shadercompiler-UnityShaderCompiler.exe0.log
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Library\shadercompiler-UnityShaderCompiler.exe0.log
+    projectPath: Library\shadercompiler-UnityShaderCompiler.exe0.log
     originalPath: 
     status: 3
     staged: 0
@@ -249,33 +171,39 @@ MonoBehaviour:
     originalPath: 
     status: 3
     staged: 0
-  - path: Unity\Temp\UnityTempFile-057abb77c9e014e4eace273ce6e1e8dd
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-057abb77c9e014e4eace273ce6e1e8dd
-    projectPath: Temp\UnityTempFile-057abb77c9e014e4eace273ce6e1e8dd
+  - path: Unity\Temp\UnityTempFile-09b38f675943cf14ab59e7fa357b36ff
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-09b38f675943cf14ab59e7fa357b36ff
+    projectPath: Temp\UnityTempFile-09b38f675943cf14ab59e7fa357b36ff
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-24cbd357523d7fb44b8e9b6b3dcfe28d
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-24cbd357523d7fb44b8e9b6b3dcfe28d
-    projectPath: Temp\UnityTempFile-24cbd357523d7fb44b8e9b6b3dcfe28d
+  - path: Unity\Temp\UnityTempFile-0a9b8c47d6fdd35439b67f773753e39f
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-0a9b8c47d6fdd35439b67f773753e39f
+    projectPath: Temp\UnityTempFile-0a9b8c47d6fdd35439b67f773753e39f
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-2861fc52fbe22b9478645a44ed7dc97e
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-2861fc52fbe22b9478645a44ed7dc97e
-    projectPath: Temp\UnityTempFile-2861fc52fbe22b9478645a44ed7dc97e
+  - path: Unity\Temp\UnityTempFile-122c66e210c2d394cb6ef5121d0b7214
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-122c66e210c2d394cb6ef5121d0b7214
+    projectPath: Temp\UnityTempFile-122c66e210c2d394cb6ef5121d0b7214
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-2a81469f4b2dd394eaaafe8ae28440ae
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-2a81469f4b2dd394eaaafe8ae28440ae
-    projectPath: Temp\UnityTempFile-2a81469f4b2dd394eaaafe8ae28440ae
+  - path: Unity\Temp\UnityTempFile-1b0b5f1b90f550742a2397d5da39fca1
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-1b0b5f1b90f550742a2397d5da39fca1
+    projectPath: Temp\UnityTempFile-1b0b5f1b90f550742a2397d5da39fca1
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-3252707a007eac04cbc7599f6649c865
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-3252707a007eac04cbc7599f6649c865
-    projectPath: Temp\UnityTempFile-3252707a007eac04cbc7599f6649c865
+  - path: Unity\Temp\UnityTempFile-3a6ed958fe9352c47b0eaeaf40af42d5
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-3a6ed958fe9352c47b0eaeaf40af42d5
+    projectPath: Temp\UnityTempFile-3a6ed958fe9352c47b0eaeaf40af42d5
+    originalPath: 
+    status: 1
+    staged: 0
+  - path: Unity\Temp\UnityTempFile-3e57a21ac18d17c49b4534a8e6574e9f
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-3e57a21ac18d17c49b4534a8e6574e9f
+    projectPath: Temp\UnityTempFile-3e57a21ac18d17c49b4534a8e6574e9f
     originalPath: 
     status: 1
     staged: 0
@@ -285,9 +213,27 @@ MonoBehaviour:
     originalPath: 
     status: 5
     staged: 0
-  - path: Unity\Temp\UnityTempFile-7670b8874593fac44a3ab6bd20243d36
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-7670b8874593fac44a3ab6bd20243d36
-    projectPath: Temp\UnityTempFile-7670b8874593fac44a3ab6bd20243d36
+  - path: Unity\Temp\UnityTempFile-4eb8b7bdd5ef8034698edb8af79e7cce
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-4eb8b7bdd5ef8034698edb8af79e7cce
+    projectPath: Temp\UnityTempFile-4eb8b7bdd5ef8034698edb8af79e7cce
+    originalPath: 
+    status: 1
+    staged: 0
+  - path: Unity\Temp\UnityTempFile-553a14dfba5641e4eaa3c039d727b636
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-553a14dfba5641e4eaa3c039d727b636
+    projectPath: Temp\UnityTempFile-553a14dfba5641e4eaa3c039d727b636
+    originalPath: 
+    status: 1
+    staged: 0
+  - path: Unity\Temp\UnityTempFile-5f4dd48d5c4b9db4a88340990d015f76
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-5f4dd48d5c4b9db4a88340990d015f76
+    projectPath: Temp\UnityTempFile-5f4dd48d5c4b9db4a88340990d015f76
+    originalPath: 
+    status: 1
+    staged: 0
+  - path: Unity\Temp\UnityTempFile-7362281f57cbdc343bd38418b2cd3937
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-7362281f57cbdc343bd38418b2cd3937
+    projectPath: Temp\UnityTempFile-7362281f57cbdc343bd38418b2cd3937
     originalPath: 
     status: 1
     staged: 0
@@ -303,21 +249,27 @@ MonoBehaviour:
     originalPath: 
     status: 5
     staged: 0
+  - path: Unity\Temp\UnityTempFile-8bcdb283c3eaa54419e7bf01682ba5b5
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-8bcdb283c3eaa54419e7bf01682ba5b5
+    projectPath: Temp\UnityTempFile-8bcdb283c3eaa54419e7bf01682ba5b5
+    originalPath: 
+    status: 1
+    staged: 0
   - path: Unity\Temp\UnityTempFile-8f7e79da7e44f3941bc864b2c5695c44
     fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-8f7e79da7e44f3941bc864b2c5695c44
     projectPath: Temp\UnityTempFile-8f7e79da7e44f3941bc864b2c5695c44
     originalPath: 
     status: 5
     staged: 0
-  - path: Unity\Temp\UnityTempFile-a47906e4702b76244a046f0c21c10902
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-a47906e4702b76244a046f0c21c10902
-    projectPath: Temp\UnityTempFile-a47906e4702b76244a046f0c21c10902
+  - path: Unity\Temp\UnityTempFile-acfbde88ac0a1ae4c9e5040c552552e3
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-acfbde88ac0a1ae4c9e5040c552552e3
+    projectPath: Temp\UnityTempFile-acfbde88ac0a1ae4c9e5040c552552e3
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-b2419b6a89716f74cb050e8861159203
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-b2419b6a89716f74cb050e8861159203
-    projectPath: Temp\UnityTempFile-b2419b6a89716f74cb050e8861159203
+  - path: Unity\Temp\UnityTempFile-b3810fe4aa82e3f469f7863055ee97d5
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-b3810fe4aa82e3f469f7863055ee97d5
+    projectPath: Temp\UnityTempFile-b3810fe4aa82e3f469f7863055ee97d5
     originalPath: 
     status: 1
     staged: 0
@@ -327,27 +279,27 @@ MonoBehaviour:
     originalPath: 
     status: 5
     staged: 0
-  - path: Unity\Temp\UnityTempFile-c08e26ba3d4af364aa99f363e39bd763
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-c08e26ba3d4af364aa99f363e39bd763
-    projectPath: Temp\UnityTempFile-c08e26ba3d4af364aa99f363e39bd763
+  - path: Unity\Temp\UnityTempFile-c1ff7654c1049fd42aeb4a0d096f466e
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-c1ff7654c1049fd42aeb4a0d096f466e
+    projectPath: Temp\UnityTempFile-c1ff7654c1049fd42aeb4a0d096f466e
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-cd32e0bfab83e6846b6aa90aa9dd5df3
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-cd32e0bfab83e6846b6aa90aa9dd5df3
-    projectPath: Temp\UnityTempFile-cd32e0bfab83e6846b6aa90aa9dd5df3
+  - path: Unity\Temp\UnityTempFile-ca808cbf2d977d34eb3309357c68bedf
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-ca808cbf2d977d34eb3309357c68bedf
+    projectPath: Temp\UnityTempFile-ca808cbf2d977d34eb3309357c68bedf
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-d72061d225023ea47816cfc84f336508
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-d72061d225023ea47816cfc84f336508
-    projectPath: Temp\UnityTempFile-d72061d225023ea47816cfc84f336508
+  - path: Unity\Temp\UnityTempFile-d1aa1b098fba91341b788ca68137fa2b
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-d1aa1b098fba91341b788ca68137fa2b
+    projectPath: Temp\UnityTempFile-d1aa1b098fba91341b788ca68137fa2b
     originalPath: 
     status: 1
     staged: 0
-  - path: Unity\Temp\UnityTempFile-e3d7617843b93244583821d565494f15
-    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-e3d7617843b93244583821d565494f15
-    projectPath: Temp\UnityTempFile-e3d7617843b93244583821d565494f15
+  - path: Unity\Temp\UnityTempFile-f4a8dbe16ef83f24995ef46e4dc44228
+    fullPath: C:\Users\aores\Desktop\TFG-Unity\Unity\Temp\UnityTempFile-f4a8dbe16ef83f24995ef46e4dc44228
+    projectPath: Temp\UnityTempFile-f4a8dbe16ef83f24995ef46e4dc44228
     originalPath: 
     status: 1
     staged: 0
