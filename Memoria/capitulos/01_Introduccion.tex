@@ -19,12 +19,13 @@ Cientos de estudios se han llevado a cabo con el fin de demostrar las virtudes d
 Y es que la virtualización es una herramienta gigantesca. Empresas como Labster se han dado cuenta de ello. Esta compañía se encarga de desarrollar laboratorios virtuales y propuestas lúdicas para la enseñanza de materias relacionadas con la ciencia, muchas de ellas llevadas a cabo en forma de videojuego\cite{labster}. ``Al integrar simulaciones en laboratorios virtuales permitimos que los alumnos tengan acceso ilimitado y económico y que practiquen todo lo que quieran hasta que aprendan los conceptos perfectamente'', dice su fundador, el danés Michael Bodekaer.	
 
 \subsubsection{Nuestro papel}
-Es entonces nuestra misión con este trabajo el llevar esto último al terreno de las telecomunicaciones. A sabiendas de que los videojuegos suponen un portal educativo muy interesante, podría ser una 
-En realidad, la idea principal.. quizás sea aquí donde puedes hablar de las deficiencias de juegos parecidos, o las fortalezas de usar un emulador de red real para enseñar estos temas.
+Es entonces nuestra misión llevar esto último al terreno de las telecomunicaciones. A sabiendas de que los videojuegos suponen un portal educativo de gran riqueza, nos proponemos desarrollar un ejemplo de \textbf{juego que permita aprender telemática}.
 
-En realidad, pon Motivación, y dentro, un párrafo con la motivación personal, si quieres (no es necesario poner la motivación personal).
+La telemática trata esencialmente del estudio y gestión de redes. La infraestructura asociada a estas suele ser cara y costosa, requiriendo un desembolso importante así como un despliegue inicial no apto para cualquiera. Esto recuerda directamente a las palabras anteriormente expuestas por el fundador de Labster. Su solución fue virtualizar laboratorios e insertarlos en juegos para, así, acercar estos a los estudiantes. Nosotros aquí pretendemos algo similar.
 
-En "motivación" pondrás qué deficiencias hay, o qué oportunidades de mejora, que hacen que este proyecto sea necesario.
+El fin que se propone este trabajo es el de crear un videojuego que integre una red virtualizada. Por suerte para nosotros, a diferencia de Bodekaer, no tenemos que encargarnos de crear un sistema de virtualización de redes, pues, como veremos con detalle en el capítulo \ref{chap:ArtState}, ya existen varios. El objetivo principal pasa por enlazar tal simulador de redes (una herramienta de virtualización de las mismas) con un videojuego.
+
+Precisamente aquel es el primordial problema con el que se habrá de lidiar. A día de hoy, no existe forma directa de unir un videojuego con un simulador de redes. Hay que considerar que estos simuladores están concebidos como finalidad en sí mismos (como una aplicación cualquiera) y no como herramienta para ser usada por utilidades externas. Se requiere por consiguiente desarrollar una infraestructura que haga de nexo entre la red virtual y un videojuego.
  
 \subsection{Objetivos}
 Aclarado lo anterior, los objetivos que el proyecto se propone son claros:

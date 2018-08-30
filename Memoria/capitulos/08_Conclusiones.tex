@@ -1,10 +1,32 @@
 \chapter{Conclusiones}\label{chap:Conclusiones}
+Antes de finalizar el documento, recordaremos los puntos claves de lo que se pudo leer en él y haremos una valoración global del proyecto.
 
-fgxdh
+\section{Trabajo realizado}
+Durante el presente documento hemos atendido principalmente a dos asuntos.
 
-\section{Descripción del problema}
+El primero de ellos describe con todo detalle la forma de hacer interactiva una red virtualizada a través de una herramienta externa a ella. La red virtualizada es generada mediante el simulador GNS3, mientras que la herramienta se materializó en una librería para el lenguaje C\#. Tal biblioteca nos permite desde encender y apagar dispositivos por la red, pasando por crear nuevos enlaces entre ellos, hasta controlarlos desde dentro tal y como necesitemos. Las posibilidades que brinda son amplias.
 
-huigk
+El segundo punto refiere directamente a la creación de un juego haciendo uso de la utilidad creada en el apartado anterior. Gracias a ella, se consiguió crear un pequeño ``puzzle'' cuyas indicaciones eran extraídas directamente desde la red virtual. El puzzle pone a prueba los conocimientos de enrutamiento del jugador.
 
+\section{Valoración del resultado}
+La API desarrollada puede suponer una herramienta de increíble utilidad para aplicaciones de toda índole en el mundo de la telemática. Al haber sido cuidada de forma tan detallada, su utilización e incluso modificación posterior no posee complejidad alguna. Consideramos entonces que, en cuanto cómo de reutilizable puede llegar a ser, es un éxito. Nos hemos encargado de que exista información suficiente para aquel que pretenda retomarla mediante documentación tanto en el código como en el repositorio donde este se hospeda.
 
+Existen problemas que aún no hemos podido resolver con éxito en la librería. Así por ejemplo, establecida una conexión con los nodos, cada envío y recepción de mensajes lleva un tiempo. La mayor parte de las veces son problemas, no directamente de la API, sino del propio simulador. Pongamos por caso uno de los más problemáticos: el arranque de cada dispositivo. Si el aparato en concreto es pesado, GNS3 necesita de un tiempo del orden de minutos para que sea satisfactoriamente iniciado, lo que implica un retraso para cualquiera que sea la aplicación desde la que se esté lanzando la librería. Además, esta aún no ha encontrado el modo de automatizar la comprobación de la operatividad de un nodo para comenzar a trabajar con él. Es necesario entones escribir una sentencia de pausa en la aplicación, lo cual es rudimentario y poco preciso y por ende implica fallos en potencia.
 
+Pese a todo ello la librería es plenamente funcional. Tiene limitaciones como el no poder generar proyectos de GNS3 desde cero o su dependencia con aquel programa, que necesita ser inicializado previamente de forma manual (no se ha automatizado su arranque) para poder trabajar con él.
+
+Posiblemente el verdadero punto débil del proyecto haya sido el videojuego. Y es que aunque al comienzo se pretendía llevar a cabo un juego completo que explotará la API al máximo y que fuera capaz de explicar varias asignaturas de la telemática, finalmente se optó por crear algo mucho más pequeño. El desarrollo de un videojuego completo es una tarea de gran complejidad que requiere de un número de horas mucho mayor del que era viable dedicar a este proyecto. Para adaptarse a las circunstancias, la decisión tomada fue la de crear un solo nivel que demostrase que la interacción con la biblioteca es funcional. El resultado pudo verse en el capítulo \ref{chap:Pruebas}.
+
+Si bien efectivamente se comprobó la viabilidad de la relación GNS3$\leftrightarrow$API$\leftrightarrow$Juego, quizá no fuera explotada lo suficiente. Muchas de las características insertadas en la librería han quedado excluidas del juego final pues no son útiles para el mismo. Añadir nuevos niveles habría garantizado su inclusión en el mismo, pero ello también implicaba una planificación más detenida y un mayor desembolso temporal inviable.
+
+En cualquiera de los casos, como ha quedado demostrado en el documento, el proyecto ha estado centrado en la interacción entre los distintos elementos de nuestro problema.
+
+\section{Experiencia personal}
+El desarrollo de este proyecto ha supuesto un aprendizaje continúo para mí. He descubierto qué son los simuladores de redes, me he introducido en el mundo de la programación de videojuegos, he aprendido a C\# y a trabajar en el entorno .NET... y realmente un largo número de etcéteras más. Ha sido realmente una experiencia plena porque todo ese aprendizaje provenía de uno mismo: de las constantes batallas contra los problemas aparecidos y de la habilidad para resolverlos con los medios dados.
+
+Por un lado me siento plenamente satisfecho con el trabajo realizado, pues he abierto un camino sobre el que firmemente pienso que es importante seguir trabajando. Me apena saber que el videojuego que tenía en mente cuando comencé el proyecto no haya podido llevarse a cabo. Mi nula experiencia con motores de juegos me ha ralentizado enormemente a la hora de crear. Esto se traduce en grandes cantidades de tiempo invertidas en pasos elementales y pequeños, reduciendo considerablemente el número de horas para el desarrollo de algo más grande.
+
+\section{Trabajos futuros}
+Tal y como se ha repetido en varias ocasiones, la API ha sido creada de forma que cualquier nuevo desarrollador que pretende hacer uso de ella, lo tenga fácil para ello. Así, proponemos que más adelante el proyecto sea retomado. 
+
+Como el presente trabajo se ha propuesto y ha logrado crear la interacción entre el videojuego y la red virtualizada, la persona que encargada de reiniciarlo tendría la responsabilidad de completar lo relativo al videojuego. Este traspaso de testigo consistiría en construir un videojuego de ciertas dimensiones que ponga en práctica lo teorizado durante el documento; algo como lo que podíamos ver en la figura \ref{subsec:modelojuego}. Disponible la herramienta y las indicaciones necesarias para hacerlo, solo queda ponerlas en práctica.
