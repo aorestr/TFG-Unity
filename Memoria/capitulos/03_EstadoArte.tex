@@ -10,14 +10,14 @@ Sin embargo, conviene no confundir ``simuladores'' con ``emuladores'' de red. Un
 En un nivel básico, un simulador de red utiliza fórmulas matemáticas para crear un modelo teórico y totalmente virtual de una red. Los simuladores son soluciones software. Si bien se utilizan principalmente con fines de investigación y educación, también pueden actuar como herramientas de prueba cruciales en el diseño y desarrollo de una red. Nosotros mostraremos ejemplos de ambos indistintamente. Solo citaremos aquellos gratuitos y/o open source.
 
 \subsection{Mininet}
-\textbf{Mininet} es un emulador de red que crea una red de hosts virtuales, switches, controladores y enlaces. Utiliza la virtualización basada en procesos de forma que es capaz de ejecutar muchos nodos (según la web, ha logrado levantar incluso 4096 a la vez) en un único núcleo del sistema operativo. Desde su versión 2.2.26, Linux soporta \texttt{namespace}s de red, una característica de virtualización ligera que proporciona a los procesos individuales interfaces de red separadas, tablas de enrutamiento y tablas ARP. Mininet puede crear switches OpenFlow en el kernel o en el espacio de usuario, controladores para controlar los conmutadores y hosts para comunicarse a través de la red simulada. Se encarga de conectarlos usando pares de ethernet virtual (\texttt{veth})\cite{mininet}.
+\textbf{Mininet} es un emulador de red que crea una red de hosts virtuales, switches, controladores y enlaces. Utiliza la virtualización basada en procesos de forma que es capaz de ejecutar muchos nodos (según la web, ha logrado levantar incluso 4096 a la vez) en un único núcleo del sistema operativo. Desde su versión 2.2.26, Linux soporta \texttt{namespace}s de red, una característica de virtualización ligera que proporciona a los procesos individuales interfaces de red separadas, tablas de enrutamiento y tablas ARP (del inglés, \textit{Address Resolution Protocol}). Mininet puede crear switches OpenFlow en el kernel o en el espacio de usuario, controladores para controlar los conmutadores y hosts para comunicarse a través de la red simulada. Se encarga de conectarlos usando pares de ethernet virtual (\texttt{veth})\cite{mininet}.
 
 Mininet presenta una serie de ventajas muy interesantes en el mundo de la virtualización de redes:
 \begin{itemize}
 \item Capacidad de alojamiento de miles de dispositivos en una misma red. 
 \item Asegura un arranque rápido de los nodos.
-\item Tiene una instalación muy sencilla, pues es posible descargarse desde su web máquinas virtuales con todo preparado para que tan solo sea necesario instalarla en un hipervisor. También admite instalación nativa.
-\item Cuenta con una \MYhref{http://mininet.org/api/annotated.html}{API} desde la que poder interactuar con la red y los dispositivos desplegados en ella. Sin embargo, está escrita en Python y no hemos dado con ningún motor de videojuegos que admita a este como lenguaje de scripting nativo.
+\item Tiene una instalación muy sencilla, pues es posible descargarse desde su web máquinas virtuales con todo preparado para que tan solo sea necesario instalarla en un hipervisor. También admite instalación nativa para Linux.
+\item Cuenta con una \MYhref{http://mininet.org/api/annotated.html}{API} (del inglés, \textit{Application Programming Interface} desde la que poder interactuar con la red y los dispositivos desplegados en ella. Sin embargo, está escrita en Python y no hemos dado con ningún motor de videojuegos que admita a este como lenguaje de scripting nativo.
 \item También posee una interfaz de usuario desde la que construir y gestionar la red.
 \end{itemize}
 
@@ -39,6 +39,13 @@ CORE se utiliza típicamente para la investigación de redes y protocolos, demos
 Sus características fundamentales son similares a las del emulador previamente citado. Al igual que aquel, CORE puede ser usado a través del GUI (la interfaz de usuario) o scripting mediante Python. Además, cuenta con una API propia. El demonio de Linux que CORE levanta escucha en un socket TCP para los mensajes de la API que lleguen de otra aplicación local o remota. La interfaz de usuario de CORE se conecta localmente a este demonio y utiliza la API para instanciar topologías. CORE también actuará como una ``servidor de emulación'' que escucha conexiones TCP de otro sistema. En el momento de la conexión, el otro sistema transmite mensajes al demonio de CORE, el cual puede controlar la la emulación en tiempo real\cite{coreapi}.
 
 \subsection{GNS3}
+GNS3 es un simulador gráfico de red multiplataforma \href{https://github.com/GNS3}{open-source} que se ejecuta en Windows, OS X y Linux \cite{bookgns}. Esto ya presenta una cierta ventaja respecto a sus anteriores competidores, cuya instalación solo es posible en Linux (y FreeBSD en el caso de CORE). Permite la virtualización de dispositivos reales tales como routers Cisco (para lo cual está especialmente preparado) y conectividad con otras redes reales como internet. Según su web, algunas de las marcas que utilizan este software son at\&t, Intel, NASA o Verizon \cite{gnsweb}.
+
+La aplicación crea un servidor en la máquina en la que es lanzado al cual se puede acceder mediante una API REST. 
+
+Cuenta con \MYhref{https://docs.gns3.com/}{documentación online}, \MYhref{https://gns3.com/community}{foros muy activos} e incluso una \MYhref{https://academy.gns3.com/}{academia} donde se imparten cursos.  
+
+En el capítulo \ref{chap:Analisis} hablaremos con más detenimiento de este simulador.
 
 \subsection{Más simuladores/emuladores}
 Existen más aplicaciones que virtualizan redes que no explicaremos aquí. Por citar algunas: Cloonix, Netkit, Shadow, VNX...
