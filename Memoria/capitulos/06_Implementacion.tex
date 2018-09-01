@@ -440,7 +440,7 @@ La figura \ref{fig:esquematico_red} está tomada directamente de la red desplega
 \begin{itemize}
 \item \textbf{VPCs}: Los VPCs son unos de los pocos nodos interactivos que GNS3 incluye por defecto. Como su propio nombre indica, no son más que PCs virtuales que incluyen \textbf{funciones básicas} que se espera que un PC pueda usar en una red. Entre esas funciones está la de asignar una dirección a su interfaz y la de lanzar PINGs a través de ella. VPC es una gran herramienta para añadir hosts simples a GNS3 y probar la conectividad entre los nodos\cite{bookgns}.
 
-Nuestra red cuenta con dos de ellos: \textit{[VPC]L1PC1} y \textit{[VPC]L1PC2}. Nótese la etiqueta con la que comienza su nombre, ya que como se comentó en anteriores ocasiones, esta sirve para que la API sea capaz de instanciar el objeto cuya clase representa este tipo de nodos (en este caso, la clase \texttt{VPC}). Solo consumen 2MB de RAM y la propia máquina anfitriona puede encargarse de gestionarlos (no es necesario pasar por GNS3 VM \textbf{ESTE CONCEPTO SERÁ EXPLICADO CUANDO HABLEMOS DE GNS3 AL COMIENZO}).
+Nuestra red cuenta con dos de ellos: \textit{[VPC]L1PC1} y \textit{[VPC]L1PC2}. Nótese la etiqueta con la que comienza su nombre, ya que como se comentó en anteriores ocasiones, esta sirve para que la API sea capaz de instanciar el objeto cuya clase representa este tipo de nodos (en este caso, la clase \texttt{VPC}). Solo consumen 2MB de RAM y la propia máquina anfitriona puede encargarse de gestionarlos (no es necesario pasar por GNS3 VM).
 
 El único papel con el que cuentan estos dispositivos es el de representar mediante una dirección el inicio y el final del escenario.
 
@@ -452,7 +452,7 @@ Al estar basado en un sistema operativo Linux, gran parte de los comandos más f
 
 GNS3 cuenta con ``plantillas'' con las que se facilitar el importado de dispositivos como nodos a GNS3. Con el fin de incluir aparatos con OpenWRT instalado usamos la plantilla que puede descargarse desde \MYhref{https://www.gns3.com/marketplace/appliance/openwrt-2}{aquí}. Una vez descargada, siguiendo una serie de pasos GNS3 permite importar el nodo con mucha facilidad. La versión del firmware de OpenWRT que nosotros usamos es la 15.05.1. Slgo antigua considerando que data de 2016 y la última versión estable es la 18.06.1.
 
-Todos los nodos que usen OpenWRT han de ser instalados en GNS3 VM, pues el simulador no permite de ningún modo que la máquina anfitriona sea la encargada de gestionarlos. La mayor parte de los aparatos cuyas imágenes son de cierta complejidad como este están obligados a ser usados de este modo.
+Todos los nodos que usen OpenWRT han de ser instalados en GNS3 VM si estamos trabajando desde Windows (en Linux no es necesario), pues el simulador no permite de ningún modo que la máquina anfitriona sea la encargada de gestionarlos. La mayor parte de los aparatos cuyas imágenes son de cierta complejidad como este están obligados a ser usados de este modo.
 
 Cinco de estos dispositivos han sido desplegados en la red. El camino más rápido para cruzar del primer PC1 al PC2 sería, en condiciones normales, \textit{[OPENWRT]L1R1} $\rightarrow$ \textit{[OPENWRT]L1R3} $\rightarrow$ \textit{[OPENWRT]L1R5}.
 

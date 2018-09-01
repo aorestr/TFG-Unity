@@ -1,8 +1,8 @@
 \chapter{Estado del arte}\label{chap:ArtState}
 
-El estado del arte se define como el nivel de desarrollo de un ámbito concreto, generalmente relacionado con el mundo técnico-científico.
+El estado del arte se define como el nivel de desarrollo de un ámbito concreto, generalmente relacionado con el mundo técnico-científico. Este capítulo se encarga de hacer un listado de aquellas tecnologías que podrían sernos útiles así como de dar una serie de apuntes acerca de cada una de ellas. Dividiremos las tecnologías en dos grandes secciones: simuladores/emuladores de red y motores de videojuego.
 
-\section{Simuladores de redes}
+\section{Simuladores y emuladores de red}
 Un simulador de red es un software que predice el comportamiento de una red de datos. En los simuladores, la red se modela con dispositivos, enlaces, aplicaciones, etc. y se informa del rendimiento de la red. La mayoría de los simuladores utilizan la simulación de eventos discretos (modelado de sistemas en los que las variables de estado cambian en momentos discretizados de tiempo). El comportamiento de la red y las diversas aplicaciones y servicios que soporta pueden ser observados en un laboratorio de pruebas; varios atributos del entorno también pueden ser modificados de manera controlada para evaluar cómo se comportarían la red bajo diferentes condiciones\cite{wiki:Network_simulation}.
 
 Sin embargo, conviene no confundir ``simuladores'' con ``emuladores'' de red. Un simulador puede realizar tareas replicadas para demostrar el comportamiento de una red y sus componentes, mientras que un emulador puede copiar el comportamiento de una red para reemplazarla funcionalmente\cite{emsim}.
@@ -34,9 +34,9 @@ Algunas de sus características clave son:
 \item Es altamente personalizable.
 \end{itemize}
 
-CORE se utiliza típicamente para la investigación de redes y protocolos, demostraciones, pruebas de aplicaciones y plataformas, evaluación de escenarios de redes, estudios de seguridad y aumento del tamaño de las redes físicas de prueba. Permite la inclusión de otras tecnologías de emulación de red como EMANE y ns-3\cite{core}.
+CORE se utiliza típicamente para la investigación de redes y protocolos, demostraciones, pruebas de aplicaciones y plataformas, evaluación de escenarios de redes, estudios de seguridad y aumento del tamaño de las redes físicas de prueba. Permite la inclusión de otras tecnologías de emulación de red como EMANE y ns-3 \cite{core}.
 
-Sus características fundamentales son similares a las del emulador previamente citado. Al igual que aquel, CORE puede ser usado a través del GUI (la interfaz de usuario) o scripting mediante Python. Además, cuenta con una API propia. El demonio de Linux que CORE levanta escucha en un socket TCP para los mensajes de la API que lleguen de otra aplicación local o remota. La interfaz de usuario de CORE se conecta localmente a este demonio y utiliza la API para instanciar topologías. CORE también actuará como una ``servidor de emulación'' que escucha conexiones TCP de otro sistema. En el momento de la conexión, el otro sistema transmite mensajes al demonio de CORE, el cual puede controlar la la emulación en tiempo real\cite{coreapi}.
+Sus características fundamentales son similares a las del emulador previamente citado. Al igual que aquel, CORE puede ser usado a través del GUI (la interfaz de usuario) o scripting mediante Python. Además, cuenta con una API propia. El demonio de Linux que CORE levanta escucha en un socket TCP para los mensajes de la API que lleguen de otra aplicación local o remota. La interfaz de usuario de CORE se conecta localmente a este demonio y utiliza la API para instanciar topologías. CORE también actuará como una ``servidor de emulación'' que escucha conexiones TCP de otro sistema. En el momento de la conexión, el otro sistema transmite mensajes al demonio de CORE, el cual puede controlar la la emulación en tiempo real \cite{coreapi}.
 
 \subsection{GNS3}
 GNS3 es un simulador gráfico de red multiplataforma \href{https://github.com/GNS3}{open-source} que se ejecuta en Windows, OS X y Linux \cite{bookgns}. Esto ya presenta una cierta ventaja respecto a sus anteriores competidores, cuya instalación solo es posible en Linux (y FreeBSD en el caso de CORE). Permite la virtualización de dispositivos reales tales como routers Cisco (para lo cual está especialmente preparado) y conectividad con otras redes reales como internet. Según su web, algunas de las marcas que utilizan este software son at\&t, Intel, NASA o Verizon \cite{gnsweb}.
@@ -51,7 +51,7 @@ En el capítulo \ref{chap:Analisis} hablaremos con más detenimiento de este sim
 Existen más aplicaciones que virtualizan redes que no explicaremos aquí. Por citar algunas: Cloonix, Netkit, Shadow, VNX...
 
 
-\section{Motores de videojuegos}
+\section{Motores de juego}
 Pondría una subsección por cada motor a considerar. Y en cada uno, comentar por qué es adecuado o no: precio, licencia, curva de aprendizaje, plataformas que soporta, facilidad para añadir librerías, o lenguaje que utilice que sea más o menos apropiado, si hay mecanismos para comunicarte con software externo (como el caso del emulador)... Con media página por cada uno, creoque basta. Unreal Engine, Amazon Lumberyard, Game Maker, Godot Engine, y no sé si alguno más que sea famosete, indicando que son los más populares (ojalá haya un informe con lista de usuarios por engine...).
 
 Creo que tanto para hablar de Unity como de GNS3, lo suyo es:
