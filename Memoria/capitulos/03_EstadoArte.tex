@@ -3,9 +3,9 @@
 El estado del arte se define como el nivel de desarrollo de un ámbito concreto, generalmente relacionado con el mundo técnico-científico. Este capítulo se encarga de hacer un listado de aquellas tecnologías que podrían sernos útiles así como de dar una serie de apuntes acerca de cada una de ellas. Dividiremos las tecnologías en dos grandes secciones: simuladores/emuladores de red y motores de videojuego.
 
 \section{Simuladores y emuladores de red}
-Un simulador de red es un software que predice el comportamiento de una red de datos. En los simuladores, la red se modela con dispositivos, enlaces, aplicaciones, etc. y se informa del rendimiento de la red. La mayoría de los simuladores utilizan la simulación de eventos discretos (modelado de sistemas en los que las variables de estado cambian en momentos discretizados de tiempo). El comportamiento de la red y las diversas aplicaciones y servicios que soporta pueden ser observados en un laboratorio de pruebas; varios atributos del entorno también pueden ser modificados de manera controlada para evaluar cómo se comportarían la red bajo diferentes condiciones\cite{wiki:Network_simulation}.
+Un simulador de red es un software que predice el comportamiento de una red de datos. En los simuladores, la red se modela con dispositivos, enlaces, aplicaciones, etc. y se informa del rendimiento de la red. La mayoría de los simuladores utilizan la simulación de eventos discretos (modelado de sistemas en los que las variables de estado cambian en momentos discretizados de tiempo). El comportamiento de la red y las diversas aplicaciones y servicios que soporta pueden ser observados en un laboratorio de pruebas; varios atributos del entorno también pueden ser modificados de manera controlada para evaluar cómo se comportarían la red bajo diferentes condiciones \cite{wiki:Network_simulation}.
 
-Sin embargo, conviene no confundir ``simuladores'' con ``emuladores'' de red. Un simulador puede realizar tareas replicadas para demostrar el comportamiento de una red y sus componentes, mientras que un emulador puede copiar el comportamiento de una red para reemplazarla funcionalmente\cite{emsim}.
+Sin embargo, conviene no confundir ``simuladores'' con ``emuladores'' de red. Un simulador puede realizar tareas replicadas para demostrar el comportamiento de una red y sus componentes, mientras que un emulador puede copiar el comportamiento de una red para reemplazarla funcionalmente \cite{emsim}.
 
 En un nivel básico, un simulador de red utiliza fórmulas matemáticas para crear un modelo teórico y totalmente virtual de una red. Los simuladores son soluciones software. Si bien se utilizan principalmente con fines de investigación y educación, también pueden actuar como herramientas de prueba cruciales en el diseño y desarrollo de una red. Nosotros mostraremos ejemplos de ambos indistintamente. Solo citaremos aquellos gratuitos y/o open source.
 
@@ -39,7 +39,7 @@ CORE se utiliza típicamente para la investigación de redes y protocolos, demos
 Sus características fundamentales son similares a las del emulador previamente citado. Al igual que aquel, CORE puede ser usado a través del GUI (la interfaz de usuario) o scripting mediante Python. Además, cuenta con una API propia. El demonio de Linux que CORE levanta escucha en un socket TCP para los mensajes de la API que lleguen de otra aplicación local o remota. La interfaz de usuario de CORE se conecta localmente a este demonio y utiliza la API para instanciar topologías. CORE también actuará como una ``servidor de emulación'' que escucha conexiones TCP de otro sistema. En el momento de la conexión, el otro sistema transmite mensajes al demonio de CORE, el cual puede controlar la la emulación en tiempo real \cite{coreapi}.
 
 \subsection{GNS3}
-GNS3 es un simulador gráfico de red multiplataforma \href{https://github.com/GNS3}{open-source} que se ejecuta en Windows, OS X y Linux \cite{bookgns}. Esto ya presenta una cierta ventaja respecto a sus anteriores competidores, cuya instalación solo es posible en Linux (y FreeBSD en el caso de CORE). Permite la virtualización de dispositivos reales tales como routers Cisco (para lo cual está especialmente preparado) y conectividad con otras redes reales como internet. Según su web, algunas de las marcas que utilizan este software son at\&t, Intel, NASA o Verizon \cite{gnsweb}.
+GNS3 es un simulador gráfico de red multiplataforma \href{https://github.com/GNS3}{open-source} que se ejecuta en Windows, macOS y Linux \cite{bookgns}. Esto ya presenta una cierta ventaja respecto a sus anteriores competidores, cuya instalación solo es posible en Linux (y FreeBSD en el caso de CORE). Permite la virtualización de dispositivos reales tales como routers Cisco (para lo cual está especialmente preparado) y conectividad con otras redes reales como internet. Según su web, algunas de las marcas que utilizan este software son at\&t, Intel, NASA o Verizon \cite{gnsweb}.
 
 La aplicación crea un servidor en la máquina en la que es lanzado al cual se puede acceder mediante una API REST. 
 
@@ -52,19 +52,33 @@ Existen más aplicaciones que virtualizan redes que no explicaremos aquí. Por c
 
 
 \section{Motores de juego}
-Pondría una subsección por cada motor a considerar. Y en cada uno, comentar por qué es adecuado o no: precio, licencia, curva de aprendizaje, plataformas que soporta, facilidad para añadir librerías, o lenguaje que utilice que sea más o menos apropiado, si hay mecanismos para comunicarte con software externo (como el caso del emulador)... Con media página por cada uno, creoque basta. Unreal Engine, Amazon Lumberyard, Game Maker, Godot Engine, y no sé si alguno más que sea famosete, indicando que son los más populares (ojalá haya un informe con lista de usuarios por engine...).
+Un motor de juego proporciona multitud de características que son útiles a través de muchos juegos diferentes, por lo que un juego implementado con ese motor obtiene todas esas características junto a elementos artísticos personalizados y código de juego específico para él \cite{unityinaction}. 
 
-Creo que tanto para hablar de Unity como de GNS3, lo suyo es:
-
-comentar las características generales en "motores de juegos" y en la de "emuladores". y luego añadir una sección quizás con los detalles de las plataformas elegidas, hablando de las características que vas a utilizar (API de GNS3, capacidad de enlazado con DLL de Unity...). Cosas que vaya a necesitar el revisor para entender el diseño o sobre todo la integración.
+Dividiremos cada uno de los que veremos en tres secciones fundamentales: plataformas hacia donde los juegos pueden ser exportados, características, lenguajes de programación que usan y precio.
 
 \subsection{Unreal Engine}
+Con una lista inmensa de juegos desarrollados con él \cite{wiki:unrealgames}, podemos asegurar que \textbf{Unreal Engine} (y más concretamente Unreal Engine 4, su última versión), de la compañía Epic Games, es uno de los motores de juego más usados de la historia. Es por eso, y por las características que veremos a continuación, que aparece en las listas de motores más famosos.
+\begin{itemize}
+\item \textbf{Plataformas soportadas}: Windows PC, PlayStation 4, Xbox One, macOS, iOS, Android, AR, VR, Linux, SteamOS y HTML5. El editor tiene soporte en Windows, Linux y macOS \cite{eulaunreal}.
+\item \textbf{Características}: renderización fotoreal en tiempo real, efectos de calidad de película de post-procesamiento, un flexible editor de materiales, abundantes herramientas de animación...\cite{unrealfeatures} Unreal no ha llegado a ser un motor tan importante en vano. Quizá, de entre todas sus prestaciones, la más interesante sea los ``blueprints''. Se trata de una forma visual y amigable de programar. Es posible crear rápidamente prototipos y contenido interactivo sin tocar una línea de código. Puede ser utilizad para construir comportamientos e interacciones de objetos, modificar interfaces de usuario, ajustar controles de entrada y mucho más.
+\item \textbf{Lenguajes de scripting}: aunque anteriormente era posible usar UnrealScript como lenguaje para desarrollar en Unreal, a partir de la versión 4 se decidió eliminar en favor de \textbf{C++}, que pasaría a ser el único lenguaje compatible con el software. Cuándo le preguntaron acerca de este cambio, Tim Sweeney, fundador de Epic Games, respondió: ``¿Por qué no matamos a UnrealScript y pasamos a C++ puro? Ya sabes, máximo rendimiento y máxima depuración. Nos da todas estas ventajas''\cite{removeuscript}.
+\item \textbf{Precio}: 5\% de royalties sobre los ingresos brutos después de los primeros \$3000 por producto y trimestre fiscal \cite{eulaunreal}.
+\end{itemize}
 
-\subsection{Amazon Lumberyard}
+Pese a los blueprints, que facilitan enormemente el trabajo lógico del juego, la curva de aprendizaje de Unreal Engine es algo mayor que para otros motores de juego, tal y como coinciden en múltiples foros de internet \cite{curveunreal}. El hecho de trabajar con C++, un lenguaje antiguo y de bajo nivel, ya supone un incremento de dificultad.
 
-\subsection{Game Maker}
+\subsection{GameMaker}
 
 \subsection{Godot Engine}
+De entre los motores de juego propietario, aparece \textbf{Godot} con su propuesta open-source. La última versión, Godot Engine 3, apareció a finales de enero con un nuevo motor de renderizado, flujo de renderizado basado en físicas para 3D, soporte para C\#... y otra serie de novedades \cite{newgodot}.
+\begin{itemize}
+\item \textbf{Plataformas soportadas}: Windows, macOS, Linux, FreeBSD, OpenBSD y Haiku. Es posible exportar los juegos a iOS, Android, Windows, macOS, Linux, UWP, *BSD, Haiku e incluso a HTML \cite{godotfeatures}.
+\item \textbf{Características}: creación de tus propias herramientas, una arquitectura que combina lo mejor de la renderización directa con la eficiencia de la renderización diferida, iluminación global para gráficos en tiempo real, edito de ``tile-maps'', transiciones personalizadas para crear animaciones...\cite{godotfeatures}
+\item \textbf{Lenguajes de scripting}: Godot tiene un lenguaje propio, muy similar a Python, llamado GDScript. Su parecido con Python equivale a sencillez de desarrollo. Además, soporta C++ y, desde su última versión, C\# \cite{godotfeatures}. Se está trabajando asimismo en la \MYhref{https://github.com/touilleMan/godot-python}{implantación de Python} como lenguaje de scripting nativo.
+\item \textbf{Precio}: quizás el punto fuerte de Godot: es totalmente gratuito, open-source y además está liberado bajo una licencia MIT, sin restricciones \cite{godotfree}.
+\end{itemize}
+
+Pese a no estar soportado de la forma en que un motor propietario de Unreal puede estarlo, Godot es un motor realmente interesante con prestaciones más que suficientes para el trabajo que nosotros pretendemos llevar a cabo.
 
 \subsection{Unity}
 
