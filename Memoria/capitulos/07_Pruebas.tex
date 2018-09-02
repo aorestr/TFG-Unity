@@ -1,10 +1,52 @@
 \chapter{Pruebas}\label{chap:Pruebas}
+En el penúltimo capítulo del documento se mostrarán los resultados del proyecto; se hará un análisis del juego en movimiento y del rendimiento del simulador que lo soporta.
 
-fgxdh
+\section{Descripción de las pruebas}
+Una vez establecido todo lo que vimos en el capítulo \ref{chap:Integration}, vamos a probar su funcionamiento así como su rendimiento. Hemos decidido llevar a cabo las pruebas en dos entornos diferentes, para ponderar ventajas e inconvenientes de cada uno de ellos. Estos se describen a continuación:
+\begin{itemize}
+\item El \textbf{caso 1} es sobre el que todo el desarrollo del proyecto ha sido ejecutado. El entorno consiste en una máquina física con Windows 10 desde donde el juego es ejecutado y GNS3 debe estar corriendo. Como se trata de un sistema operativo Windows, nodos como los de OpenWRT necesitan ser montados sobre un GNS3 VM, lo cual implica hacer uso de un hipervisor (aquí usaremos Virtualbox, pues aunque su rendimiento es inferior al de VMware, es open source) donde instalarlo. El proceso de despliegue es entonces algo tedioso, ya que requiere de una instalación de GNS3, una configuración apropiada del mismo y una máquina virtual con GNS3 VM.
+\item El \textbf{caso 2} busca acabar con ese proceso. La idea aquí es usar una sola máquina virtual como contenedor de todo lo que el juego necesita del simulador. Para ello, se ha preparado una máquina virtual con Xubuntu (recalcar que el adaptador de red está establecido como ``puente'', ya que así que la máquina toma una dirección de red diferente de aquella de la máquina huésped) y sobre él se ha instalado GNS3; se ha configurado este, se ha creado el proyecto de la figura \ref{fig:esquematico_red} y finalmente se ha exportado la máquina en formato \textit{.ova}. De esta forma ganamos en portabilidad. Además, puede demostrar que la API funciona incluso cuando el GNS3 al que llama es remoto.
+\end{itemize}
 
-\section{Descripción del problema}
+En ambos casos, se llevarán a cabo varias pruebas.
+\begin{itemize}
+\item La primera de ellas observará el consumo de RAM que GNS3 toma, tanto cuando el proyecto está parado como en acción. Para ello son usadas dos herramientas de Microsoft: Process Explorer y RamMap. Usaríamos únicamente el primero de ellos si no fuera porque los hipervisores usan algo llamado ``memoria bloqueada por el controlador'' (\textit{driver locked memory}) que los monitores de recursos normales no muestran. La memoria bloqueada por el controlador aparece cuando un controlador modo-kernel evita que las páginas de memoria sean cambiadas al archivo de paginación. Es a través de este mecanismo que el hipervisor varía la cantidad de memoria disponible para un huésped cuando la memoria dinámica está activada \cite{dlm}.
+\item La segunda medirá cuánto tiempo tarda cada router OpenWRT en iniciarse de forma aislada (se arranca él solo, no el proyecto completo). Para ello, se empieza a cronometrar desde que se pulsa el botón de inicio del nodo hasta que en el terminal del router aparece el mensaje \textit{br-lan: port 1(eth0) entered forwarding state
+}, a partir del cual el nodo comienza a ser plenamente funcional.
+\item La última medirá el tiempo que Unity necesita para cargar la escena tomando los datos del simulador. No sé contará aquí el tiempo otorgado de forma manual para que espere a que los nodos se inicien.
+\end{itemize}
 
-huigk
+\section{Caso 1}
+\subsection{Consumo de RAM}
+La memoria bloqueada en el PC antes de que GNS3 y la máquina virtual de GNS3 VM sean abiertos es de 13652KB, los cuales serán descontados del total.
 
+\begin{itemize}
+\item Cuando el proyecto es abierto pero \textbf{ningún nodo es iniciado}, GNS3 aloja 131,7MB mientras que GNS3 VM 28,3125MB. Total: \textbf{160,01MB}.
+\item \textbf{Arrancado} el proyecto, GNS3 152,1MB y GNS3 VM se mantiene igual. Total: \textbf{180,41MB}.
+\end{itemize}
 
+\subsection{Tiempo de arranque de los routers}
+La siguiente tabla recoge el tiempo de arranque individual de cada nodo y la media del total.
 
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l|l|l|l|l|l|}
+\cline{2-7}
+                                      & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} & \textbf{R5} & \textbf{Media} \\ \hline
+\multicolumn{1}{|l|}{\textbf{Tiempo}} &  52,06s		&             &             &             &             &                \\ \hline
+\end{tabular}
+\label{tab:t1}
+\end{table}
+
+\section{Caso 2}
+\subsection{Consumo de RAM}
+De nuevo, la memoria bloqueada en el PC antes del experimento es de 13652KB.
+
+\begin{itemize}
+\item Cuando \textbf{está parado} el proyecto, la máquina virtual que contiene Xubuntu y donde está GNS3 instalado ocupa \textbf{261,61MB}.
+\item Cuando se \textbf{inicia} todo el proyecto, la RAM usada pasa a ser de \textbf{790,61MB}.
+\end{itemize}
+
+\subsection{Tiempo de arranque de los routers}
+
+\section{Conclusiones}

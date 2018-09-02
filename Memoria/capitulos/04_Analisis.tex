@@ -11,6 +11,8 @@ Se ha decidido que GNS3 sea el simulador de redes a utilizar para nuestro proyec
 \item Integra \textbf{WireShark} nativamente para estudiar el envío de datos entre los distintos dispositivos.
 \end{itemize}
 
+Con la descripción de simulador y emulador de red que pudo verse en la sección \ref{sec:simuladoremulador}, entendemos que GNS3 es un simulador (tal y como es descrito en la mayoría de fuentes) que incluye en sí mismo una serie de emuladores que ayudan a recrear los entornos. Las emulaciones son posibles gracias a herramientas como QEMU (un emulador de máquinas y virtualizador open source \cite{qemu}). Lo que ocurre entre los distintos dispositivos (emulados) desplegados en GNS3 es lo que el software simula.
+
 GNS3 se estructura en \textbf{proyectos}. En cada proyecto podemos desplegar una serie de dispositivos y conectarlos entre sí. Al guardar un proyecto como tal, el despliegue realizado se guarda junto a él. Sin embargo, el estado de las máquinas no corre la misma suerte, y es que a cada apagado de las mismas toda su configuración se pierde.
 
 Una de las características más interesantes de GNS3 y sus proyectos está en la importación y exportación de estos. El simulador cuenta con una opción que permite extraer todo un proyecto en una imagen (de formato \textit{.gns3project}) para que sea fácilmente portable. Existe la posibilidad de exportar, junto a la topología creada, las imágenes base sobre las que los nodos del proyecto están construidas para que no sea necesario contar con esas imágenes en el GNS3 donde se pretende importar.
