@@ -1,19 +1,26 @@
 \chapter{Pruebas}\label{chap:Pruebas}
-En el penúltimo capítulo del documento se mostrarán los resultados del proyecto; se hará un análisis del juego en movimiento y del rendimiento del simulador que lo soporta.
+En el penúltimo capítulo del documento se mostrarán los resultados del proyecto; se hará un análisis del establecimiento del juego y del rendimiento del simulador que lo soporta.
 
 \section{Descripción de las pruebas}
-Una vez establecido todo lo que vimos en el capítulo \ref{chap:Integration}, vamos a probar su funcionamiento así como su rendimiento. Hemos decidido llevar a cabo las pruebas en dos entornos diferentes, para ponderar ventajas e inconvenientes de cada uno de ellos. Estos se describen a continuación:
+Una vez asentado todo lo que vimos en el capítulo \ref{chap:Integration}, vamos a probar su funcionamiento así como su rendimiento. Hemos decidido llevar a cabo las pruebas en dos entornos diferentes, para ponderar ventajas e inconvenientes de cada uno de ellos. Estos se describen a continuación:
 \begin{itemize}
 \item El \textbf{caso 1} es sobre el que todo el desarrollo del proyecto ha sido ejecutado. El entorno consiste en una máquina física con Windows 10 desde donde el juego es ejecutado y GNS3 debe estar corriendo. Como se trata de un sistema operativo Windows, nodos como los de OpenWRT necesitan ser montados sobre un GNS3 VM, lo cual implica hacer uso de un hipervisor (aquí usaremos Virtualbox, pues aunque su rendimiento es inferior al de VMware, es open source) donde instalarlo. El proceso de despliegue es entonces algo tedioso, ya que requiere de una instalación de GNS3, una configuración apropiada del mismo y una máquina virtual con GNS3 VM.
 \item El \textbf{caso 2} busca acabar con ese proceso. La idea aquí es usar una sola máquina virtual como contenedor de todo lo que el juego necesita del simulador. Para ello, se ha preparado una máquina virtual con Xubuntu (recalcar que el adaptador de red está establecido como ``puente'', ya que así que la máquina toma una dirección de red diferente de aquella de la máquina huésped) y sobre él se ha instalado GNS3; se ha configurado este, se ha creado el proyecto de la figura \ref{fig:esquematico_red} y finalmente se ha exportado la máquina en formato \textit{.ova}. De esta forma ganamos en portabilidad. Además, puede demostrar que la API funciona incluso cuando el GNS3 al que llama es remoto.
+
+La máquina virtual tiene asignados dos núcleos del procesador.
 \end{itemize}
 
-En ambos casos, se llevarán a cabo varias pruebas.
+En ambos casos, se llevarán a cabo varias pruebas sobre el proyecto de la figura \ref{fig:esquematico_red}.
 \begin{itemize}
-\item La primera de ellas observará el consumo de RAM que GNS3 toma, tanto cuando el proyecto está parado como en acción. Para ello son usadas dos herramientas de Microsoft: Process Explorer y RamMap. Usaríamos únicamente el primero de ellos si no fuera porque los hipervisores usan algo llamado ``memoria bloqueada por el controlador'' (\textit{driver locked memory}) que los monitores de recursos normales no muestran. La memoria bloqueada por el controlador aparece cuando un controlador modo-kernel evita que las páginas de memoria sean cambiadas al archivo de paginación. Es a través de este mecanismo que el hipervisor varía la cantidad de memoria disponible para un huésped cuando la memoria dinámica está activada \cite{dlm}.
-\item La segunda medirá cuánto tiempo tarda cada router OpenWRT en iniciarse de forma aislada (se arranca él solo, no el proyecto completo). Para ello, se empieza a cronometrar desde que se pulsa el botón de inicio del nodo hasta que en el terminal del router aparece el mensaje \textit{br-lan: port 1(eth0) entered forwarding state
-}, a partir del cual el nodo comienza a ser plenamente funcional.
-\item La última medirá el tiempo que Unity necesita para cargar la escena tomando los datos del simulador. No sé contará aquí el tiempo otorgado de forma manual para que espere a que los nodos se inicien.
+\item La primera de ellas observará el consumo de RAM que GNS3 toma, tanto cuando el proyecto está parado como en acción. Para ello son usadas dos herramientas de Microsoft: Process Explorer y RamMap. Usaríamos únicamente el primero de ellos si no fuera porque los hipervisores utilizan algo llamado ``memoria bloqueada por el controlador'' (\textit{driver locked memory}) que los monitores de recursos normales no muestran. La memoria bloqueada por el controlador aparece cuando un controlador modo-kernel evita que las páginas de memoria sean cambiadas al archivo de paginación. Es a través de este mecanismo que el hipervisor varía la cantidad de memoria disponible para un huésped cuando la memoria dinámica está activada \cite{dlm}.
+\item La segunda medirá cuánto tiempo tarda cada router OpenWRT en iniciarse de forma aislada (se arranca él solo, no el proyecto completo). Para ello, se empieza a cronometrar desde que se pulsa el botón de inicio del nodo hasta que en el terminal del router aparece el mensaje \textit{br-lan: port 1(eth0) entered forwarding state}, a partir del cual el nodo comienza a ser plenamente funcional. También se testeará el caso análogo para cuando se ejecuta el proyecto completo. En esta situación, se mostrará el tiempo transcurrido hasta que todos los routers sean correctamente inicializados.
+\item La última medirá el tiempo que Unity necesita para cargar la escena tomando los datos del simulador. No se contará aquí el la espera establecida manualmente para que el juego no trabaje hasta que los aparatos estén disponibles. Extraeremos tres datos:
+\begin{enumerate}
+\item Tiempo de establecimiento de los VPCs: cuánto tiempo se necesita para que su configuración sea establecida en GNS3.
+\item Tiempo de establecimiento de los routers: cuánto tiempo se necesita para que su configuración sea establecida en GNS3. Recordar que esta tarea fue paralelizada de modo que se establecían todos ``a la vez'' y no secuencialmente.
+\item Tiempo de establecimiento de las tablas de encaminamiento: cuánto tiempo necesita Unity para pedir los datos a los routers (tablas de encaminamiento, IPs asociadas a cierta interfaz) con el fin de rellenar los carteles de la escena.
+\end{enumerate}
+Llevaremos a cabo esta prueba de forma automatizada sobre el juego compilado, insertando una instancia \texttt{StopWatch} en la clase \texttt{L1M1Handler} y exportando los distintos lapsos de tiempo en un fichero de texto que pueda ser consultado tras su escritura.
 \end{itemize}
 
 \section{Caso 1}
@@ -30,12 +37,27 @@ La siguiente tabla recoge el tiempo de arranque individual de cada nodo y la med
 
 \begin{table}[H]
 \centering
-\begin{tabular}{l|l|l|l|l|l|l|}
-\cline{2-7}
-                                      & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} & \textbf{R5} & \textbf{Media} \\ \hline
-\multicolumn{1}{|l|}{\textbf{Tiempo}} &  52,06s		&             &             &             &             &                \\ \hline
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\textbf{R1} & \textbf{R2} 	& \textbf{R3} 	& \textbf{R4} 	& \textbf{R5} 	& \textbf{Media}	\\ \hline
+52,28s		& 52,38s		& 47,13s		& 51,26s		& 51,73s		& \textbf{50,956}	\\ \hline
 \end{tabular}
 \label{tab:t1}
+\end{table}
+
+Si ahora probamos a arrancar el proyecto completo (que incluye dos VPCs además de los routers), el resultado se dispara, necesitando de nada menos que \textbf{4min15s} para que todos los nodos sean completamente cargados. Es más de cuatro veces la media de lo que necesita cuando son ejecutados individualmente.
+
+\subsection{Tiempo de establecimiento de la escena}
+La tabla \ref{tab:t2} recoge los datos obtenidos tras la prueba:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Establecimiento VPCs} & \textbf{Establecimiento routers} & \textbf{\begin{tabular}[c]{@{}c@{}}Establecimiento tablas\\ de encaminamiento\end{tabular}} \\ \hline
+0,017s                        & 42,255s                          & 62,299s                                           \\ \hline
+\end{tabular}
+\label{tab:t2}
 \end{table}
 
 \section{Caso 2}
@@ -48,5 +70,31 @@ De nuevo, la memoria bloqueada en el PC antes del experimento es de 13652KB.
 \end{itemize}
 
 \subsection{Tiempo de arranque de los routers}
+La siguiente tabla recoge el tiempo de arranque individual de cada nodo y la media del total.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\textbf{R1} & \textbf{R2} 	& \textbf{R3} 	& \textbf{R4} 	& \textbf{R5} 	& \textbf{Media}	\\ \hline
+60,26s		& 57,96s		& 58,21s		& 58,44s		& 57,95s		& \textbf{58,564}	\\ \hline
+\end{tabular}
+\label{tab:t3}
+\end{table}
+
+Como es de esperar, el tiempo que tardan todos los nodos en ser completamente inicializados también se ve incrementado. Hasta los \textbf{5min16s} concretamente.
+
+\subsection{Tiempo de establecimiento de la escena}
+La tabla \ref{tab:t4} recoge los datos obtenidos tras la prueba:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Establecimiento VPCs} & \textbf{Establecimiento routers} & \textbf{\begin{tabular}[c]{@{}c@{}}Establecimiento tablas\\ de encaminamiento\end{tabular}} \\ \hline
+0,017s                        & 46,246s                          & 66,294s                                           \\ \hline
+\end{tabular}
+\label{tab:t4}
+\end{table}
 
 \section{Conclusiones}
