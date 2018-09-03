@@ -98,3 +98,35 @@ La tabla \ref{tab:t4} recoge los datos obtenidos tras la prueba:
 \end{table}
 
 \section{Conclusiones}
+Como era de esperar, el caso 2, al estar basado íntegramente en una máquina virtual, ofrece peores resultados que el caso 1, ya que esta cuenta con los recursos de la máquina física de forma muy limitada y controlada.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{imagenes/ram}
+  \caption{Comparación consumo de RAM}
+  \label{fig:ram}
+\end{figure}
+
+La figura \ref{fig:ram} evidencia la diferencia de consumo de RAM entre ambas opciones. Mientras que la primera apenas llega a los 200MBs, la segunda la cuadriplica. En consecuencia, será necesario contar con un PC de ciertas prestaciones para ser capaz de trabajar con redes grandes de usar este método.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{imagenes/tiemposarranque}
+  \caption{Tiempos de arranque de los nodos de forma individual (arriba) y en grupo (abajo)}
+  \label{fig:tiemposarranque}
+\end{figure}
+
+El resultado también es negativo para el tiempo de arranque de los routers. Si bien en ninguno de los das casos la activación es automática como veníamos anunciando, el caso 2 sigue quedando detrás según se observa en la gráfica \ref{fig:tiemposarranque}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{imagenes/arranquejuego}
+  \caption{Tiempos de arranque de las partes del juego relacionadas con el simulador}
+  \label{fig:arranquejuego}
+\end{figure}
+
+Finalmente, la figura \ref{fig:arranquejuego} muestra que las diferencias a la hora de interactuar con el juego no son demasiado grandes entre los dos casos. El caso 1 es ligeramente más rápido que el segundo.
+
+Aunque es evidente la derrota en rendimiento de la máquina virtual, las ventajas con ella son claras como se explicó al comienzo del capítulo. El hecho de aislar toda la configuración del simulador en una sola máquina virtual hace su uso extremadamente portable y sencillo. Problemas como su mayor consumo de RAM no debe serlo a día de hoy, con sistemas que cuentan fácilmente con 8GBs de RAM. Además, la sola instalación de GNS3 es ya de por sí poco recomendable para equipos de pocas prestaciones \cite{gnsweb}. Yendo aún a más: si el proyecto se encuentra inicialmente activo y configurado cuando el juego fuera a hacer uso de él, el caso 2 no apenas se ve perjudicado frente al segundo en cuanto a configuración del juego e interacción con este.
+
+Consideramos entonces que es la opción correcta a seguir, ya que firmemente pensamos que las ventajas que ofrece las hacen ideales para el proyecto (acercar el juego al mayor número de personas) frente a los inconvenientes que es evidente que presenta.
