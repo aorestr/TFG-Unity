@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cacheType: 1
-  lastUpdatedAtString: 2018-08-27T20:26:33.852+02:00
-  initializedAtString: 2018-08-27T20:26:33.852+02:00
+  lastUpdatedAtString: 2018-09-04T20:45:57.473+02:00
+  initializedAtString: 2018-09-04T20:45:57.473+02:00
   currentGitRemote:
     name: origin
     url: git@github.com:aorestr/TFG-Unity.git
@@ -34,4 +34,4 @@ MonoBehaviour:
   currentConfigRemote:
     name: origin
     url: git@github.com:aorestr/TFG-Unity.git
-  currentHead: c549297
+  currentHead: 0a60819

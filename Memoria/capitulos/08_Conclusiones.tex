@@ -4,9 +4,13 @@ Antes de finalizar el documento, recordaremos los puntos claves de lo que se pud
 \section{Trabajo realizado}
 Durante el presente documento hemos atendido principalmente a dos asuntos.
 
-El primero de ellos describe con todo detalle la forma de hacer interactiva una red virtualizada a través de una herramienta externa a ella. La red virtualizada es generada mediante el simulador GNS3, mientras que la herramienta se materializó en una librería para el lenguaje C\#. Tal biblioteca nos permite desde encender y apagar dispositivos por la red, pasando por crear nuevos enlaces entre ellos, hasta controlarlos desde dentro tal y como necesitemos. Las posibilidades que brinda son amplias.
+El primero de ellos describe con todo detalle el método llevado a cabo para volver interactiva una red virtualizada a través de una herramienta externa a ella. La red virtualizada es generada mediante el simulador GNS3. La susodicha herramienta, por su parte, se materializó en una librería para el lenguaje C\#. Para lograr esto, se requiere el uso de la API REST de GNS3, desde la cual mandamos peticiones, tanto en busca de información como a la espera de crear cambios en la red.  Es asimismo necesario crear conexiones con los nodos contenidos en los proyectos con sockets, gracias a los cuales ganamos total control sobre ellos. La biblioteca nos permite desde encender y apagar dispositivos por la red, pasando por crear nuevos enlaces entre ellos, hasta controlarlos de forma absoluta. Las posibilidades son amplias.
 
-El segundo punto refiere directamente a la creación de un juego haciendo uso de la utilidad creada en el apartado anterior. Gracias a ella, se consiguió crear un pequeño ``puzzle'' cuyas indicaciones eran extraídas directamente desde la red virtual. El puzzle pone a prueba los conocimientos de enrutamiento del jugador.
+El segundo punto refiere directamente a la creación de un juego. Insertando la biblioteca desarrollada en los entresijos del videojuego somos capaces de controlar todo lo que ocurre en la red virtualizada. Esto tiene repercusión bilateral: el juego puede nutrirse de la la red, de sus estructura y de su información, a la vez que puede modificarla tal y como sea necesario.
+
+A través de la utilidad, se creó un pequeño ``puzzle'' cuyas indicaciones eran extraídas directamente desde la red virtual. El puzzle pone a prueba los conocimientos de enrutamiento del jugador mediante un sencillo laberinto, donde cada plataforma del nivel remite a un router de la red que permite el salto al siguiente mediante una serie de puertas que no simbolizan otra cosa que las interfaces de cada uno.
+
+Finalmente, durante las pruebas del proyecto, se propuso una configuración alternativa del simulador de redes. En lugar de ser instalado de forma nativa, es enteramente desplegado en una máquina virtual que, al ser exportada en un formato fácilmente importable en un hipervisor, facilita la portabilidad de las redes y, por consiguiente, de los juegos que sean desarrollados junto a ellas.
 
 \section{Valoración del resultado}
 La API desarrollada puede suponer una herramienta de increíble utilidad para aplicaciones de toda índole en el mundo de la telemática. Al haber sido cuidada de forma tan detallada, su utilización e incluso modificación posterior no posee complejidad alguna. Consideramos entonces que, en cuanto cómo de reutilizable puede llegar a ser, es un éxito. Nos hemos encargado de que exista información suficiente para aquel que pretenda retomarla mediante documentación tanto en el código como en el repositorio donde este se hospeda.
@@ -19,14 +23,14 @@ Posiblemente el verdadero punto débil del proyecto haya sido el videojuego. Y e
 
 Si bien efectivamente se comprobó la viabilidad de la relación GNS3$\leftrightarrow$API$\leftrightarrow$Juego, quizá no fuera explotada lo suficiente. Muchas de las características insertadas en la librería han quedado excluidas del juego final pues no son útiles para el mismo. Añadir nuevos niveles habría garantizado su inclusión en el mismo, pero ello también implicaba una planificación más detenida y un mayor desembolso temporal inviable.
 
-En cualquiera de los casos, como ha quedado demostrado en el documento, el proyecto ha estado centrado en la interacción entre los distintos elementos de nuestro problema.
+En cualquiera de los casos, como ha quedado demostrado en el documento, el proyecto ha estado centrado en la interacción entre los distintos elementos de nuestro problema. Se trata de una prueba de concepto que, consideramos, ha sido fructuosa.
 
 \section{Experiencia personal}
 El desarrollo de este proyecto ha supuesto un aprendizaje continúo para mí. He descubierto qué son los simuladores de redes, me he introducido en el mundo de la programación de videojuegos, he aprendido a C\# y a trabajar en el entorno .NET... y realmente un largo número de etcéteras más. Ha sido realmente una experiencia plena porque todo ese aprendizaje provenía de uno mismo: de las constantes batallas contra los problemas aparecidos y de la habilidad para resolverlos con los medios dados.
 
 Por un lado me siento plenamente satisfecho con el trabajo realizado, pues he abierto un camino sobre el que firmemente pienso que es importante seguir trabajando. Me apena saber que el videojuego que tenía en mente cuando comencé el proyecto no haya podido llevarse a cabo. Mi nula experiencia con motores de juegos me ha ralentizado enormemente a la hora de crear. Esto se traduce en grandes cantidades de tiempo invertidas en pasos elementales y pequeños, reduciendo considerablemente el número de horas para el desarrollo de algo más grande.
 
-\section{Trabajos futuros}
+\section{Trabajo futuro}
 Tal y como se ha repetido en varias ocasiones, la API ha sido creada de forma que cualquier nuevo desarrollador que pretende hacer uso de ella, lo tenga fácil para ello. Así, proponemos que más adelante el proyecto sea retomado. 
 
 Como el presente trabajo se ha propuesto y ha logrado crear la interacción entre el videojuego y la red virtualizada, la persona que encargada de reiniciarlo tendría la responsabilidad de completar lo relativo al videojuego. Este traspaso de testigo consistiría en construir un videojuego de ciertas dimensiones que ponga en práctica lo teorizado durante el documento; algo como lo que podíamos ver en la sección \ref{subsec:modelojuego}. Disponible la herramienta y las indicaciones necesarias para hacerlo, solo queda ponerlas en práctica.

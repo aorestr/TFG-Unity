@@ -29,7 +29,8 @@ public class L1M1Handler : MonoBehaviour {
                 GNS3Handler.Instance.projectHandler.GetNodeByName(nodeName)
             );
         }
-
+        // Initialize a Stopwatch instance in order to measure times
+        //Stopwatch stopWatch = new Stopwatch();
         // Assign every node with a variable
         VPC PC1 = (VPC)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[0]);
         VPC PC2 = (VPC)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[1]);
@@ -40,19 +41,49 @@ public class L1M1Handler : MonoBehaviour {
         OpenWRT R5 = (OpenWRT)GNS3Handler.Instance.projectHandler.GetNodeByName(L1Mapping.NodeNamesM1[6]);
         OpenWRT[] Routers = new OpenWRT[5] { R1, R2, R3, R4, R5 };
 
-        // We need to wait. Otherwise, nodes won't boot properly
-        Thread.Sleep(240000);
+        // We need to wait. Otherwise, nodes won't boot properly. We have set 4:30
+        Thread.Sleep(270000);
 
         // Set up end-point nodes
         L1M1HandlerHelper.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
+        /*
+        stopWatch.Start();
+        L1M1HandlerHelper.SetUpPCs(new VPC[2] { PC1, PC2 }, NetsPrefix);
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\aores\Desktop\caso2.txt"))
+        {
+            file.WriteLine($"Milisegundos en preparar los VPCs: {stopWatch.ElapsedMilliseconds.ToString()}");
+        }
+        stopWatch.Stop();
+        */
+
         // Set-up routers
         L1M1HandlerHelper.SetUpRouters(Routers, NetsPrefix);
+        /*
+        stopWatch.Start();
+        L1M1HandlerHelper.SetUpRouters(Routers, NetsPrefix);
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\aores\Desktop\caso2.txt", true))
+        {
+            file.WriteLine($"Milisegundos en preparar los routers: {stopWatch.ElapsedMilliseconds.ToString()}");
+        }
+        stopWatch.Stop();
+        */
 
         // Set the routing tables signs
         for (int i = 0; i < Routers.Length; i++)
             L1M1HandlerHelper.SetRoutingTables(Routers[i].RoutingTable, NetTables[i]);
+        /*
+        stopWatch.Start();
+        for (int i = 0; i < Routers.Length; i++)
+            L1M1HandlerHelper.SetRoutingTables(Routers[i].RoutingTable, NetTables[i]);
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\aores\Desktop\caso2.txt", true))
+        {
+            file.WriteLine($"Milisegundos en preparar las tablas de encaminamiento del juego: {stopWatch.ElapsedMilliseconds.ToString()}");
+        }
+        stopWatch.Stop();
+        */
+
         // IP of the PC2
-        DestinationIP.text = $"192.168.{ NetsPrefix[NetsPrefix.Length - 1]}/24";
+        DestinationIP.text = $"Dest:192.168.{NetsPrefix[NetsPrefix.Length - 1]}/24";
         StartCoroutine("Timer");
     }
 

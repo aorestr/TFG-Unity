@@ -18,8 +18,6 @@ Según Wikipedia, una \textbf{API} ``es un conjunto de subrutinas, funciones y p
 
 La programación se rige por \textbf{capas de abstracción}. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en agilidad de escritura y sencillez en el diseño sin perder flexibilidad de desarrollo.
 
-\textit{Pondría más bien que para facilitar esta comunicación, una de las alternativas que exsiten en sistemas complejos, es aplicar el concepto de capa. Una capa sería.. (en redes, el modelo OSI o el TCP/IP usan capas, en la que la superior solicita servicios a la inferior, y esta se lo facilita... En TCP/IP se define de forma abstracta, no a nivel de programación).}
-
 Como se ha citado previamente, GNS3 hace uso de una \textbf{API REST} (\textit{REpresentational State Transfer}). Esto es, mediante una serie de métodos (los conocidos GET, POST...) asociados a una URI concreta podemos interactuar \textbf{vía web} con una aplicación. La diferencia fundamental con otra clase de servicios web es que REST está orientado a recursos y no a métodos. Esto permite a la web utilizar comunicaciones sin estado, facilitando de este modo su escalabilidad\cite{REST}.
 
 Aunque de gran utilidad (ya veremos qué papel concreto juega en nuestro trabajo), hace falta algo más para poder propiciar la interacción entre el simulador de redes y el videojuego; la API trabaja a un nivel mucho más bajo del que requerimos para desarrollar los juegos. Surge la necesidad entonces de crear nuestra propia API que haga uso de la API REST de GNS3 y que defina las funciones necesarias, a un nivel más abstracto y con más facilidades, que haga de intermediaria entre GNS3 y Unity.
@@ -45,19 +43,19 @@ Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
 
 \subsection{Diseño de la API}
 Antes de desarrollar la API, que se ha decidido llamar \textbf{GNS3sharp} por la fusión entre las dos tecnologías que la conforman, es necesario reflexionar sobre los distintos aspectos que la compondrán (estructura, servicios, funciones...). Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
-\subsubsection[Interacción con GNS3]{¿Cómo debe interactuar con el simulador?}
+\subsubsection[Interacción con GNS3]{Interacción con GNS3 (¿Cómo debe interactuar con el simulador?)}
 Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión. Todo esto volverá a ser ilustrado en la subsección \ref{subsec:interac_emul} con mayor detalle.
 
 Tratándose de una API REST, lo único que nos es necesario para la conexión es un \textbf{cliente web}. El framework de .NET ya cuenta con una clase dedicada a ello denominada \texttt{System.Net.WebClient}\cite{webclient}, que contiene métodos más que suficientes para nuestro uso. Será pues sobre esto sobre lo que se base primordialmente la relación entre nuestra librería y el simulador de redes como tal. A continuación veremos que habremos de emplear alguna tecnología más.
 
-\subsubsection[Acceso a la API]{¿Cómo queremos que interactúe con el exterior?}\label{subsec:accesoapi}
+\subsubsection[Acceso a la API]{Acceso a la API (¿Cómo queremos que interactúe con el exterior?)}\label{subsec:accesoapi}
 Es importante tener esto claro, pues el uso de la librería y de sus métodos por parte de una aplicación externa debe optimizar la productividad y agilizar el desarrollo lo máximo posible. Aquel que vaya a hacer uso de ellas debe tener un esquema claro del modo en que puede gestionar la interacción, siendo pues cercana al usuario (más bien desarrollador) último.
 
 GNS3 funciona a través de proyectos. En un proyecto se pueden incluir tantos nodos como se desee para, a posteriori, ser interconectados. Las posibilidades son muy amplias y dejan poder absoluto al usuario. La singularidad del proyecto apenas pasa por permitir arrancar o apagar todos los nodos contenidos en él a la vez.
 
 Siendo así, se ha optado por concentrar lo crucial de la interacción entre el simulador y el desarrollador en \textbf{una sola clase-objeto}. Esta clase, que se explicará con detalle más adelante, permitirá hacer de puente entre el proyecto y los distintos elementos que lo componen y aquel que haga uso de ella.
 
-\subsubsection[Funcionalidad]{Más importante aún, ¿qué queremos que haga?}
+\subsubsection[Funcionalidad]{Funcionalidad (¿Qué queremos que haga?)}
 Todo lo explicado hasta ahora es correcto: definimos una forma con la que el código pueda acceder al simulador y reflexionamos en la manera en la que el desarrollador que la use pueda sacarle partido. Sin embargo, ¿qué significa entonces \textit{sacarle partido}?
 
 Para responder no hay más que irse al propio GNS3 y ver todas las opciones que nos ofrece: desplegar nodos, enlazarlos entre sí, cortar esos enlaces, arrancar todos los nodos juntos, parar algunos de ellos a voluntad... 
@@ -179,4 +177,25 @@ Existen dos aproximaciones al modo en el que estos niveles se conectan con el si
 De entre estos dos acercamientos al problema, quizás el primero sea más simple, pero el arranque de cada nodo no es inmmediato. El segundo entraña una mayor dificultad ingenieril y mayor propensión al error aunque la configuración de los aparatos conlleve menos tiempo.
 \end{itemize}
 
-Sin embargo, aunque todas estas ideas pueden sonar realmente interesantes, el juego final desarrollado no ha podido alcanzarlas. En el siguiente capítulo, donde se detalla la integración real de lo expuesto en este capítulo, se comprobarán cuáles han sido las dificultas encontradas en el camino que han frenado de una forma u otra el escenario inicial. 
+\subsection{Juego a desarrollar}\label{subsec:fracasojuego}
+
+Sin embargo, aunque todas estas ideas pueden sonar realmente interesantes, el juego final desarrollado no ha podido alcanzarlas. La complejidad existente para llevarlo a cabo era demasiado grande. En su lugar, se ha preferido crear un único pequeño escenario que sirva como demostración del potencial del proyecto.
+
+Con este propósito, se desarrollará un minijuego basado en tablas de enrutamiento. El objetivo del jugador es ser capaz de alcanzar un dispositivo marcado de la red en el menor tiempo posible. Por supuesto, habrá de atravesar una serie de nodos para alcanzarlo.
+
+El mapa estará compuesto por varias plataformas y en cada una de ellas un cartel con la tabla de enrutamiento del respectivo router. Son estas plataformas entonces una suerte de representantes de los routers de la red. Al jugador se le darán varias posibles opciones como siguiente salto. Cada opción es una interfaz del router. En la interfaz aparecerá la dirección IP del equipo a alcanzar. El resultado será algo como lo que puede verse en la imagen \ref{fig:juegoaccion}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.1]{imagenes/juegoaccion}
+  \caption{Imágenes del minijuego en acción}
+  \label{fig:juegoaccion}
+\end{figure}
+
+Con este nivel tan sencillo conseguimos dos cosas:
+\begin{itemize}
+\item Dar un ejemplo de juego didáctico con redes. Se ponen a prueba los conocimientos del jugador sobre redes y se le anima a hacerlo lo mejor posible a través de un contador ascendente.
+\item Mostrar cómo se lleva a cabo la interacción entre el simulador y el juego. Dicho en otras palabras, demostrar que, efectivamente, la API es funcional y puede ser usada con el propósito que se esperaba.
+\end{itemize}
+
+Se cimentan unos pilares sobre los que podrán construirse cosas mucho mayores en el futuro.
