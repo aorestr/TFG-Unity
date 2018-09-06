@@ -12,7 +12,7 @@ Dividiremos el trabajo total a realizar en distintos \textit{paquetes de trabajo
 \subsubsection{P.1 Revisión bibliográfica}
 Este paquete recoge las tareas relacionadas con el estudio previo de la materia que circunscribe todo el documento. Se trata de una tarea importa ya que sobre ella se cimentará todo el trabajo posterior. Un buen análisis del entorno nos posibilitará una mayor facilidad en la realización del proyecto.
 \begin{itemize}
-\item \textbf{S.1.1 Estudio sobre la educación y los videojuegos}. Pequeño estudio previo al trabajo para entender mejor la relación entre los videojuegos y su labor educativa.
+\item \textbf{S.1.1 Revisión bibliográfica sobre la educación y los videojuegos}. Pequeño estudio previo al trabajo para entender mejor la relación entre los videojuegos y su labor educativa.
 \item \textbf{S.1.2 Revisión del estado actual de simuladores/emuladores de redes}. Investigación para encontrar cuáles son las aplicaciones encargadas de virtualizar redes más importantes y populares a día de hoy.
 \item \textbf{S.1.3 Revisión del estado actual de los motores de juego}. Búsqueda de los motores para la fabricación de videojuegos. Tanto esta tarea como la anterior serán abordadas en el capítulo \ref{chap:ArtState}.
 \item \textbf{S.1.4 Análisis de las tecnologías encontradas}. Tras las investigaciones previas, es necesario hacer un análisis de entre todas las tecnologías encontradas para quedarnos con aquellas que más nos convengan en función de las ventajas que presentan frente al resto. El análisis ha sido condensado en el capítulo \ref{chap:Analisis}.
@@ -22,27 +22,25 @@ Este paquete recoge las tareas relacionadas con el estudio previo de la materia 
 El actual paquete tiene por misión crear un diseño previo a la implementación del propósito último del proyecto. Se trata de un esbozo de lo que en última instancia será desarrollado. Se estudia durante todo el capítulo \ref{chap:Design}.
 \begin{itemize}
 \item \textbf{S.2.1 Diseño del sistema de interconexión red-juego}. En este punto cabe investigar y proponer ideas acerca del modo en el que el juego es habilitado para interaccionar directamente con el simulador/emulador. Esto derivará en, como más tarde se verá, el diseño de una biblioteca en C\#.
-\item \textbf{S.2.2 Diseño conceptual del juego}. Estructura que debe contener así como ideas de niveles que puedan ser implementadas en él.
+\item \textbf{S.2.2 Diseño conceptual del juego}. Estructura que el juego debe contener así como ideas de niveles que puedan ser implementadas en él.
 \end{itemize}
 
 \subsubsection{P.3 Dominio de las herramientas}
 Elegidas las tecnologías con las que llevar a cabo nuestro trabajo en S.1.4, queda aprender a usarlas. Es interesante en este punto buscar, para cada una de las tecnologías usadas, herramientas internas que puedan ayudarnos con nuestro fin.
 \begin{itemize}
-\item \textbf{S.3.1 Toma de contacto con GNS3}. Siendo este el simulador elegido finalmente para el proyecto, es necesario conocerlo y comprenderlo, ya sea para poder usarlo junto al juego como para facilitar la realización de la herramienta que interconecta juego-simulador. Encontrar nodos compatibles con nuestro proyecto es igualmente importante.
-\item \textbf{S.3.2 Lectura sobre las particularidades de C\#}. C\# es el lenguaje sobre el que se realizará la biblioteca que permitirá la interconexión entre juego y simulador. Se trata de un lenguaje de sintaxis similar a Java, con lo que no debe suponer una primera toma de contacto dura. Sin embargo, es necesario estudiarlo mínimamente para hacerse a él y sacarle todo el partido posible.
-\item \textbf{S.3.3 Toma de contacto con Unity}. Unity será el motor elegido para desarrollar los juegos. La inexperiencia con motores de juego requerirá pasar más tiempo en esta tarea.
+\item \textbf{S.3.1 Toma de contacto con el simulador de redes}. Es necesario conocerlo y comprenderlo, ya sea para poder usarlo junto al juego como para facilitar la realización de la herramienta que interconecta juego-simulador. Encontrar nodos compatibles con nuestro proyecto es igualmente importante.
+\item \textbf{S.3.2 Lectura sobre las particularidades de C\#}. C\# es el lenguaje sobre el que se realizará la biblioteca que permitirá la interconexión entre juego y simulador. Se trata de un lenguaje de sintaxis similar a Java, con lo que no debe suponer una primera toma de contacto extremadamente compleja. Sin embargo, es necesario estudiarlo mínimamente para hacerse a él y sacarle todo el partido posible.
+\item \textbf{S.3.3 Toma de contacto con el entorno de desarrollo del juego}. La inexperiencia con motores de juego requerirá pasar más tiempo en esta tarea.
 \end{itemize}
-
-Nada de lo anterior queda recogido en el presente documento.
 
 \subsubsection{P.4 Implementación del diseño}
-El diseño ya fue trazado, llega el momento de integrarlo en la realidad. Este proceso está extensamente redactado durante el capítulo \ref{chap:Integration}.
+Tras el diseño, se procede a la implementación. Este proceso está extensamente redactado durante el capítulo \ref{chap:Integration}.
 \begin{itemize}
 \item \textbf{S.4.1 Creación de la biblioteca}. Hemos acordado que la herramienta que posibilita la interacción entre simulador y juego es una biblioteca llamada desde una API. Su desarrollo es lo que cubre esta tarea. 
-\item \textbf{S.4.2 Creación del juego}. Desarrollo de un juego que satisfaga nuestras necesidades. Esto no solo incluye todo el desarrollo del juego en Unity (búsqueda de assets de arte, despliegue de objetos en las escenas, scripting) si no también la implementación de las redes en GNS3 necesarias.
+\item \textbf{S.4.2 Creación del juego}. Desarrollo de un juego que satisfaga nuestras necesidades. Esto no solo incluye todo el desarrollo del juego en el motor que sea elegido (búsqueda de assets de arte, despliegue de objetos en las escenas, scripting) sino también la creación de las redes necesarias en el software de virtualización.
 \end{itemize}
 
-\subsubsection{P.5 Experimentación con el resultado}
+\subsubsection{P.5 Experimentación}
 Tal y como podrá leerse en el capítulo \ref{chap:Pruebas}, este paquete contiene las tareas llevadas a cabo para analizar el trabajo llevado a cabo.
 \begin{itemize}
 \item \textbf{S.5.1 Creación de los escenarios de pruebas}. Dos son los escenarios sobre los que las pruebas se llevarán a cabo. Es necesario definirlos correctamente antes de que estas sean aplicadas.
@@ -200,7 +198,7 @@ Aplicaciones y demás material digital que ha sido necesario para desarrollar el
 \item El editor \href{http://www.xm1math.net/texmaker/}{\textbf{Texmaker 5.0.2}} junto a \href{https://miktex.org/about}{MiKTeX 2.9}, implementación de \LaTeX.
 \item \href{https://es.libreoffice.org/descubre/draw/}{\textbf{LibreOffice Draw 6.1.0.3}} para el diseño de algunos esquemas.
 \item \href{https://inkscape.org/es/}{\textbf{InkScape 0.92}} para la transformación de imágenes vectoriales en archivos de formato \textit{.pdf} y edición de las mismas.
-\item Finalmente, la planificación ha requerido del uso del software \href{http://www.projectlibre.com/}{ProjectLibre 1.7 Community Edition}.
+\item Finalmente, la planificación ha requerido del uso del software \href{http://www.projectlibre.com/}{\textbf{ProjectLibre 1.7 Community Edition}}.
 \end{itemize}
 \item Como lector de archivos \textit{.pdf} ha sido elegido \href{https://www.foxitsoftware.com/pdf-reader/}{\textbf{Foxit Reader}}. Última versión: 9.2.0.
 \item Para el desarrollo de código:
