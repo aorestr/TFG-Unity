@@ -73,11 +73,45 @@ Los nodos están interconectados entre sí mediante enlaces. Los enlaces son los
 El recurso asociado en la API a los enlaces de un proyecto es: \textit{http://$<$IP del server$>$:$<$puerto del servidor$>$/v2/projects/$<$ID del proyecto$>$/links}
  
 \section{Motor de videojuegos: Unity}
+\subsection{Ventajas sobre otros motores}
 Una de las principales razones por las que se ha elegido Unity como el motor sobre el que desarrollar nuestro juego es por su popularidad y su facilidad de aprendizaje. Cuenta con toneladas de información en la red y con foros muy activos que permiten encontrar respuesta a las preguntas generadas a gran velocidad. Pero Unity es una buena elección también por méritos propios.
 
 El motor posee simulación física propia, oclusión ambiental (SSAO), sombras dinámicas... y una larga lista de elementos más. Muchos motores de juego cuentan también de estas características, pero Unity tiene dos ventajas principales sobre otras herramientas de desarrollo de juegos igualmente avanzadas: un flujo de trabajo visual (\textit{visual workflow}) extremadamente productivo y un alto grado de compatibilidad entre plataformas.
 
 El workflow visual posee un diseño bastante único, diferente de la mayoría de los otros entornos. El editor se utiliza para diseñar las escenas de su juego y para unir los ``assets'' (cuyo significado veremos más adelante) de arte y el código en objetos interactivos. Lo bueno de este editor es que permite crear juegos de calidad profesional de forma rápida y eficaz, proporcionando a los desarrolladores herramientas increíblemente productivas a la vez que utilizando las últimas tecnologías en el mundo de los videojuegos.
 
+El editor es especialmente útil para hacer iteraciones rápidas, permitiendo perfeccionar el juego a través de ciclos de protipado y pruebas. Se pueden ajustar objetos en el editor y mover cosas incluso mientras el juego está en marcha. Además, Unity permite personalizar el editor mismo escribiendo scripts que añaden nuevas funciones y menús a la interfaz.
 
-Espero finiquitarlo mañana también. Honestamente no creo que vaya a añadir mucho.
+Además de las importantes ventajas en cuanto a productividad del editor, el otro punto fuerte del conjunto de herramientas de Unity es el alto grado de compatibilidad entre plataformas. Unity no sólo es multiplataforma en cuanto a los objetivos de implementación (se puede implementar en el PC, la web, el móvil o las consolas), sino que es multiplataforma en cuanto a las herramientas de desarrollo (se puede desarrollar el juego en Windows o macOS). Esta naturaleza se debe en gran medida a que Unity comenzó como software sólo para Mac y más tarde fue portado a Windows. La primera versión fue lanzada en 2005. Actualmente se encuentra en su quinta versión principal (con muchas actualizaciones menores que se publican con frecuencia). Inicialmente, Unity sólo soportaba Mac tanto para el desarrollo como para la implementación, pero en pocos meses Unity se había actualizado para funcionar también en Windows.
+
+Mientras tanto, el sistema de componentes modulares utilizado para construir objetos de juego aporta un tercer y más sutil beneficio. En un sistema de componentes, los "componentes" son paquetes de funcionalidad de mezcla y correspondencia, y los objetos son construido como un conjunto de componentes más que como una estricta jerarquía de clases. En otras palabras, un sistema de componentes es un enfoque diferente (y generalmente más flexible) a la hora de hacer programación orientada a objetos, donde los objetos del juego se construyen a través de composición en lugar de herencia.
+
+En un sistema de componentes, los objetos existen en una jerarquía plana y diferentes objetos tienen diferentes colecciones de componentes. Esto difiere de una estructura de herencia, donde diferentes objetos se encuentran en ramas completamente diferentes del árbol. Esta disposición facilita la creación rápida de prototipos, ya que puede mezclar y combinar rápidamente diferentes componentes en lugar de tener que refactorizar la cadena de herencia cuando los objetos cambian.
+
+Aunque podría escribirse código para implementar un sistema de componentes personalizado si no existiera, Unity ya tiene un sistema de componentes robusto; sistema integrado perfectamente con el editor visual. En lugar de manipular componentes en código, es posible adjuntar y separar componentes dentro del editor visual. No se está limitado a construir sólo objetos a través de la composición: existe además la opción de usar herencia en el propio código.
+
+\subsection{Desventajas}
+Unity tiene muchas ventajas que la convierten en una gran elección para el desarrollo de juegos pero, como cualquier otra herramienta, tiene sus puntos débiles. En particular, la combinación del editor visual y un código muy elaborado por debajo, aunque muy efectiva con el sistema de componentes de Unity, es inusual y puede crear dificultades. En escenas complejas, puede perderse la pista de qué objetos de la escena tienen componentes específicos. Unity proporciona funcionalidades de búsqueda para encontrar scripts adjuntos, pero esa búsqueda quizás debería ser más robusta; a día de hoy es posible encontrar situaciones en las que es necesario inspeccionar manualmente todo lo que hay en la escena para encontrar vínculos de scripts.
+
+Una otra desventanja tiene que ver con el trabajo con ``prefabs''. Los prefabs son un concepto específico de Unity. Se trata de un enfoque flexible para definir visualmente los objetos interactivos. El concepto de prefab es poderoso y único, pero puede llegar a ser especialmente incómodo el editar prefabs. Considerando que son una parte útil y central del trabajo con Unity, se espera que las versiones futuras mejoren el flujo de trabajo para su edición.
+
+\subsection{Interfaz de usuario}
+La figura mostrada a continuación ilustra un ejemplo de la interfaz de usuario del motor.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.11]{imagenes/uiunity}
+  \caption{Interfaz de usuario de Unity}
+  \label{fig:uiunity}
+\end{figure} 
+
+\begin{enumerate}
+\item Toda el área superior es la barra de herramientas. A la izquierda hay botones para desplazar la vista de la escena y mover objetos de la misma, y en el centro está el botón arranque para lanzar la escena que esté siendo editada.
+\item ``Scene'' y ``Game'' son pestañas para ver la escena y jugar al juego, respectivamente.
+\item ``Hierarchy'' muestra una lista de todos los objetos de la escena, anidados de acuerdo con la forma en que están vinculados entre sí. Con tan solo arrastrar objetos hacia esta pestaña es posible anidarlos entre sí.
+\item ``Project'' y ``Console'' son pestañas para ver todos los archivos del proyecto y los mensajes del código, respectivamente.
+\item Carpetas con los archivos relacionados con el proyecto.
+\item El ``inspector'' ocupa todo el lado derecho. Muestra información sobre el objeto actualmente seleccionado (una lista de componentes). Estos componentes asociados al objeto son los que lo configuran y otorgan propiedades. Un script puede ser anclado como componente.
+\end{enumerate}
+
+A medida que el documento avance hablaremos de más herramientas y elementos de Unity que han sido necesarias para nuestro propósito.
