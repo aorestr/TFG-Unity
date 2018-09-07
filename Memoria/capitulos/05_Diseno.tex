@@ -1,8 +1,8 @@
 \chapter{Diseño de la solución}\label{chap:Design}
-En este capítulo se describirá el modo en el que la API será construida y cómo el juego ha de ser llevado a cabo para cumplir con los propósitos que se han ido repitiendo a lo largo del texto.
+En este capítulo se describirá el modo en el que la API para la interconexión entre el simulador y el juego será construida y cómo este ha de ser llevado a cabo para cumplir con los propósitos que se han ido repitiendo a lo largo del texto.
 
 \section{La API: GNS3sharp}\label{sec:dis_api}
-Para llevar a cabo la interacción entre el videojuego y el simulador de redes es necesario desarrollar previamente alguna herramienta que lo posibilite. Con esta fin, se ha construido una librería propia que lo posibilita.
+Para llevar a cabo la interacción entre el videojuego y el simulador de redes es necesario desarrollar previamente alguna herramienta que lo posibilite. Con este fin, se ha construido una librería propia que ofrece configurar y obtener información del simulador desde fuera de él.
 
 \begin{figure}[H]
   \centering
@@ -11,19 +11,19 @@ Para llevar a cabo la interacción entre el videojuego y el simulador de redes e
   \label{fig:capa_api}
 \end{figure}
 
-Esta librería será usada mediante una API, que en nuestro proyecto se encuentra, metafóricamente, entre el juego y GNS3 tal y como se deja entrever en la figura \ref{fig:capa_api}. Todos sus detalles serán explicados en las próximas páginas.
+Esta librería será usada mediante una API, que en nuestro proyecto se encuentra, de forma lógica, entre el juego y GNS3 tal y como se esquematiza en la figura \ref{fig:capa_api}. Todos sus detalles serán explicados en las próximas páginas.
 
 \subsection{Introducción}\label{subsec:sectionapi}
 Según Wikipedia, una \textbf{API} ``es un conjunto de subrutinas, funciones y procedimientos (o métodos, en la programación orientada a objetos) que ofrece cierta biblioteca para ser utilizado por otro software como una capa de abstracción''\cite{wiki:api}. Comprende una serie de funciones que facilitan en mayor o menor medida trabajar sobre un cierto elemento. Como ejemplo de API famosa tenemos la de Google Maps, que contiene un compendio de métodos para JavaScript que permiten interactuar directamente con la plataforma de Google y crear nuestros programas jugando con ella\cite{googlemaps}. En resumen, una API no es más que un conjunto de funciones definidas para acceder a un servicio determinado.
 
-La programación se rige por \textbf{capas de abstracción}. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en agilidad de escritura y sencillez en el diseño sin perder flexibilidad de desarrollo.
+En la programación de sistemas complejos se suele aplicar un diseño basado en \textbf{capas de abstracción}. Partiendo de conceptos concretos se desarrolla una capa de abstracción haciendo uso de ellos que permite elevar el trato de elementos concretos un nivel por encima\cite{abstraction}. De esta forma ganamos en agilidad de escritura y sencillez en el diseño sin perder flexibilidad de desarrollo.
 
-Como se ha citado previamente, GNS3 hace uso de una \textbf{API REST} (\textit{REpresentational State Transfer}). Esto es, mediante una serie de métodos (los conocidos GET, POST...) asociados a una URI concreta podemos interactuar \textbf{vía web} con una aplicación. La diferencia fundamental con otra clase de servicios web es que REST está orientado a recursos y no a métodos. Esto permite a la web utilizar comunicaciones sin estado, facilitando de este modo su escalabilidad\cite{REST}.
+Como se ha citado previamente, GNS3 implementa una \textbf{API REST} (\textit{REpresentational State Transfer}). Esto es, mediante una serie de métodos (los conocidos GET, POST...) asociados a una URI (\textit{Uniform Resource Identifier} o identficador de recurso uniforme \cite{uri}) concreta podemos interactuar \textbf{vía web} con una aplicación. La diferencia fundamental con otra clase de servicios web es que REST está orientado a recursos y no a métodos. Esto permite a la web utilizar comunicaciones sin estado, facilitando de este modo su escalabilidad\cite{REST}.
 
-Aunque de gran utilidad (ya veremos qué papel concreto juega en nuestro trabajo), hace falta algo más para poder propiciar la interacción entre el simulador de redes y el videojuego; la API trabaja a un nivel mucho más bajo del que requerimos para desarrollar los juegos. Surge la necesidad entonces de crear nuestra propia API que haga uso de la API REST de GNS3 y que defina las funciones necesarias, a un nivel más abstracto y con más facilidades, que haga de intermediaria entre GNS3 y Unity.
+Aunque de gran utilidad (ya que permite tomar información de los proyectos de GNS3 y controlar algunos de sus parámetros), hace falta algo más para poder propiciar la interacción entre el simulador de redes y el videojuego; la API trabaja a un nivel mucho más bajo del que requerimos para desarrollar los juegos. Surge la necesidad entonces de crear nuestra propia API que haga uso de la API REST de GNS3 y que defina las funciones necesarias, a un nivel más abstracto y con más facilidades, que haga de intermediaria entre GNS3 y Unity.
 
 \subsection{Elección del lenguaje para la librería}
-En pleno 2018 la cantidad de lenguajes de programación existentes roza el absurdo. Desde el tradicional C, pasando por el multifuncional Java, el sencillo Python o incluso los llamados lenguajes esotéricos como LOLCODE\cite{esotericlang}. De entre todos ellos nosotros elegiremos uno sobre el que trabajar. Esta decisión está condicionada, como es natural, por el motor de videojuegos a utilizar.
+En pleno 2018, la cantidad de lenguajes de programación existentes roza el absurdo. Desde el tradicional C, pasando por el multifuncional Java, el sencillo Python o incluso los llamados lenguajes esotéricos como LOLCODE\cite{esotericlang}. Nosotros elegiremos uno sobre el que trabajar de entre todos ellos. Esta decisión está condicionada, como es natural, por el motor de videojuegos a utilizar.
 
 Ya que nuestra intención es que el motor sea capaz de establecer interacción con el simulador, es necesario que la API a desarrollar esté escrita en un lenguaje con el que el propio motor sea capaz de trabajar. \textbf{C\#} parecía la opción más sensata. ¿Por qué? Las razones se exponen a continuación:
 
@@ -42,7 +42,7 @@ Particularmente, en este trabajo adoptaremos C\#7, lanzado a la vez que Visual S
 Aclarada las razones, pasamos a analizar el uso que le daremos a este lenguaje.
 
 \subsection{Diseño de la API}
-Antes de desarrollar la API, que se ha decidido llamar \textbf{GNS3sharp} por la fusión entre las dos tecnologías que la conforman, es necesario reflexionar sobre los distintos aspectos que la compondrán (estructura, servicios, funciones...). Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
+Antes de desarrollar la API es necesario reflexionar sobre los distintos aspectos que la compondrán (estructura, servicios, funciones...). Se ha decidido darle por nombre \textbf{GNS3sharp}, por la fusión entre las dos tecnologías que la conforman. Para dar soluciones, tenemos que plantearnos antes las preguntas adecuadas:
 \subsubsection[Interacción con GNS3]{Interacción con GNS3 (¿Cómo debe interactuar con el simulador?)}
 Como ya se dijo con anterioridad, GNS3 crea un servidor en el equipo desde el que se ejecuta. Este servidor acepta peticiones REST, creando así una suerte de interacción con el programa sin necesidad de poner las manos en él de forma directa. Se abre de esta forma al mundo del scripting y así a nosotros para crear un conjunto de métodos que faciliten su acceso y gestión. Todo esto volverá a ser ilustrado en la subsección \ref{subsec:interac_emul} con mayor detalle.
 
@@ -72,7 +72,7 @@ Aclarado el concepto, mostramos la estructura básica sobre la que nuestra libre
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.75]{imagenes/diagrama_api1}
-  \caption{Boceto de diagrama UML de la API}
+  \caption{Esquema de diagrama UML de la API}
   \label{fig:diagrama_api1}
 \end{figure}
 
@@ -131,6 +131,8 @@ A continuación se dará una visión de la interacción desde el punto de vista 
   \label{fig:diagrama_interaccion}
 \end{figure}
 
+Los colores de las flechas en la figura anterior son representativos. Mientras que las flechas naranjas establecen conexiones mediante REST (es decir, con conexiones HTTP), las rojas lo hacen con sockets. Así, la API solicita y envía información al servidor de GNS3 mediante sobre HTTP y hace lo propio con los nodos mediante sockets TCP.
+
 Los proyectos de Unity están basados en un elemento llamado \GAOBJ. Todos los objetos que componen las escenas del proyecto se pueden abstraer en última instancia en ese tipo. El primer paso para que un proyecto de Unity pueda conectarse y controlar un esquema de red de GNS3 pasa por \textbf{insertar un \GAOBJ~ que tenga una instancia de la clase \GNSCS}. La única condición que se le impone a este objeto es que este parámetro contenido en él (la instancia) ha de ser accesible por todo el resto de elementos de la escena.
 
 ¿Para qué? De este modo, todos esos elementos no necesitan crear la suya propia. Creando una sola instancia de la clase centralizamos el trabajo en un solo objeto. La instancia contendrá información de los datos del proyecto de GNS3; información que podrá ser tomada por todos los componentes de la escena sin más que copiar la referencia al objeto. Si estos declararán su propia instancia cada uno perdería en tiempo (la recopilación de datos desde el servidor no es instantánea) y en eficiencia.
@@ -144,7 +146,7 @@ La idea es que el jugador (en otros términos, el usuario final), posea interacc
 \item El script recibe la respuesta y, tras analizarla, confirma que la interfaz se ha cerrado. Envía un mensaje al \GAOBJ~ de la puerta para que la cierre.
 \end{enumerate}
 
-Este flujo es de alguna forma lo que se ha representado en la figura~\ref{fig:diagrama_interaccion}. El bloque morado hace referencia a todo el entorno que comprende una escena de Unity. Esta escena contendrá una serie de \GAOBJ s, cuyo comportamiento vendrá determinado mayormente mediante lógica programada por scripts. El bloque azul hace referencia a este compendio. Alguno de esos scripts será el encargado de contener una instancia de \GNSCS . Al ser creada, esta se conecta al servidor de GNS3 desde donde recibe toda la información del proyecto con el que se quiere trabajar. A partir de ahí, el resto de \GAOBJ s de la escena no tendrán más que usar esa instancia para poder conectarse a los nodos (entre otras cosas) de la simulación. 
+Este flujo es lo que se ha representado en la figura~\ref{fig:diagrama_interaccion}. El bloque morado hace referencia a todo el entorno que comprende una escena de Unity. Esta escena contendrá una serie de \GAOBJ s, cuyo comportamiento vendrá determinado mayormente mediante lógica programada por scripts. El bloque azul hace referencia a este compendio. Alguno de esos scripts será el encargado de contener una instancia de \GNSCS . Al ser creada, esta se conecta al servidor de GNS3 desde donde recibe toda la información del proyecto con el que se quiere trabajar. A partir de ahí, el resto de \GAOBJ s de la escena no tendrán más que usar esa instancia para poder conectarse a los nodos (entre otras cosas) de la simulación. 
 
 \subsection{Modelo de videojuego}\label{subsec:modelojuego}
 Ahora que sabemos de qué forma se interconecta el juego con la red y en qué consiste exactamente la interacción, queda por concretizar qué clase de juegos podríamos crear. Hay que tener en mente en todo momento que pretendemos crear un \textbf{juego didáctico}, así que no nos vale cualquier construcción. La dificultad es, entonces, doble, pues es necesario seguir los cánones que dictan el buen hacer de un videojuego (véase un inteligente diseño de niveles, una estética atractiva y coherente, apartado técnico gráfico y sonoro propio, niveles a prueba de bugs...) a la vez que planear \textbf{qué} se quiere enseñar en ellos y \textbf{cómo} se pretende hacerlo.
@@ -154,13 +156,13 @@ Para sortear estas dificultades se ha decidido que la estructura del juego esté
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35, trim={0 9cm 0 9cm}]{imagenes/hall_juego}
-  \caption{Boceto del hub del juego}
+  \caption{Boceto de la sala de distribución del juego}
   \label{fig:hall}
 \end{figure}
 
 En el boceto de la figura de arriba se quiere ejemplificar (de forma extremadamente simplista) en qué consistiría este diseño.
 \begin{itemize}
-\item Cada vez que el jugador entre en el juego se encontrará en una suerte de ``hall''. El hall estará acotado por paredes con un número determinado de puertas.
+\item Cada vez que el jugador entre en el juego se encontrará en una suerte de sala de distribución. Esta estará acotada por paredes con un número determinado de puertas.
 \item Estas puertas conducen a los distintos niveles del juego. Cada puerta corresponde a una lección diferente sobre redes y telemática. El jugador no tiene que superar una lección (un nivel, una zona) para acceder a la siguiente, sino que puede elegir qué quiere aprender indistintamente. Por supuesto, se podría vetar la entrada a una zona hasta que supere una concreta. Idealmente, cada nivel al que se accede contaría con varias fases que van incrementando en dificultad.
 \item Al superar estas zonas, se desbloquea un ``manual'' acerca de lo aprendido en esa sala. Este manual puede ser consultado en un monitor localizado en el centro del hall. Gracias a esto, se podría repasar rápidamente lo aprendido en niveles anteriores desde un solo lugar.
 \end{itemize}
@@ -177,13 +179,13 @@ Existen dos aproximaciones al modo en el que estos niveles se conectan con el si
 De entre estos dos acercamientos al problema, quizás el primero sea más simple, pero el arranque de cada nodo no es inmmediato. El segundo entraña una mayor dificultad ingenieril y mayor propensión al error aunque la configuración de los aparatos conlleve menos tiempo.
 \end{itemize}
 
-\subsection{Juego a desarrollar}\label{subsec:fracasojuego}
+\subsection{Caso de ejemplo}\label{subsec:fracasojuego}
 
 Sin embargo, aunque todas estas ideas pueden sonar realmente interesantes, el juego final desarrollado no ha podido alcanzarlas. La complejidad existente para llevarlo a cabo era demasiado grande. En su lugar, se ha preferido crear un único pequeño escenario que sirva como demostración del potencial del proyecto.
 
 Con este propósito, se desarrollará un minijuego basado en tablas de enrutamiento. El objetivo del jugador es ser capaz de alcanzar un dispositivo marcado de la red en el menor tiempo posible. Por supuesto, habrá de atravesar una serie de nodos para alcanzarlo.
 
-El mapa estará compuesto por varias plataformas y en cada una de ellas un cartel con la tabla de enrutamiento del respectivo router. Son estas plataformas entonces una suerte de representantes de los routers de la red. Al jugador se le darán varias posibles opciones como siguiente salto. Cada opción es una interfaz del router. En la interfaz aparecerá la dirección IP del equipo a alcanzar. El resultado será algo como lo que puede verse en la imagen \ref{fig:juegoaccion}.
+El mapa estará compuesto por varias plataformas y en cada una de ellas un cartel con la tabla de enrutamiento del respectivo router. Son estas plataformas entonces una suerte de representantes de los routers de la red. Al jugador se le darán varias posibles opciones como siguiente salto. Cada opción es una interfaz del router. En la interfaz aparecerá la dirección IP del equipo a alcanzar. El resultado será similar a lo que puede verse en la figura \ref{fig:juegoaccion}.
 
 \begin{figure}[H]
   \centering

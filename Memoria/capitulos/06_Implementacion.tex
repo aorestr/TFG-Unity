@@ -9,6 +9,8 @@ Para finalizar se explicará la relación existente entre las clases con ayuda d
 Todas estas clases conforman un único \texttt{namespace} o espacio de nombres. Conviene recalcar que la API ha sido enteramente desarrollada desde cero.
 
 \subsection[GNS3sharp]{\href{https://github.com/aorestr/GNS3sharp/blob/master/gsn3sharp.cs}{GNS3sharp}}\label{subsec:gnscsclass}
+Clase que dirige un proyecto de GNS3.
+
 \subsubsection{Constructor}
 El constructor de \GNSCS~es sin duda uno de los elementos más importantes de toda a API. ¿Por qué? Tendrá la responsabilidad de conectarse al servidor de GNS3, recibir todos los datos de un cierto proyecto que solicitemos, procesarlos y guardarlos de tal forma que sean útiles. Su cabecera se muestra justo a continuación:
 \begin{lstlisting}[language={[Sharp]C}, caption={Cabecera del constructor de \texttt{GNS3sharp}}, label={gnscs1}]
@@ -210,6 +212,8 @@ if (byteContent != null){
 \end{itemize}
 
 \subsection[Node]{\href{https://github.com/aorestr/GNS3sharp/blob/master/node.cs}{Node}}
+Clase representante de los nodos (dispositivos) integrados en los proyectos de GNS3.
+
 \subsubsection{Constructor}
 El constructor principal de \NODE~solo es llamado desde \GNSCS. Es bastante sencillo: asigna parámetros básicos que la instancia de \GNSCS~toma del servidor. Entre ellos se encuentra la dirección del nodo. Gracias a ella y mediante otro método interno de la clase, se crea un cliente TCP y se establece un flujo de conexión para el envío y recepción de mensajes.
 
@@ -278,7 +282,7 @@ Esta es la única clase de la librería que hace uso de un destructor personaliz
 
 Únicamente se encarga de cerrar la conexión establecida con el nodo.
 
-\subsection{Herederos de Node}
+\subsection{Particularización de los nodos}
 La clase \NODE~no hace más que de padre para todo un abanico de clases. A partir de ahí se crea una estructura en árbol desde la que se ramifica una serie de subclases. Las tres herederas directas son \texttt{Router}, \texttt{Switch} y \texttt{Guest}, correspondientes a los tres amplios grupos de nodos que pueden encontrarse en GNS3. Estas tres clases son abstractas; su labor no es otra que la de declarar métodos importantes que cada uno de estos aparatos se espera que posean.
 
 La definición de los métodos se encuentra en sus clases herederas, que no representan otra cosa que dispositivos concretos. Pongamos un ejemplo para que se vea más sencillo:
@@ -344,6 +348,8 @@ El método se encarga de encontrar la IP relacionada con cierta interfaz del rou
 La conclusión que ha de sacarse de esto es que todos los métodos, o la mayor parte de ellos, van a ser definidos en base a estas dos funciones, \texttt{Send()} y \texttt{Receive()}. Podemos llevar esta lógica algo más allá: si no existe método creado en cierta clase para realizar una operación que nos es necesaria, podemos hacer uso de aquellas dos funciones para, sobre la marcha, conseguir lo que esperamos.
 
 \subsection[Link]{\href{https://github.com/aorestr/GNS3sharp/blob/master/link.cs}{Link}}
+Clase representante de los enlaces que unen los distintos nodos que configuran un proyecto del simulador.
+
 \subsubsection{Constructor}
 Una vez más, el constructor es únicamente accesible desde el espacio de nombres y solo será llamado desde \GNSCS. Se han definido dos concretamente: uno que supone que todos los parámetros del enlace de GNS3 son nulos (es un enlace ideal) y otro que supone que al menos uno de ellos es distinto.
 
@@ -364,7 +370,7 @@ Esta clase solo cuenta con un método, \texttt{EditLink()}. Permite editar uno d
 \item \texttt{ServerProjects}: en esta clase deben definirse métodos asociados a la URI del server donde se lista el conjunto de proyectos definidos en él. Por el momento solo cuenta con un método (\texttt{GetProjectIDByName()}) que extrae el ID de un proyecto dado su nombre, realmente útil a la hora de instanciar \GNSCS.
 \end{itemize}
 
-\subsection{Estructura de la API}
+\subsection{Estructura de la biblioteca}
 A continuación se muestra el diagrama UML de la API, desde el que puede observarse esquemáticamente el diseño de cada una de las clases y la relación que existe entre ellas.
 
 \begin{figure}[h]
@@ -398,10 +404,10 @@ Establecidos una serie de parámetros que servirán de metadatos para el ensambl
 
 Ya tenemos preparada la librería para que Unity haga uso de ella.
 
-\subsection{GitHub y la comunidad}
+\subsection{GitHub y la comunidad open source}
 Hemos considerado esencial que la API sea reutilizable. El objetivo de su desarrollo en ningún caso ha sido el de nacer y morir para el presente trabajo. Lejos de esto, se pretende que esta librería pueda ser utilizada por quien quiera, ya tenga como propósito la construcción de un videojuego o cualquier otra aplicación.
 
-Con esto en mente, todo el código utilizado por la librería se encuentra disponible en \MYhref{https://github.com/aorestr/GNS3sharp}{este repositorio} de mi GitHub personal. Está liberado bajo una licencia MIT, tremendamente permisiva a la hora de reutilizar el código.
+Con esto en mente, todo el código utilizado por la librería se encuentra disponible en de mi GitHub personal a través de la dirección \url{https://github.com/aorestr/GNS3sharp}. Está liberado bajo una licencia MIT, tremendamente permisiva a la hora de reutilizar el código.
 
 Además de los archivos de la propia API, se puede encontrar un README que explica algunos puntos importantes que considerar a la hora de utilizarla. En el repositorio de GitHub existe asimismo una sección de ``releases'', donde se suben los distintos compilados de la librería en formato ``.dll'' a medida que esta se expande o se reparan problemas aparecidos. Por supuesto, todo el código y su documentación están escritos en inglés para así llegar a más desarrolladores.
 
