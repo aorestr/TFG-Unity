@@ -1,14 +1,16 @@
 \chapter{Pruebas}\label{chap:Pruebas}
-En el penúltimo capítulo del documento se mostrarán los resultados del proyecto; se hará un análisis del establecimiento del juego y del rendimiento del simulador que lo soporta.
+En el penúltimo capítulo del documento se mostrarán los resultados del proyecto; se hará un análisis de la ejecución juego (su ) y del rendimiento del simulador sobre el que se ejecuta.
 
 \section{Descripción de las pruebas}
 \subsection{Escenarios}
-Una vez asentado todo lo que vimos en el capítulo \ref{chap:Integration}, vamos a probar su funcionamiento así como su rendimiento. Hemos decidido llevar a cabo las pruebas en dos entornos diferentes, para ponderar ventajas e inconvenientes de cada uno de ellos. Estos se describen a continuación:
+En estas secciones se verifica el funcionaiento y se analiza el rendimiento de todo aquello que vimos en el capítulo \ref{chap:Integration}. Hemos decidido llevar a cabo las pruebas en dos entornos diferentes, para ponderar ventajas e inconvenientes de cada uno de ellos. Estos se describen a continuación:
 \begin{itemize}
-\item El \textbf{caso 1} es sobre el que todo el desarrollo del proyecto ha sido ejecutado. El entorno consiste en una máquina física con Windows 10 desde donde el juego es ejecutado y GNS3 debe estar corriendo. Como se trata de un sistema operativo Windows, nodos como los de OpenWRT necesitan ser montados sobre un GNS3 VM, lo cual implica hacer uso de un hipervisor (aquí usaremos Virtualbox, pues aunque su rendimiento es inferior al de VMware, es open source) donde instalarlo. El proceso de despliegue es entonces algo tedioso, ya que requiere de una instalación de GNS3, una configuración apropiada del mismo y una máquina virtual con GNS3 VM.
-\item El \textbf{caso 2} busca acabar con ese proceso. La idea aquí es usar una sola máquina virtual como contenedor de todo lo que el juego necesita del simulador. Para ello, se ha preparado una máquina virtual con Xubuntu (recalcar que el adaptador de red está establecido como ``puente'', ya que así que la máquina toma una dirección de red diferente de aquella de la máquina huésped) y sobre él se ha instalado GNS3; se ha configurado este, se ha creado el proyecto de la figura \ref{fig:esquematico_red} y finalmente se ha exportado la máquina en formato \textit{.ova}. De esta forma ganamos en portabilidad. Además, puede demostrar que la API funciona incluso cuando el GNS3 al que llama es remoto.
+\item \textbf{caso 1: GNS3 nativo}. Se trata del escenario sobre el que todo el desarrollo del proyecto ha sido ejecutado. El entorno consiste en una máquina física con Windows 10 desde donde el juego es ejecutado y GNS3 debe estar corriendo. Como se trata de un sistema operativo Windows, nodos como los de OpenWRT necesitan ser montados sobre un GNS3 VM, lo cual implica hacer uso de un hipervisor (aquí usaremos Virtualbox, pues aunque su rendimiento es inferior al de VMware, es open source) donde instalarlo. El proceso de despliegue es entonces algo tedioso, ya que requiere de una instalación de GNS3, una configuración apropiada del mismo y una máquina virtual con GNS3 VM.
 
-La máquina virtual tiene asignados dos núcleos del procesador.
+Como se ejecuta sobre la máquina física, cuenta con todas las prestaciones que listamos en la sección \ref{sec:hardware}.
+\item \textbf{Caso 2: GNS3 en una máquina virtual}. Este caso pretende acabar con ese proceso. La idea aquí es usar una sola máquina virtual como contenedor de todo lo que el juego necesita del simulador. Para ello, se ha preparado una máquina virtual con Xubuntu (recalcar que el adaptador de red está establecido como ``puente'', ya que así que la máquina toma una dirección de red diferente de aquella de la máquina huésped) y sobre él se ha instalado GNS3; se ha configurado este, se ha creado el proyecto de la figura \ref{fig:esquematico_red} y finalmente se ha exportado la máquina en formato \textit{.ova}. De esta forma ganamos en portabilidad. Además, puede demostrar que la API funciona incluso cuando el GNS3 al que llama es remoto.
+
+La máquina virtual (dentro del PC previamente mencionado) tiene asignados dos núcleos del procesador, 4GB de RAM y un disco de tamaño variable.
 \end{itemize}
 
 \subsection{Pruebas a realizar}
@@ -50,6 +52,8 @@ La siguiente tabla recoge el tiempo de arranque individual de cada nodo y la med
 \end{table}
 
 Si ahora probamos a arrancar el proyecto completo (que incluye dos VPCs además de los routers), el resultado se dispara, necesitando de nada menos que \textbf{4min15s} para que todos los nodos sean completamente cargados. Es más de cuatro veces la media de lo que necesita cuando son ejecutados individualmente.
+
+El tiempo de arranque es independiente del número de intentos. Si el nodo fue previamente arrancado previamente y después apagado, su reinicio no encontrará diferencias temporales.
 
 \subsection{Tiempo de establecimiento de la escena}
 La tabla \ref{tab:t2} recoge los datos obtenidos tras la prueba:
@@ -133,7 +137,8 @@ El resultado también es negativo para el tiempo de arranque de los routers. Si 
 Finalmente, la figura \ref{fig:arranquejuego} muestra que las diferencias a la hora de interactuar con el juego no son demasiado grandes entre los dos casos. El caso 1 es ligeramente más rápido que el segundo.
 
 \section{Conclusiones}
+El rendimiento del caso 2 es, en cada escenario, peor que el del caso 1. En las pruebas temporales la diferencia no es especialmente grande, de apenas unos segundos; quizá se evidencie más en el arranque grupal de los nodos, pero aún así no difieren más de 30 segundos. La principal problemática reside, como ha podido verse, en el consumo de memoria RAM, donde el primer caso supera con creces al segundo. 
 
-Aunque es evidente el hándicap en cuanto a rendimiento de la máquina virtual, las ventajas con ella son claras y fueron listadas al comienzo del capítulo. El hecho de aislar toda la configuración del simulador en una sola máquina virtual, hace su uso extremadamente portable y sencillo. Problemas como su mayor consumo de RAM no debe serlo a día de hoy, con sistemas que cuentan fácilmente con 8GBs de RAM. Además, la sola instalación de GNS3 es ya de por sí poco recomendable para equipos de pocas prestaciones \cite{gnsweb}. Yendo aún a más: si el proyecto se encuentra inicialmente activo y configurado cuando el juego fuera a hacer uso de él, el caso 2 no apenas se ve perjudicado frente al segundo en cuanto a configuración del juego e interacción con este.
+Sin embargo, pese a este hándicap, sus ventajas son claras y fueron listadas al comienzo del capítulo. El hecho de aislar toda la configuración del simulador en una sola máquina virtual, hace su uso extremadamente portable y sencillo. Su principal problema, el consumo de RAM, no debe serlo a día de hoy, con sistemas que cuentan fácilmente con 8GBs de RAM. Además, la sola instalación de GNS3 es ya de por sí poco recomendable para equipos de pocas prestaciones \cite{gnsweb}. Yendo aún a más: si el proyecto se encuentra inicialmente activo y configurado cuando el juego se propone hacer uso de él, el caso 2 apenas se ve perjudicado frente al primero en cuanto a configuración del juego e interacción con este.
 
-Consideramos entonces que es la opción correcta a seguir, ya que firmemente pensamos que las ventajas que ofrece las hacen ideales para el proyecto (acercar el juego al mayor número de personas) frente a los inconvenientes que es evidente que presenta.
+Consideramos entonces que es la opción correcta a seguir. Tratándose de un elemento que ha de ser compartido por los docentes hacia los alumnos, es importante para estos que ofrezca facilidad de instalación, la cual ofrece. Su portabilidad la convierte en la opción más interesante pese a los inconvenientes que es evidente que presenta.

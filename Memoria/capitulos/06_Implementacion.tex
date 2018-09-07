@@ -416,9 +416,9 @@ Además de los archivos de la propia API, se puede encontrar un README que expli
 En esta sección se detalla la construcción del videojuego. En primer lugar se habla del juego en sí, qué se será creado y qué se puede esperar de la creación. Inmediatamente después se describe el entorno generado en GNS3 para ser usado por Unity para, más adelante, mostrar cómo y qué ha sido desarrollado mediante él.
 
 \subsection{Descripción del juego}
-Aunque al comienzo el propósito del proyecto era desarrollar algo similar a lo descrito en la subsección \ref{subsec:modelojuego}, en la subsección siguiente, la \ref{subsec:fracasojuego}, ya hablamos de la inviabilidad de la idea original. Propusimos entonces crear un pequeño nivel como prueba de concepto para así demostrar el potencial entre la biblioteca, el simulador y el motor de juego.
+Aunque al comienzo el propósito del proyecto era desarrollar algo similar a lo descrito en la subsección \ref{subsec:modelojuego}, en la subsección siguiente, la \ref{subsec:fracasojuego}, ya hablamos del juego a desarrollar. Propusimos entonces crear un pequeño nivel como prueba de concepto para así demostrar el potencial entre la biblioteca, el simulador y el motor de juego.
 
-A modo de breve recordatorio sobre lo visto en aquella sección, el nivel será un pequeño escenario con varias plataformas. Cada una de estas hará simbólicamente de router. En ellas podrá encontrarse un cuadro mostrando la tabla de enrutamiento del nodo y una serie de puertas que hacen de sus interfaces. Al atravesarlas, se avanza hasta la plataforma que lleve al nodo que hay tras la interfaz. El objetivo es llegar hasta el aparato cuya IP aparece en la esquina inferior-izquierda de la pantalla.
+A modo de breve recordatorio sobre lo visto en aquella sección, el nivel será un pequeño escenario con varias plataformas. Cada una de estas hará simbólicamente de router. En ellas podrá encontrarse un cuadro mostrando la tabla de enrutamiento del nodo y una serie de puertas que hacen de sus interfaces. Al atravesarlas, se avanza hasta la plataforma que lleve al nodo que hay tras la interfaz. El objetivo es llegar hasta el aparato cuya IP aparece en la esquina inferior izquierda de la pantalla.
 
 \subsection{El proyecto de GNS3}
 Para empezar será necesario construir la red sobre la que se apoyará el videojuego. Se ha construido una pequeña, de apenas cinco routers y dos PCs, uno como plataforma de inicio y otro como destino a alcanzar.
@@ -480,8 +480,8 @@ En esta sección se describe tanto el diseño del nivel de nuestro juego como el
 
 \subsubsection{Materiales}
 \begin{itemize}
-\item El fondo es una imagen estática tomada de \MYhref{https://opengameart.org/content/industrial-background-2d}{OpenGameArt}, una famosa web que publica arte redistribuible para la elaboración de juegos. Está liberado bajo una licencia	\href{CC 3.0}{https://creativecommons.org/licenses/by/3.0/}, lo que implica que puede ser compartido y copiado siempre y cuando se dé crédito al autor y una referencia al material. Un enlace desde donde puede ser encontrado ya se ha dejado en la línea anterior. Gracias a ``Alucard'' por esta imagen.
-\item El decorado del nivel se ha generado gracias a un conjunto de sprites localizados una vez más en \MYhref{https://opengameart.org/content/sci-fi-platform-tiles}{OpenGameArt}. En esta ocasión, el material tiene licencia \href{https://creativecommons.org/publicdomain/zero/1.0/}{CC0 1.0}, de dominio público; totalmente libre.
+\item El fondo es una imagen estática tomada de OpenGameArt, una famosa web que publica arte redistribuible para la elaboración de juegos. Está liberado bajo una licencia	\href{https://creativecommons.org/licenses/by/3.0/}{CreativeCommons 3.0} con retribución, lo que implica que puede ser compartido y copiado siempre y cuando se dé crédito al autor y una referencia al material. Un enlace desde donde puede ser encontrado ya se ha dejado en la línea anterior. Gracias a ``Alucard'' por esta imagen. El diseño puede ser consultado en la dirección \url{https://opengameart.org/content/industrial-background-2d}.
+\item El decorado del nivel se ha generado gracias a un conjunto de sprites localizados una vez más en OpenGameArt. En esta ocasión, el material tiene licencia \href{https://creativecommons.org/publicdomain/zero/1.0/}{CC0 1.0}, de dominio público; totalmente libre. El diseño puede ser consultado en la dirección \url{https://opengameart.org/content/sci-fi-platform-tiles}.
 
 Un sprite es más un mapa de bits usado como elemento individual cuyo conjunto posibilita crear escenas en un videojuego. Si atendemos a esa definición y reparamos en la imagen a la que puede accederse desde el enlace anterior, es evidente que esa descripción no se corresponde a la figura. Digamos que esa imagen está formada por decenas de pequeños sprites y es tarea nuestra el extraerlos para nuestro propio uso. Unity nos lo pone fácil, ya que contiene una herramienta llamada ``sprite editor'' (visible en la figura \ref{fig:sprite_editor}), que disecciona imágenes para convertirlas en pequeñas piezas. Si los sprites están repartidos con un tamaño fijo en la imagen, como es nuestro caso, es tan sencillo como indicarle tal dimensiones en píxeles y Unity hará el resto.
 
@@ -494,7 +494,7 @@ Un sprite es más un mapa de bits usado como elemento individual cuyo conjunto p
 
 Ya veremos de qué modo son usados los sprites en el siguiente apartado.
 
-\item Finalmente, nos hemos visto ayudados por uno de los paquetes que Unity incluye por defecto. Se trata del paquete ``2D'', que puede ser descargado desde el propio cliente de Unity en \textit{Assets} $\rightarrow$ \textit{Import package} $\rightarrow$ \textit{2D}. Incluye una serie de assets (\textbf{ESTE CONCEPTO DEBE EXPLICARSE LA PRIMERA VEZ QUE SE HABLE DE UNITY}) básicos para la creación de niveles bidimensionales. 
+\item Finalmente, nos hemos visto ayudados por uno de los paquetes que Unity incluye por defecto. Se trata del paquete ``2D'', que puede ser descargado desde el propio cliente de Unity en \textit{Assets} $\rightarrow$ \textit{Import package} $\rightarrow$ \textit{2D}. Incluye una serie de assets básicos para la creación de niveles bidimensionales. 
 
 \end{itemize}
 

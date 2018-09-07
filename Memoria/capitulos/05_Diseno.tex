@@ -78,7 +78,7 @@ Aclarado el concepto, mostramos la estructura básica sobre la que nuestra libre
 
 El diagrama UML de la figura \ref{fig:diagrama_api1} dibuja cuáles son las clases que componen la librería y da pistas acerca de la relación entre ellas. Así, es claro que las tales \texttt{Switch}, \texttt{Node} y \texttt{Router} heredan de de \NODE~y que a su vez esta es usada por \GNSCS~por alguna propiedad llamada \texttt{Nodes} (que hasta la subsección \ref{subsec:gnscsclass} no se analizará).
 
-A continuación pasamos a desarrollar cada una de las clases conceptualmente:
+A continuación pasamos a desarrollar cada una de las clases conceptualmente. La implementación y particularidad de todas ellas serán desarrolladas en el capítulo \ref{chap:Integration}. Aquí únicamente crearemos un esbozo de lo que se espera de las clases que componen la biblioteca.
 
 \subsubsection[''La clase principal'']{GNS3sharp, la clase principal}
 Tal y como expusimos en la sección~\ref{subsec:accesoapi}, crearemos una clase principal que gestionará toda la interacción con el simulador de redes. Hemos llamado a esta clase del mismo modo que a la API, \GNSCS. Recalcamos entonces: los objetos que se encarguen de gestionar los proyectos serán del tipo \GNSCS.
@@ -181,7 +181,7 @@ De entre estos dos acercamientos al problema, quizás el primero sea más simple
 
 \subsection{Caso de ejemplo}\label{subsec:fracasojuego}
 
-Sin embargo, aunque todas estas ideas pueden sonar realmente interesantes, el juego final desarrollado no ha podido alcanzarlas. La complejidad existente para llevarlo a cabo era demasiado grande. En su lugar, se ha preferido crear un único pequeño escenario que sirva como demostración del potencial del proyecto.
+Sin embargo, finalmente se decidió crear algo más sencillo. La complejidad existente para llevarlo a cabo era grande. En su lugar, se ha preferido crear un único pequeño escenario que sirva como demostración del potencial del proyecto, una prueba de concepto.
 
 Con este propósito, se desarrollará un minijuego basado en tablas de enrutamiento. El objetivo del jugador es ser capaz de alcanzar un dispositivo marcado de la red en el menor tiempo posible. Por supuesto, habrá de atravesar una serie de nodos para alcanzarlo.
 
@@ -200,4 +200,4 @@ Con este nivel tan sencillo conseguimos dos cosas:
 \item Mostrar cómo se lleva a cabo la interacción entre el simulador y el juego. Dicho en otras palabras, demostrar que, efectivamente, la API es funcional y puede ser usada con el propósito que se esperaba.
 \end{itemize}
 
-Se cimentan unos pilares sobre los que podrán construirse cosas mucho mayores en el futuro.
+Se trata de un ejemplo básico que sirve de base para futuros desarrollos. 
